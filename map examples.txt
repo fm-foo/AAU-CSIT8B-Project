@@ -1,0 +1,370 @@
+map BasicMap {
+        // base background for a tile if nothing else is specified
+        // hex colour type: # with 6 numbers
+        background: colour { hex: #0000FF; };
+        // size of the map in tiles
+        shape: box {
+                // integer type: integer
+                height: 10; width: 10;
+        };
+};
+
+map ImageMap {
+        // file reference
+        // string type: string surrounded by ""s
+        background: image { path: "./grass.png"; };
+        shape: box {
+                height: 10;
+                width: 10;
+        };
+};
+// investigate how easy it is to go without semicolon on blocks (get rid of {};)
+
+map SectionMap {
+        background: image { path: "./grass.png"; };
+        shape: box {
+                height: 10;
+                width: 10;
+        };
+        // define a section - a portion of the map with something different going on
+        // zero-indexed
+        // coordinate type: 2 numbers with a ,
+        // specified as X coordinate first, then Y coordinate
+        // X heads to the right ->
+        // Y heads downwards |
+        //                   V 
+        // section defines the coordinate in the definition here
+        section 3, 3 {
+                background: image { path: "./stone.png"; };
+                shape: box {
+                        // disallow negative sizes?
+                        height: 3;
+                        width: 3;
+                };
+        };
+        // final map should look like this
+        // where * is the grass texture and # is the stone texture
+        //   0123456789
+        // 0 **********
+        // 1 **********
+        // 2 **********
+        // 3 ***###****
+        // 4 ***###****
+        // 5 ***###****
+        // 6 **********
+        // 7 **********
+        // 8 **********
+        // 9 **********
+};
+
+map SectionMap2 {
+        background: image { path: "./grass.png"; };
+        shape: box {
+                height: 10;
+                width: 10;
+        };
+        section 2, 1 {
+                background: image { path: "./stone.png"; };
+                // coordinates shape type
+                // specifies individual points, no relation between them
+                shape: coordinates {
+                        0, 0;
+                        0, 1;
+                        5, 0;
+                        5, 1;
+                };
+        };
+        // section
+        // . is no tile, # is stone
+        //   012345
+        // 0 #....#
+        // 1 #....#
+        section 1, 6 {
+                background: image { path: "./stone.png"; };
+                // line shape type
+                // draws a line between the points, in order
+                shape: line {
+                        0, 0;
+                        0, 2;
+                        7, 2;
+                        7, 0;
+                };
+        };
+        // section
+        // . is no tile, # is stone
+        //   01234567
+        // 0 #......#
+        // 1 #......#
+        // 2 ########
+        
+        // final map should look like this
+        // where * is the grass texture and # is the stone texture
+        //   0123456789
+        // 0 **********
+        // 1 **#****#**
+        // 2 **#****#**
+        // 3 **********
+        // 4 **********
+        // 5 **********
+        // 6 *#******#*
+        // 7 *#******#*
+        // 8 *########*
+        // 9 **********
+};
+
+// some takeaways
+// blocks can have properties, but also just bare items
+// map type has background and shape properties, and a number of sections
+// section type has background and shape
+
+
+section NamedSection {
+                                // red
+        background: colour { hex: #FF0000; };
+        shape: box {
+                height: 5;
+                width: 5;
+        };
+        section 0, 0 {
+                                        // green
+                background: colour { hex: #00FF00; };
+                shape: line {
+                        0, 0;
+                        4, 4;
+                };
+        };
+        section 0, 4 {
+                background: colour { hex: #00FF00; };
+                shape: line {
+                        0, 0;
+                        // coordinates are relative
+                        -4, 4;
+                };
+        };
+        // final section should look like this
+        // where r is red and G is green
+        //   01234
+        // 0 GrrrG
+        // 1 rGrGr
+        // 2 rrGrr
+        // 3 rGrGr
+        // 4 GrrrG
+};
+
+map SectionReference {
+                                // blue
+        background: colour { hex: #0000FF; };
+        shape: box {
+                height: 7; width: 7;
+        };
+        // reference to named section
+        reference section NamedSection 1, 1;
+        // final map should look like this
+        // where B is blue, r is red, and G is green
+        //
+        // BBBBBBB
+        // BGrrrGB
+        // BrGrGrB
+        // BrrGrrB
+        // BrGrGrB
+        // BGrrrGB
+        // BBBBBBB
+};
+
+map WarningSectionReference {
+        background: colour { hex: #0000FF; };
+        shape: box {
+                height: 7; width: 7;
+        };
+        reference section NamedSection 3, 3;
+        // can raise a warning - section reaching off of map
+        // final map should look like this
+        // where B is blue, r is red, and G is green
+        // subsection areas outside of bounding region are clipped
+        //
+        // BBBBBBB
+        // BBBBBBB
+        // BBBBBBB
+        // BBBGrrr
+        // BBBrGrG
+        // BBBrrGr
+        // BBBrGrG
+};
+
+map ErrorSectionReference {
+        background: colour { hex: #0000FF; };
+        shape: box {
+                height: 7; width: 7;
+        };
+        reference section NamedSection 8, 8;
+        // error - section is off the map entirely
+};
+
+// more notes
+// map and section are fundamentally the same type
+// a map is just a section we want to output/use/otherwise
+// might change this in the future? maybe change the name of it, too
+// sections can have names and coordinates in their definition, both are optional
+// a section with no name cannot be referred to, no issue
+// a section with no coordinates is not displayed on the map
+
+map SectionReferenceFun {
+        background: colour { hex: #000000; };
+        shape: box {
+                height: 10; width: 10;
+        };
+        // section without coordinates is not rendered
+        section WhiteBox {
+                background: colour { hex: #FFFFFF; };
+                shape: box { height: 2; width: 2; };
+        };
+        // can reference sections in the same map
+        reference section WhiteBox 2, 2;
+        reference section WhiteBox 2, 7;
+        reference section WhiteBox 7, 2;
+        reference section WhiteBox 7, 7;
+        // final map should look like this
+        // . for black, @ for white
+        //
+        // ..........
+        // ..........
+        // ..@@...@@.
+        // ..@@...@@.
+        // ..........
+        // ..........
+        // ..........
+        // ..@@...@@.
+        // ..@@...@@.
+        // ..........
+};
+
+map SectionReferenceFun2 {
+        background: colour { hex: #000000; };
+        shape: box {
+                height: 10; width: 10;
+        };
+        // section WITH coordinates is rendered
+        section WhiteBox 2, 2 {
+                background: colour { hex: #FFFFFF; };
+                shape: box { height: 2; width: 2; };
+        };
+        // can reference sections in the same map
+        // reference coordinates override original coordinates
+        reference section WhiteBox 2, 7;
+        reference section WhiteBox 7, 2;
+        reference section WhiteBox 7, 7;
+        // final map should look like this
+        // . for black, @ for white
+        //
+        // ..........
+        // ..........
+        // ..@@...@@.
+        // ..@@...@@.
+        // ..........
+        // ..........
+        // ..........
+        // ..@@...@@.
+        // ..@@...@@.
+        // ..........
+};
+
+// has coordinates, but is just a bare section
+// error - those coordinates can't mean anything
+section BareSectionError 2, 3 {
+        background: colour { hex: #FFFFFF; };
+        shape: box { height: 2; width: 2; };
+};
+
+// bare section without name
+// error - can't be referenced, so is useless
+section {
+        background: colour { hex: #FFFFFF; };
+        shape: box { height: 2; width: 2; };
+};
+
+
+map OverlappingSections {
+        background: image { path: "./grass.png"; };
+        shape: box {
+                height: 10;
+                width: 10;
+        };
+        section 2, 2 {
+                background: image { path: "./stone.png"; };
+                shape: box {
+                        height: 5;
+                        width: 5;
+                };
+                
+        };
+        section 5, 5 {
+                background: image { path: "./water.png"; };
+                shape: box {
+                        height: 3;
+                        width: 3;
+                };
+        };
+        // Overlapping sections are rendered in order
+        // The last section in a group is rendered on top
+        //
+        // final map should look like this
+        // where * is the grass texture, S is the stone texture
+        // and W is the water texture
+        // 
+        // **********
+        // **********
+        // **SSSSS***
+        // **SSSSS***
+        // **SSSSS***
+        // **SSSWWW**
+        // **SSSWWW**
+        // *****WWW**
+        // **********
+        // **********
+};
+
+map SectionMap3 {
+        background: image { path: "./grass.png"; };
+        shape: box {
+                height: 4;
+                width: 4;
+        };
+        section 1, 1 {
+                background: image { path: "./chest.png"; };
+                // point shape - has no block
+                shape: point;
+        };
+        section 1, 1 {
+                background: image { path: "./chest.png"; };
+                shape: coordinate { 0, 0; };
+        };
+        // final map should look like this
+        // where * is the grass texture and $ is the chest texture
+        // 
+        // ****
+        // *$**
+        // ****
+        // ****
+};
+
+/* multi-line comment block!
+
+properties exist once and only once
+
+BACKGROUND TYPES:
+colour - 1 field, 'hex'
+image - 1 field, 'path'
+
+SHAPE TYPES:
+point - no fields
+box - 2 fields, 'height' and 'width'
+line - no fields, many values, of coordinate types
+coordinates - no fields, many values, of coordinate types
+
+PRIMITIVE TYPES:
+string
+integer
+coordinate (parsed as 'int, int')
+colour (parsed as #XXXXXX)
+
+*/
