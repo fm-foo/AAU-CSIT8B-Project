@@ -4,6 +4,8 @@ options {
     language=CSharp;
 }
 
+file                : map_or_section*;
+
 map_or_section      : (map | section) SEMICOLON;
 
 map                 : MAP IDENTIFIER OPEN_BRACE (section_properties|section_statements)* CLOSE_BRACE;
@@ -13,8 +15,9 @@ colour              : COLOUR OPEN_BRACE (colour_properties)* CLOSE_BRACE;
 image               : IMAGE OPEN_BRACE (image_properties)* CLOSE_BRACE;
 box                 : BOX OPEN_BRACE (box_properties)* CLOSE_BRACE;
 line                : LINE OPEN_BRACE (point_statements)* CLOSE_BRACE;
-coordinates         : LINE OPEN_BRACE (point_statements)* CLOSE_BRACE;
+coordinates         : COORDINATES OPEN_BRACE (point_statements)* CLOSE_BRACE;
 point_shape         : POINT;
+reference_section   : REFERENCE SECTION IDENTIFIER POINT_LIT;
 
 section_properties  : (background_property | shape_property) SEMICOLON;
 box_properties      : (height_property | width_property) SEMICOLON;
@@ -33,7 +36,7 @@ hex_property        : HEX COLON COLOUR_LIT;
 path_property       : PATH COLON STRING;
 
 point_statements    : POINT_LIT SEMICOLON;
-section_statements  : section SEMICOLON;
+section_statements  : (section | reference_section) SEMICOLON;
 
 fragment NEWLINE    : '\r\n' | '\n';
 fragment CHARACTER  : ~[ \t\r\n];

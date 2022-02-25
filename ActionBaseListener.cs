@@ -36,6 +36,18 @@ using ParserRuleContext = Antlr4.Runtime.ParserRuleContext;
 [System.CLSCompliant(false)]
 public partial class ActionBaseListener : IActionListener {
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="ActionParser.file"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterFile([NotNull] ActionParser.FileContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ActionParser.file"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitFile([NotNull] ActionParser.FileContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="ActionParser.map_or_section"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -143,6 +155,18 @@ public partial class ActionBaseListener : IActionListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitPoint_shape([NotNull] ActionParser.Point_shapeContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ActionParser.reference_section"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterReference_section([NotNull] ActionParser.Reference_sectionContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ActionParser.reference_section"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitReference_section([NotNull] ActionParser.Reference_sectionContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="ActionParser.section_properties"/>.
 	/// <para>The default implementation does nothing.</para>

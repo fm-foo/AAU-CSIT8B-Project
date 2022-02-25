@@ -11,7 +11,7 @@ public class Program
         ITokenStream tokens = new CommonTokenStream(lexer);
         ActionParser parser = new ActionParser(tokens);
         parser.BuildParseTree = true;
-        IParseTree tree = parser.map_or_section();
+        IParseTree tree = parser.file();
         var listener = new TestListener();
         ParseTreeWalker.Default.Walk(listener, tree);
     }
@@ -19,10 +19,8 @@ public class Program
 
 public class TestListener : ActionBaseListener
 {
-    public override void EnterEveryRule([NotNull] ParserRuleContext context)
+    public override void EnterMap_or_section([NotNull] ActionParser.Map_or_sectionContext context)
     {
-        Console.WriteLine("Here");
-        base.EnterEveryRule(context);
+        Console.WriteLine("Map or section");
     }
-
 }
