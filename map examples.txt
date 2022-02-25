@@ -336,7 +336,7 @@ map SectionMap3 {
         };
         section 1, 1 {
                 background: image { path: "./chest.png"; };
-                shape: coordinate { 0, 0; };
+                shape: coordinates { 0, 0; };
         };
         // final map should look like this
         // where * is the grass texture and $ is the chest texture

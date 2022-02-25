@@ -31,13 +31,233 @@ using IToken = Antlr4.Runtime.IToken;
 [System.CLSCompliant(false)]
 public interface IActionListener : IParseTreeListener {
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="ActionParser.token"/>.
+	/// Enter a parse tree produced by <see cref="ActionParser.map_or_section"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterToken([NotNull] ActionParser.TokenContext context);
+	void EnterMap_or_section([NotNull] ActionParser.Map_or_sectionContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="ActionParser.token"/>.
+	/// Exit a parse tree produced by <see cref="ActionParser.map_or_section"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitToken([NotNull] ActionParser.TokenContext context);
+	void ExitMap_or_section([NotNull] ActionParser.Map_or_sectionContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ActionParser.map"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterMap([NotNull] ActionParser.MapContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ActionParser.map"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitMap([NotNull] ActionParser.MapContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ActionParser.section"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterSection([NotNull] ActionParser.SectionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ActionParser.section"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitSection([NotNull] ActionParser.SectionContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ActionParser.colour"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterColour([NotNull] ActionParser.ColourContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ActionParser.colour"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitColour([NotNull] ActionParser.ColourContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ActionParser.image"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterImage([NotNull] ActionParser.ImageContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ActionParser.image"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitImage([NotNull] ActionParser.ImageContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ActionParser.box"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterBox([NotNull] ActionParser.BoxContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ActionParser.box"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitBox([NotNull] ActionParser.BoxContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ActionParser.line"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterLine([NotNull] ActionParser.LineContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ActionParser.line"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitLine([NotNull] ActionParser.LineContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ActionParser.coordinates"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterCoordinates([NotNull] ActionParser.CoordinatesContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ActionParser.coordinates"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitCoordinates([NotNull] ActionParser.CoordinatesContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ActionParser.point_shape"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterPoint_shape([NotNull] ActionParser.Point_shapeContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ActionParser.point_shape"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitPoint_shape([NotNull] ActionParser.Point_shapeContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ActionParser.section_properties"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterSection_properties([NotNull] ActionParser.Section_propertiesContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ActionParser.section_properties"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitSection_properties([NotNull] ActionParser.Section_propertiesContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ActionParser.box_properties"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterBox_properties([NotNull] ActionParser.Box_propertiesContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ActionParser.box_properties"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitBox_properties([NotNull] ActionParser.Box_propertiesContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ActionParser.colour_properties"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterColour_properties([NotNull] ActionParser.Colour_propertiesContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ActionParser.colour_properties"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitColour_properties([NotNull] ActionParser.Colour_propertiesContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ActionParser.image_properties"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterImage_properties([NotNull] ActionParser.Image_propertiesContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ActionParser.image_properties"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitImage_properties([NotNull] ActionParser.Image_propertiesContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ActionParser.background_property"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterBackground_property([NotNull] ActionParser.Background_propertyContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ActionParser.background_property"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitBackground_property([NotNull] ActionParser.Background_propertyContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ActionParser.background_values"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterBackground_values([NotNull] ActionParser.Background_valuesContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ActionParser.background_values"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitBackground_values([NotNull] ActionParser.Background_valuesContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ActionParser.shape_property"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterShape_property([NotNull] ActionParser.Shape_propertyContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ActionParser.shape_property"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitShape_property([NotNull] ActionParser.Shape_propertyContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ActionParser.shape_values"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterShape_values([NotNull] ActionParser.Shape_valuesContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ActionParser.shape_values"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitShape_values([NotNull] ActionParser.Shape_valuesContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ActionParser.height_property"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterHeight_property([NotNull] ActionParser.Height_propertyContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ActionParser.height_property"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitHeight_property([NotNull] ActionParser.Height_propertyContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ActionParser.width_property"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterWidth_property([NotNull] ActionParser.Width_propertyContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ActionParser.width_property"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitWidth_property([NotNull] ActionParser.Width_propertyContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ActionParser.hex_property"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterHex_property([NotNull] ActionParser.Hex_propertyContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ActionParser.hex_property"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitHex_property([NotNull] ActionParser.Hex_propertyContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ActionParser.path_property"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterPath_property([NotNull] ActionParser.Path_propertyContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ActionParser.path_property"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitPath_property([NotNull] ActionParser.Path_propertyContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ActionParser.point_statements"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterPoint_statements([NotNull] ActionParser.Point_statementsContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ActionParser.point_statements"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitPoint_statements([NotNull] ActionParser.Point_statementsContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ActionParser.section_statements"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterSection_statements([NotNull] ActionParser.Section_statementsContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ActionParser.section_statements"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitSection_statements([NotNull] ActionParser.Section_statementsContext context);
 }

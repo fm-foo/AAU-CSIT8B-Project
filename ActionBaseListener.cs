@@ -36,17 +36,281 @@ using ParserRuleContext = Antlr4.Runtime.ParserRuleContext;
 [System.CLSCompliant(false)]
 public partial class ActionBaseListener : IActionListener {
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="ActionParser.token"/>.
+	/// Enter a parse tree produced by <see cref="ActionParser.map_or_section"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterToken([NotNull] ActionParser.TokenContext context) { }
+	public virtual void EnterMap_or_section([NotNull] ActionParser.Map_or_sectionContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="ActionParser.token"/>.
+	/// Exit a parse tree produced by <see cref="ActionParser.map_or_section"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitToken([NotNull] ActionParser.TokenContext context) { }
+	public virtual void ExitMap_or_section([NotNull] ActionParser.Map_or_sectionContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ActionParser.map"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterMap([NotNull] ActionParser.MapContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ActionParser.map"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitMap([NotNull] ActionParser.MapContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ActionParser.section"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterSection([NotNull] ActionParser.SectionContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ActionParser.section"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitSection([NotNull] ActionParser.SectionContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ActionParser.colour"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterColour([NotNull] ActionParser.ColourContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ActionParser.colour"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitColour([NotNull] ActionParser.ColourContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ActionParser.image"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterImage([NotNull] ActionParser.ImageContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ActionParser.image"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitImage([NotNull] ActionParser.ImageContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ActionParser.box"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterBox([NotNull] ActionParser.BoxContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ActionParser.box"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitBox([NotNull] ActionParser.BoxContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ActionParser.line"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterLine([NotNull] ActionParser.LineContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ActionParser.line"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitLine([NotNull] ActionParser.LineContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ActionParser.coordinates"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterCoordinates([NotNull] ActionParser.CoordinatesContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ActionParser.coordinates"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitCoordinates([NotNull] ActionParser.CoordinatesContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ActionParser.point_shape"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterPoint_shape([NotNull] ActionParser.Point_shapeContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ActionParser.point_shape"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitPoint_shape([NotNull] ActionParser.Point_shapeContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ActionParser.section_properties"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterSection_properties([NotNull] ActionParser.Section_propertiesContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ActionParser.section_properties"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitSection_properties([NotNull] ActionParser.Section_propertiesContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ActionParser.box_properties"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterBox_properties([NotNull] ActionParser.Box_propertiesContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ActionParser.box_properties"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitBox_properties([NotNull] ActionParser.Box_propertiesContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ActionParser.colour_properties"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterColour_properties([NotNull] ActionParser.Colour_propertiesContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ActionParser.colour_properties"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitColour_properties([NotNull] ActionParser.Colour_propertiesContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ActionParser.image_properties"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterImage_properties([NotNull] ActionParser.Image_propertiesContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ActionParser.image_properties"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitImage_properties([NotNull] ActionParser.Image_propertiesContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ActionParser.background_property"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterBackground_property([NotNull] ActionParser.Background_propertyContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ActionParser.background_property"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitBackground_property([NotNull] ActionParser.Background_propertyContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ActionParser.background_values"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterBackground_values([NotNull] ActionParser.Background_valuesContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ActionParser.background_values"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitBackground_values([NotNull] ActionParser.Background_valuesContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ActionParser.shape_property"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterShape_property([NotNull] ActionParser.Shape_propertyContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ActionParser.shape_property"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitShape_property([NotNull] ActionParser.Shape_propertyContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ActionParser.shape_values"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterShape_values([NotNull] ActionParser.Shape_valuesContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ActionParser.shape_values"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitShape_values([NotNull] ActionParser.Shape_valuesContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ActionParser.height_property"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterHeight_property([NotNull] ActionParser.Height_propertyContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ActionParser.height_property"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitHeight_property([NotNull] ActionParser.Height_propertyContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ActionParser.width_property"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterWidth_property([NotNull] ActionParser.Width_propertyContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ActionParser.width_property"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitWidth_property([NotNull] ActionParser.Width_propertyContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ActionParser.hex_property"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterHex_property([NotNull] ActionParser.Hex_propertyContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ActionParser.hex_property"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitHex_property([NotNull] ActionParser.Hex_propertyContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ActionParser.path_property"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterPath_property([NotNull] ActionParser.Path_propertyContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ActionParser.path_property"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitPath_property([NotNull] ActionParser.Path_propertyContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ActionParser.point_statements"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterPoint_statements([NotNull] ActionParser.Point_statementsContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ActionParser.point_statements"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitPoint_statements([NotNull] ActionParser.Point_statementsContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ActionParser.section_statements"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterSection_statements([NotNull] ActionParser.Section_statementsContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ActionParser.section_statements"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitSection_statements([NotNull] ActionParser.Section_statementsContext context) { }
 
 	/// <inheritdoc/>
 	/// <remarks>The default implementation does nothing.</remarks>

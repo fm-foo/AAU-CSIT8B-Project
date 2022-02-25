@@ -11,17 +11,18 @@ public class Program
         ITokenStream tokens = new CommonTokenStream(lexer);
         ActionParser parser = new ActionParser(tokens);
         parser.BuildParseTree = true;
-        IParseTree tree = parser.token();
+        IParseTree tree = parser.map_or_section();
         var listener = new TestListener();
         ParseTreeWalker.Default.Walk(listener, tree);
     }
 }
 
-
 public class TestListener : ActionBaseListener
 {
-    public override void EnterToken([NotNull] ActionParser.TokenContext context)
+    public override void EnterEveryRule([NotNull] ParserRuleContext context)
     {
-        Console.WriteLine(context.GetText());
+        Console.WriteLine("Here");
+        base.EnterEveryRule(context);
     }
+
 }
