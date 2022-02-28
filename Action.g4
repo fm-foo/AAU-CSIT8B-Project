@@ -43,6 +43,7 @@ fragment CHARACTER  : ~[ \t\r\n];
 fragment WS         : [ \t\r\n];
 fragment LETTER     : [a-zA-Z];
 fragment DIGIT      : [0-9];
+fragment NZ_DIGIT   : [1-9];
 fragment ALPHANUM   : [a-zA-Z0-9];
 fragment HEX_LIT    : [0-9a-fA-F];
 
@@ -78,6 +79,6 @@ SINGLE_QUOTED_STRING: '\'' CHARACTER*? '\'';
 POINT_LIT           : INTEGER WS*? ',' WS*? INTEGER;
 IDENTIFIER          : LETTER ALPHANUM*;
 INTEGER             : '-'? NATURAL_NUMBER;
-NATURAL_NUMBER      : DIGIT+;
+NATURAL_NUMBER      : NZ_DIGIT DIGIT*;
 // this is the only way to match exactly 6 hexes
 COLOUR_LIT          : '#' HEX_LIT HEX_LIT HEX_LIT HEX_LIT HEX_LIT HEX_LIT;
