@@ -46,6 +46,9 @@ fragment DIGIT      : [0-9];
 fragment NZ_DIGIT   : [1-9];
 fragment ALPHANUM   : [a-zA-Z0-9];
 fragment HEX_LIT    : [0-9a-fA-F];
+fragment DQ_STRING  : '"' CHARACTER*? '"';
+fragment SQ_STRING  : '\'' CHARACTER*? '\'';
+
 
 WHITESPACE          : WS+ -> skip;
 SINGLELINE_COMMENT  : '//' (CHARACTER|[\t ])* NEWLINE -> skip;
@@ -73,12 +76,10 @@ PATH                : 'path';
 POINT               : 'point';
 SHAPE               : 'shape';
 
-STRING              : DOUBLE_QUOTED_STRING | SINGLE_QUOTED_STRING;
-DOUBLE_QUOTED_STRING: '"' CHARACTER*? '"';
-SINGLE_QUOTED_STRING: '\'' CHARACTER*? '\'';
+STRING              : DQ_STRING | SQ_STRING;
 POINT_LIT           : INTEGER WS*? ',' WS*? INTEGER;
 IDENTIFIER          : LETTER ALPHANUM*;
-INTEGER             : '-'? NATURAL_NUMBER;
-NATURAL_NUMBER      : NZ_DIGIT DIGIT*;
+INTEGER             : '-'? ('0' | NATURAL_NUMBER);
+NATURAL_NUMBER      : ('0' | NZ_DIGIT DIGIT*);
 // this is the only way to match exactly 6 hexes
 COLOUR_LIT          : '#' HEX_LIT HEX_LIT HEX_LIT HEX_LIT HEX_LIT HEX_LIT;
