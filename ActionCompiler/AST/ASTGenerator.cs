@@ -10,7 +10,7 @@ using System;
 
 namespace Action.AST
 {
-    public class ASTVisitor : ActionBaseVisitor<object>
+    public class ASTGenerator : ActionBaseVisitor<object>
     {
 
         public override List<ComplexNode> VisitFile([NotNull] ActionParser.FileContext context)
