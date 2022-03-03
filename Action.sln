@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30114.105
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActionCompiler", "ActionCompiler\ActionCompiler.csproj", "{BCCAC99C-62DA-4828-A156-907ED73A7FB3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActionCompiler.TokenCompiler", "ActionCompiler.TokenCompiler\ActionCompiler.TokenCompiler.csproj", "{1E4C33F9-79BD-4EAF-8397-CB446F2A98AB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BCCAC99C-62DA-4828-A156-907ED73A7FB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BCCAC99C-62DA-4828-A156-907ED73A7FB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BCCAC99C-62DA-4828-A156-907ED73A7FB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BCCAC99C-62DA-4828-A156-907ED73A7FB3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E4C33F9-79BD-4EAF-8397-CB446F2A98AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E4C33F9-79BD-4EAF-8397-CB446F2A98AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E4C33F9-79BD-4EAF-8397-CB446F2A98AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E4C33F9-79BD-4EAF-8397-CB446F2A98AB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
