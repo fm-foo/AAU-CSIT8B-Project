@@ -1,26 +1,21 @@
 ﻿using Antlr4.Runtime;
-using ActionCompiler.Parser;
+using Action.Parser;
 using System;
-using ActionCompiler.AST;
+using Action.AST;
+using System.IO;
+using Action.Compiler;
+using Microsoft.Extensions.Logging;
 
-namespace ActionCompiler
+namespace Action
 {
     public class Program
     {
         public static void Main()
         {
-            ICharStream stream = new AntlrFileStream("map examples.txt");
-            ITokenSource lexer = new ActionLexer(stream);
-            ITokenStream tokens = new CommonTokenStream(lexer);
-            ActionParser parser = new ActionParser(tokens);
-            parser.BuildParseTree = true;
-            ActionParser.FileContext tree = parser.file();
-            var visitor = new ASTVisitor();
-            var nodes = visitor.VisitFile(tree);
-            foreach (var node in nodes)
-            {
-                Console.WriteLine(node);
-            }
+            using Stream stream = new FileStream("map examples.txt", FileMode.Open);
+            using var factory = LoggerFactory.Create(builder => builder.AddConsole());
+            var compiler = new ActionCompiler();
+            var result = compiler.Compile(stream, factory.CreateLogger<ActionCompiler>());
         }
     }
 }

@@ -10,7 +10,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-namespace ActionCompiler.TokenCompiler;
+namespace Action.TokenCompiler;
 
 [Generator]
 public class TokenEnumGenerator : ISourceGenerator
@@ -52,7 +52,7 @@ public class TokenEnumGenerator : ISourceGenerator
 
         var unit = CompilationUnit()
             .AddMembers(
-                NamespaceDeclaration(IdentifierName("ActionCompiler.Parser")).AddMembers(enumdecl)
+                NamespaceDeclaration(IdentifierName("Action.Parser")).AddMembers(enumdecl)
             );
 
         SourceText text = SourceText.From(unit.NormalizeWhitespace().ToFullString(), Encoding.UTF8);

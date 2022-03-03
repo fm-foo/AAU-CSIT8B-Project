@@ -1,6 +1,6 @@
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
-using ActionCompiler.Parser;
+using Action.Parser;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Globalization;
@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 
-namespace ActionCompiler.AST
+namespace Action.AST
 {
     public class ASTVisitor : ActionBaseVisitor<object>
     {
