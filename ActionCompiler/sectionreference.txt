@@ -1,0 +1,29 @@
+map SectionReferenceFun {
+        background: colour { hex: #000000; };
+        shape: box {
+                height: 10; width: 10;
+        };
+        // section without coordinates is not rendered
+        section WhiteBox {
+                background: colour { hex: #FFFFFF; };
+                shape: box { height: 2; width: 2; };
+        };
+        // can reference sections in the same map
+        reference section WhiteBox 2, 2;
+        reference section WhiteBox 2, 7;
+        reference section WhiteBox 7, 2;
+        reference section WhiteBox 7, 7;
+        // final map should look like this
+        // . for black, @ for white
+        //
+        // ..........
+        // ..........
+        // ..@@...@@.
+        // ..@@...@@.
+        // ..........
+        // ..........
+        // ..........
+        // ..@@...@@.
+        // ..@@...@@.
+        // ..........
+};

@@ -191,14 +191,14 @@ map WarningSectionReference {
         // BBBrGrG
 };
 
-map ErrorSectionReference {
+/*map ErrorSectionReference {
         background: colour { hex: #0000FF; };
         shape: box {
                 height: 7; width: 7;
         };
         reference section NamedSection 8, 8;
         // error - section is off the map entirely
-};
+};*/
 
 // more notes
 // map and section are fundamentally the same type
@@ -270,10 +270,10 @@ map SectionReferenceFun2 {
 
 // has coordinates, but is just a bare section
 // error - those coordinates can't mean anything
-section BareSectionError 2, 3 {
+/*section BareSectionError 2, 3 {
         background: colour { hex: #FFFFFF; };
         shape: box { height: 2; width: 2; };
-};
+};*/
 
 // bare section without name
 // error - can't be referenced, so is useless
