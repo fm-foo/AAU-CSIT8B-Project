@@ -9,7 +9,7 @@
             "request": "launch",
             "name": "Debug Current Grammar",
             "input": "ActionCompiler/map examples.txt",
-            "grammar": "Action.g4",
+            "grammar": "ActionCompiler/Action.g4",
             "visualParseTree": true
         },
         {
