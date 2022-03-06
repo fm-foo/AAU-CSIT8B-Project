@@ -13,6 +13,7 @@ using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp.Drawing;
 using SixLabors.ImageSharp.Drawing.Processing;
+using SixLabors.ImageSharp.Formats;
 
 namespace Action.Compiler
 {
@@ -152,6 +153,9 @@ namespace Action.Compiler
             Image<Argb32> image = new Image<Argb32>(width, height, new Argb32(0, 0, 0, 0));
             tiles.ForEach((x, y, tile) =>
             {
+                if (image is null)
+                    return; //Break out of ForEach
+
                 if (tile is EmptyTile)
                 {
                     // do nothing
@@ -170,6 +174,28 @@ namespace Action.Compiler
                     // the image should be opened and an error should be added if it doesn't exist
                     // return null if there's an error
                     // the image should be resized to 50x50, and a warning diagnostic should be added if it's not 50x50
+                    try
+                    {
+                        Image inputImage = Image.Load(i.file);
+
+                        if (inputImage.Width != TileSize || inputImage.Height != TileSize)
+                        {
+                            diagnostics.Add(new DiagnosticResult(Severity.Warning, $"Input image \"{i.file}\" has wrong dimensions! Width: {inputImage.Width}px, Height: {inputImage.Height}px, Required: Width: {TileSize}px, Height: {TileSize}px!"));
+                            inputImage.Mutate(i => i.Resize(new Size(TileSize, TileSize)));
+                        }
+
+                        Point location = new Point(x * TileSize, y * TileSize);   
+
+                        image.Mutate(i =>
+                            i.DrawImage(inputImage, location, 1f)
+                        );
+
+                    }
+                    catch (FileNotFoundException exception)
+                    {
+                        diagnostics.Add(new DiagnosticResult(Severity.Error, exception.Message));
+                        image = null!; // Cannot directly return value 
+                    }
                 }
                 else
                     throw new InvalidOperationException();
@@ -232,7 +258,21 @@ namespace Action.Compiler
             }
             else if (shape is ComplexNode { type: LineKeywordNode, values: var linecoords})
             {
-                throw new NotImplementedException();
+                Debug.Assert(linecoords.All(c => c is CoordinateNode));
+
+                map.Fill(new EmptyTile());
+                List<(CoordinateNode, CoordinateNode)> coordinates = linecoords.Cast<CoordinateNode>().Zip(linecoords.Cast<CoordinateNode>().Skip(1), (a, b) => (a, b)).ToList(); // Get a list of coordinate pairs: (a, b, c) -> ((a, b), (b, c))
+
+                foreach ((CoordinateNode p1, CoordinateNode p2) in coordinates)
+                {
+                    List<CoordinateNode> points = GetLinePoints(p1, p2);
+                    foreach (CoordinateNode p in points)
+                    {
+                        map[p.x.integer, p.y.integer] = tile;
+                    }
+                }
+
+               // throw new NotImplementedException();
             }
             else
             {
@@ -240,6 +280,53 @@ namespace Action.Compiler
             }
         }
 
+        /// <summary>
+        /// Get the points that are interescted by the line drawn between <paramref name="p0"/> and <paramref name="p1"/>
+        /// Based on: https://www.redblobgames.com/grids/line-drawing.html
+        /// </summary>
+        /// <param name="p0">First point.</param>
+        /// <param name="p1">Second point.</param>
+        /// <returns></returns>
+        private static List<CoordinateNode> GetLinePoints(CoordinateNode p0, CoordinateNode p1)
+        {
+            List<CoordinateNode> points = new();
+
+            int dx = p1.x.integer - p0.x.integer;
+            int dy = p1.y.integer - p0.y.integer;
+            int nx = Math.Abs(dx);
+            int ny = Math.Abs(dy);
+            int sign_x = dx > 0 ? 1 : -1;
+            int sign_y = dy > 0 ? 1 : -1;
+
+            CoordinateNode p = new CoordinateNode(new IntNode(p0.x.integer), new IntNode(p0.y.integer));
+            points.Add(p);
+
+            for ((int ix, int iy) = (0, 0); ix < nx || iy < ny;)
+            {
+                int decision = (1 + 2 * ix) * ny - (1 + 2 * iy) * nx;
+                if (decision == 1)
+                {
+                    p = new CoordinateNode(new IntNode(p.x.integer + sign_x), new IntNode(p.y.integer + sign_y));
+                    ix++;
+                    iy++;
+                }
+                else if (decision < 0)
+                {
+                    p = new CoordinateNode(new IntNode(p.x.integer + sign_x), new IntNode(p.y.integer));
+                    ix++;
+                }
+                else
+                {
+                    p = new CoordinateNode(new IntNode(p.x.integer), new IntNode(p.y.integer + sign_y));
+                    iy++;
+                }
+                points.Add(p);
+            }
+
+            points.Add(p1);
+
+            return points;
+        }
 
         private static (int height, int width) GetDimensions(ComplexNode node)
         {
@@ -270,7 +357,21 @@ namespace Action.Compiler
         private static (int height, int width) GetDimensionsCoords(ComplexNode shape)
         {
             Debug.Assert(shape.type is CoordinatesKeywordNode or LineKeywordNode);
-            throw new InvalidOperationException();
+            Debug.Assert(shape.values.All(c => c is CoordinateNode));
+            // For now, get the size of a bounding box that encompasses all lines
+            List<CoordinateNode> coordinates = shape.values.Cast<CoordinateNode>().ToList();
+
+            int heightMin = coordinates.Min(c => c.y.integer);
+            int heightMax = coordinates.Max(c => c.y.integer);
+
+            int height = heightMax - heightMin;
+
+            int widthMin = coordinates.Min(c => c.x.integer);
+            int widthMax = coordinates.Max(c => c.x.integer);
+
+            int width = widthMax - widthMin;
+
+            return (height + 1, width + 1);
         }
     }
 

@@ -8,11 +8,30 @@ map SectionReferenceFun {
                 background: colour { hex: #FFFFFF; };
                 shape: box { height: 2; width: 2; };
         };
+
+
+
+        section 4, 4 {
+            background: image {path: "./image.png"; };
+            shape: box {height: 2; width: 2;};
+        };
         // can reference sections in the same map
         reference section WhiteBox 2, 2;
-        reference section WhiteBox 2, 7;
-        reference section WhiteBox 7, 2;
-        reference section WhiteBox 7, 7;
+        reference section WhiteBox 2, 6;
+        reference section WhiteBox 6, 2;
+        reference section WhiteBox 6, 6;
+
+        section 0, 0 {
+            background: colour { hex: #f21000; };
+            shape: line {
+                0, 0;
+                9, 0;
+                9, 9;
+                0, 9;
+                0, 0;
+            };
+        };
+
         // final map should look like this
         // . for black, @ for white
         //
