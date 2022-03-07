@@ -13,17 +13,22 @@ namespace Action
     {
         public static void Main()
         {
-            using Stream stream = new FileStream("sectionreference.txt", FileMode.Open);
+            using Stream stream = new FileStream("map examples.txt", FileMode.Open);
             using var factory = LoggerFactory.Create(builder => builder.AddConsole());
             var compiler = new ActionCompiler();
             var result = compiler.Compile(stream, factory.CreateLogger<ActionCompiler>());
-            Debug.Assert(result.Success);
-            foreach (var image in result.Images)
+            if (result.Success)
             {
-                FileInfo file = new FileInfo(image.filename);
-                using var fs = file.Create();
-                image.file.CopyTo(fs);
+                Debug.Assert(result.Success);
+                foreach (var image in result.Images)
+                {
+                    FileInfo file = new FileInfo(image.filename);
+                    using var fs = file.Create();
+                    image.file.CopyTo(fs);
+                }
             }
+            foreach (var diagnostic in result.Diagnostics)
+                Console.WriteLine(diagnostic);
         }
     }
 }

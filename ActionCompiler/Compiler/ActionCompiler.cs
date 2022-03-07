@@ -146,11 +146,11 @@ namespace Action.Compiler
         }
 
         private const int TileSize = 50;
-        private Image<Argb32>? CopyToImage(Tile[,] tiles, List<DiagnosticResult> diagnostics)
+        private Image<Argb32>? CopyToImage(Section tiles, List<DiagnosticResult> diagnostics)
         {
-            var width = tiles.GetLength(0) * TileSize;
-            var height = tiles.GetLength(1) * TileSize;
-            Image<Argb32> image = new Image<Argb32>(width, height, new Argb32(0, 0, 0, 0));
+            var width = tiles.Width * TileSize;
+            var height = tiles.Height * TileSize;
+            Image<Argb32>? image = new Image<Argb32>(width, height, new Argb32(0, 0, 0, 0));
             tiles.ForEach((x, y, tile) =>
             {
                 if (image is null)
@@ -169,14 +169,13 @@ namespace Action.Compiler
                 }
                 else if (tile is ImageTile i)
                 {
-                    // do nothing - for now
                     // few notes
                     // the image should be opened and an error should be added if it doesn't exist
                     // return null if there's an error
                     // the image should be resized to 50x50, and a warning diagnostic should be added if it's not 50x50
                     try
                     {
-                        Image inputImage = Image.Load(i.file);
+                        using Image inputImage = Image.Load(i.file);
 
                         if (inputImage.Width != TileSize || inputImage.Height != TileSize)
                         {
@@ -194,7 +193,8 @@ namespace Action.Compiler
                     catch (FileNotFoundException exception)
                     {
                         diagnostics.Add(new DiagnosticResult(Severity.Error, exception.Message));
-                        image = null!; // Cannot directly return value 
+                        image.Dispose();
+                        image = null; // Cannot directly return value 
                     }
                 }
                 else
@@ -203,12 +203,11 @@ namespace Action.Compiler
             return image;
         }
 
-        private Tile[,] CompileSection(ComplexNode node)
+        private Section CompileSection(ComplexNode node)
         {
             Debug.Assert(node is SectionNode or MapNode);
-            (int height, int width) = GetDimensions(node);
             // index as map[x, y]
-            Tile[,] map = new Tile[width, height];
+            Section map = GetDimensions(node);
             Tile backgroundTile = GetBackgroundTile(node);
             FillShape(map, node, backgroundTile);
             foreach (var section in node.values.Cast<SectionNode>())
@@ -241,7 +240,7 @@ namespace Action.Compiler
             }
         }
 
-        private static void FillShape(Tile[,] map, ComplexNode node, Tile tile)
+        private static void FillShape(Section map, ComplexNode node, Tile tile)
         {
             var shape = node.GetProperty<ShapeKeywordNode, ValueNode>();
             if (shape is PointKeywordNode or ComplexNode { type: BoxKeywordNode })
@@ -261,7 +260,11 @@ namespace Action.Compiler
                 Debug.Assert(linecoords.All(c => c is CoordinateNode));
 
                 map.Fill(new EmptyTile());
-                List<(CoordinateNode, CoordinateNode)> coordinates = linecoords.Cast<CoordinateNode>().Zip(linecoords.Cast<CoordinateNode>().Skip(1), (a, b) => (a, b)).ToList(); // Get a list of coordinate pairs: (a, b, c) -> ((a, b), (b, c))
+                List<(CoordinateNode, CoordinateNode)> coordinates = linecoords
+                    .Cast<CoordinateNode>()
+                    .Zip(linecoords.Cast<CoordinateNode>().Skip(1), (a, b) => (a, b))
+                    .ToList(); 
+                    // Get a list of coordinate pairs: (a, b, c) -> ((a, b), (b, c))
 
                 foreach ((CoordinateNode p1, CoordinateNode p2) in coordinates)
                 {
@@ -328,14 +331,14 @@ namespace Action.Compiler
             return points;
         }
 
-        private static (int height, int width) GetDimensions(ComplexNode node)
+        private static Section GetDimensions(ComplexNode node)
         {
             var shape = node.properties
                 .Where(n => n.identifier is ShapeKeywordNode)
                 .Select(n => n.value)
                 .Single();
             if (shape is PointKeywordNode)
-                return (1, 1);
+                return new Section(0, 0, 1, 1);
             var cshape = (ComplexNode)shape;
             return cshape switch
             {
@@ -346,15 +349,15 @@ namespace Action.Compiler
             };
         }
 
-        private static (int height, int width) GetDimensionsBox(ComplexNode shape)
+        private static Section GetDimensionsBox(ComplexNode shape)
         {
             Debug.Assert(shape.type is BoxKeywordNode);
             IntNode height = shape.GetProperty<HeightKeywordNode, IntNode>();
             IntNode width = shape.GetProperty<WidthKeywordNode, IntNode>();
-            return (height.integer, width.integer);
+            return new Section(0, 0, width.integer, height.integer);
         }
 
-        private static (int height, int width) GetDimensionsCoords(ComplexNode shape)
+        private static Section GetDimensionsCoords(ComplexNode shape)
         {
             Debug.Assert(shape.type is CoordinatesKeywordNode or LineKeywordNode);
             Debug.Assert(shape.values.All(c => c is CoordinateNode));
@@ -371,7 +374,71 @@ namespace Action.Compiler
 
             int width = widthMax - widthMin;
 
-            return (height + 1, width + 1);
+            return new Section(widthMin, heightMin, width + 1, height + 1);
+        }
+    }
+
+    public class Section
+    {
+
+        private readonly Tile[,] tiles;
+
+        public int Width { get; }
+        public int Height { get; }
+        public int WidthMin { get; }
+        public int HeightMin { get; }
+
+        public Section(int xmin, int ymin, int xsize, int ysize)
+        {
+            tiles = new Tile[xsize, ysize];
+            WidthMin = xmin;
+            HeightMin = ymin;
+            Width = xsize;
+            Height = ysize;
+        }
+
+        public void Fill(Tile tile)
+        {
+            ForEach((x, y, _) => this[x, y] = tile);
+        }
+
+        public void ForEach(Action<int, int, Tile> action)
+        {
+            for (int x = 0; x < tiles.GetLength(0); x++)
+                for (int y = 0; y < tiles.GetLength(1); y++)
+                    action(x + WidthMin, y + HeightMin, tiles[x, y]);
+        }
+
+        public void CopyTo(Section dest, int x, int y)
+        {
+            for (int source_x = 0; source_x < tiles.GetLength(0); source_x++)
+            {
+                for (int source_y = 0; source_y < tiles.GetLength(1); source_y++)
+                {
+                    int dest_x = source_x + x + WidthMin;
+                    int dest_y = source_y + y + HeightMin;
+                    if (dest_x >= 0
+                        && dest_y >= 0 
+                        && dest_x < dest.Width
+                        && dest_y < dest.Height)
+                    {
+                        Tile srctile = tiles[source_x, source_y];
+                        Tile desttile = dest[dest_x, dest_y];
+                        if (srctile is not EmptyTile
+                            && desttile is not EmptyTile)
+                        {
+                            dest[dest_x, dest_y] = srctile; 
+                        }
+                        
+                    }
+                }
+            }
+        }
+
+        public Tile this[int x, int y]
+        {
+            get => tiles[x - WidthMin, y - HeightMin];
+            set => tiles[x - WidthMin, y - HeightMin] = value;
         }
     }
 

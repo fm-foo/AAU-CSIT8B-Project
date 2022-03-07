@@ -1,48 +1,52 @@
-map SectionReferenceFun {
-        background: colour { hex: #000000; };
+section NamedSection {
+                                // red
+        background: colour { hex: #FF0000; };
         shape: box {
-                height: 10; width: 10;
+                height: 5;
+                width: 5;
         };
-        // section without coordinates is not rendered
-        section WhiteBox {
-                background: colour { hex: #FFFFFF; };
-                shape: box { height: 2; width: 2; };
+        /*section 0, 0 {
+                                        // green
+                background: colour { hex: #00FF00; };
+                shape: line {
+                        0, 0;
+                        4, 4;
+                };
+        };*/
+        section 0, 4 {
+                background: colour { hex: #00FF00; };
+                shape: line {
+                        0, 0;
+                        // coordinates are relative
+                        -4, 4;
+                };
         };
+        // final section should look like this
+        // where r is red and G is green
+        //   01234
+        // 0 GrrrG
+        // 1 rGrGr
+        // 2 rrGrr
+        // 3 rGrGr
+        // 4 GrrrG
+};
 
-
-
-        section 4, 4 {
-            background: image {path: "./image.png"; };
-            shape: box {height: 2; width: 2;};
+map SectionReference {
+                                // blue
+        background: colour { hex: #0000FF; };
+        shape: box {
+                height: 7; width: 7;
         };
-        // can reference sections in the same map
-        reference section WhiteBox 2, 2;
-        reference section WhiteBox 2, 6;
-        reference section WhiteBox 6, 2;
-        reference section WhiteBox 6, 6;
-
-        section 0, 0 {
-            background: colour { hex: #f21000; };
-            shape: line {
-                0, 0;
-                9, 0;
-                9, 9;
-                0, 9;
-                0, 0;
-            };
-        };
-
+        // reference to named section
+        reference section NamedSection 1, 1;
         // final map should look like this
-        // . for black, @ for white
+        // where B is blue, r is red, and G is green
         //
-        // ..........
-        // ..........
-        // ..@@...@@.
-        // ..@@...@@.
-        // ..........
-        // ..........
-        // ..........
-        // ..@@...@@.
-        // ..@@...@@.
-        // ..........
+        // BBBBBBB
+        // BGrrrGB
+        // BrGrGrB
+        // BrrGrrB
+        // BrGrGrB
+        // BGrrrGB
+        // BBBBBBB
 };

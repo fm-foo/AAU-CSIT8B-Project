@@ -1,5 +1,6 @@
 map BasicMap {
-        // base background for a tile if nothing else is specified
+        // base background for a tile if nothing else 
+        // is specified
         // hex colour type: # with 6 numbers
         background: colour { hex: #0000FF; };
         // size of the map in tiles
@@ -18,7 +19,8 @@ map ImageMap {
                 width: 10;
         };
 };
-// investigate how easy it is to go without semicolon on blocks (get rid of {};)
+// investigate how easy it is to go without semicolon 
+// on blocks (get rid of {};)
 
 map SectionMap {
         background: image { path: "./grass.png"; };
@@ -26,14 +28,17 @@ map SectionMap {
                 height: 10;
                 width: 10;
         };
-        // define a section - a portion of the map with something different going on
+        // define a section - a portion of the map 
+        // with something different going on
         // zero-indexed
         // coordinate type: 2 numbers with a ,
-        // specified as X coordinate first, then Y coordinate
+        // specified as X coordinate first, then Y 
+        // coordinate
         // X heads to the right ->
         // Y heads downwards |
         //                   V 
-        // section defines the coordinate in the definition here
+        // section defines the coordinate in the 
+        // definition here
         section 3, 3 {
                 background: image { path: "./stone.png"; };
                 shape: box {
