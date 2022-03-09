@@ -1,0 +1,6 @@
+map BasicMap {
+        background: colour { hex: #0000FF; };
+        shape: box {
+                height: "ten"; width: 10;
+        };
+};

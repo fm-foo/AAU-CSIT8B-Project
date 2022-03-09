@@ -8,6 +8,9 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 using System.Diagnostics;
+using Antlr4.Runtime.Dfa;
+using Antlr4.Runtime.Sharpen;
+using Antlr4.Runtime.Atn;
 
 namespace Action.Compiler
 {
@@ -51,6 +54,9 @@ namespace Action.Compiler
             ITokenStream tokens = new CommonTokenStream(lexer);
             ActionParser parser = new ActionParser(tokens);
             parser.BuildParseTree = true;
+            var listener = new TestErrorListener();
+            parser.RemoveErrorListeners();
+            parser.AddErrorListener(listener);
             ActionParser.FileContext tree = parser.file();
             var visitor = new ASTGenerator();
             return visitor.VisitFile(tree);
@@ -101,6 +107,16 @@ namespace Action.Compiler
                     newnodes.Add(newnode);
             }
             return newnodes;
+        }
+    }
+
+    public class TestErrorListener : BaseErrorListener
+    {
+        public override void SyntaxError(TextWriter output, IRecognizer recognizer, IToken offendingSymbol, 
+            int line, int charPositionInLine, string msg, RecognitionException e)
+        {
+            ;
+            base.SyntaxError(output, recognizer, offendingSymbol, line, charPositionInLine, msg, e);
         }
     }
 }

@@ -1,0 +1,42 @@
+map WarningSectionReference {
+        background: colour { hex: #0000FF; };
+        shape: box {
+                height: 7; width: 7;
+        };
+        reference section NamedSection 3, 3;
+        // can raise a warning - section reaching off of map
+        // final map should look like this
+        // where B is blue, r is red, and G is green
+        // subsection areas outside of bounding region are clipped
+        //
+        // BBBBBBB
+        // BBBBBBB
+        // BBBBBBB
+        // BBBGrrr
+        // BBBrGrG
+        // BBBrrGr
+        // BBBrGrG
+};
+
+map ErrorSectionReference {
+        background: colour { hex: #0000FF; };
+        shape: box {
+                height: 7; width: 7;
+        };
+        reference section NamedSection 8, 8;
+        // error - section is off the map entirely
+};
+
+// has coordinates, but is just a bare section
+// error - those coordinates can't mean anything
+section BareSectionError 2, 3 {
+        background: colour { hex: #FFFFFF; };
+        shape: box { height: 2; width: 2; };
+};
+
+// bare section without name
+// error - can't be referenced, so is useless
+section {
+        background: colour { hex: #FFFFFF; };
+        shape: box { height: 2; width: 2; };
+};
