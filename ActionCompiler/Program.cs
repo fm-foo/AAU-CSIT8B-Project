@@ -12,10 +12,12 @@ namespace Action
     {
         public static void Main()
         {
-            using Stream stream = new FileStream("map examples syntax errors.txt", FileMode.Open);
+            using Stream stream = new FileStream("map examples semantic errors.txt", FileMode.Open);
             using var factory = LoggerFactory.Create(builder => builder.AddConsole());
             var compiler = new ActionCompiler();
             var result = compiler.Compile(stream, factory.CreateLogger<ActionCompiler>());
+            foreach (var diagnostic in result.Diagnostics)
+            Console.WriteLine(diagnostic);
         }
     }
 }

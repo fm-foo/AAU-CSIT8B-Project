@@ -54,8 +54,8 @@ namespace Action.Compiler
             ITokenStream tokens = new CommonTokenStream(lexer);
             ActionParser parser = new ActionParser(tokens);
             parser.BuildParseTree = true;
-            var listener = new TestErrorListener();
-            parser.RemoveErrorListeners();
+            var listener = new TestErrorListener(diagnostics);
+            //parser.RemoveErrorListeners();
             parser.AddErrorListener(listener);
             ActionParser.FileContext tree = parser.file();
             var visitor = new ASTGenerator();
@@ -67,7 +67,27 @@ namespace Action.Compiler
         // maybe subclass it for different types of errors?
         private bool SemanticsErrorCheck(List<ComplexNode> ast, ILogger<ActionCompiler> logger, List<DiagnosticResult> diagnostics)
         {
-            return true;
+            var visitor = new SemErrorNoIdentifierSectionVisitor();
+            var errorHandling = visitor.Visit(ast);
+            var visitor2 = new SemErrorEmptyBackgroundVisitor();
+            var errorHandling2 = visitor2.Visit(ast);
+            var visitor3 = new SemErrorCoordinateSectionVisitor();
+            var errorHandling3 = visitor3.Visit(ast);
+            var visitor4 = new SemErrorEmptySizeBoxVisitor();
+            var errorHandling4 = visitor4.Visit(ast);
+            var visitor5 = new SemErrorMapWithoutBSVisitor();
+            var errorHandling5 = visitor5.Visit(ast);
+            diagnostics.AddRange(errorHandling);
+            diagnostics.AddRange(errorHandling2);
+            diagnostics.AddRange(errorHandling3);
+            diagnostics.AddRange(errorHandling4);
+            diagnostics.AddRange(errorHandling5);
+            if(diagnostics.Any(error => error.severity == Severity.Error)){
+                return false;
+            }else{
+                return true;
+            }
+ 
         }
 
         private List<ComplexNode>? ResolveReferences(List<ComplexNode> ast, ILogger<ActionCompiler> logger, List<DiagnosticResult> diagnostics)
@@ -107,16 +127,6 @@ namespace Action.Compiler
                     newnodes.Add(newnode);
             }
             return newnodes;
-        }
-    }
-
-    public class TestErrorListener : BaseErrorListener
-    {
-        public override void SyntaxError(TextWriter output, IRecognizer recognizer, IToken offendingSymbol, 
-            int line, int charPositionInLine, string msg, RecognitionException e)
-        {
-            ;
-            base.SyntaxError(output, recognizer, offendingSymbol, line, charPositionInLine, msg, e);
         }
     }
 }

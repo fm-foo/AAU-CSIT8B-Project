@@ -1,3 +1,21 @@
+map ErrorNoProperty {
+
+        // error - map without shape and background
+};
+
+map ErrorNoShape {
+        background: colour { hex: #0000FF; };
+
+        // error - map without shape
+};
+
+map ErrorNoBackground {
+        shape: box {
+                height: 7; width: 7;
+        };
+        // error - map without background
+};
+
 map WarningSectionReference {
         background: colour { hex: #0000FF; };
         shape: box {
@@ -27,11 +45,73 @@ map ErrorSectionReference {
         // error - section is off the map entirely
 };
 
+map ErrorColourEmpty {
+        background: colour { };
+        shape: box {
+                height: 7; width: 7;
+        };
+        // error - colour is empty
+};
+
+map ErrorImageEmpty {
+        background: image { };
+        shape: box {
+                height: 7; width: 7;
+        };
+        // error - image is empty
+};
+
+map ErrorSizeEmpty {
+        background: colour { hex: #0000FF; };
+        shape: box {
+                
+        };
+        // error - box does not have height or width
+};
+
 // has coordinates, but is just a bare section
 // error - those coordinates can't mean anything
 section BareSectionError 2, 3 {
         background: colour { hex: #FFFFFF; };
         shape: box { height: 2; width: 2; };
+};
+
+// To check that the Coordinate Section error does not appear on a section defined inside another section or map
+map SectionMap {
+        background: image { path: "./grass.png"; };
+        shape: box {
+                height: 10;
+                width: 10;
+        };
+        // define a section - a portion of the map with something different going on
+        // zero-indexed
+        // coordinate type: 2 numbers with a ,
+        // specified as X coordinate first, then Y coordinate
+        // X heads to the right ->
+        // Y heads downwards |
+        //                   V 
+        // section defines the coordinate in the definition here
+        section 3, 3 {
+                background: image { path: "./stone.png"; };
+                shape: box {
+                        // disallow negative sizes?
+                        height: 3;
+                        width: 3;
+                };
+        };
+        // final map should look like this
+        // where * is the grass texture and # is the stone texture
+        //   0123456789
+        // 0 **********
+        // 1 **********
+        // 2 **********
+        // 3 ***###****
+        // 4 ***###****
+        // 5 ***###****
+        // 6 **********
+        // 7 **********
+        // 8 **********
+        // 9 **********
 };
 
 // bare section without name
