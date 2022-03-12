@@ -131,7 +131,7 @@ namespace Action.AST
         {
             return new PropertyNode(
                 new HeightKeywordNode(),
-                (ColourNode)this.Visit(context.HEIGHT())
+                (IntNode)this.Visit(context.INTEGER())
             );
         }
 
@@ -139,7 +139,7 @@ namespace Action.AST
         {
             return new PropertyNode(
                 new WidthKeywordNode(),
-                (ColourNode)this.Visit(context.WIDTH())
+                (IntNode)this.Visit(context.INTEGER())
             );
         }
 
