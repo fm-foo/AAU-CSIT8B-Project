@@ -77,11 +77,14 @@ namespace Action.Compiler
             var errorHandling4 = visitor4.Visit(ast);
             var visitor5 = new SemErrorMapWithoutBSVisitor();
             var errorHandling5 = visitor5.Visit(ast);
+            var visitor6 = new SemErrorSectionOffMapVisitor();
+            var errorHandling6 = visitor6.Visit(ast);
             diagnostics.AddRange(errorHandling);
             diagnostics.AddRange(errorHandling2);
             diagnostics.AddRange(errorHandling3);
             diagnostics.AddRange(errorHandling4);
             diagnostics.AddRange(errorHandling5);
+            diagnostics.AddRange(errorHandling6);
             if(diagnostics.Any(error => error.severity == Severity.Error)){
                 return false;
             }else{
