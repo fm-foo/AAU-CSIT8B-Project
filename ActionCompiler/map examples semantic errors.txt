@@ -45,15 +45,6 @@ map WarningSectionReference {
         // BBBrGrG
 };
 
-map ErrorSectionReference {
-        background: colour { hex: #0000FF; };
-        shape: box {
-                height: 7; width: 7;
-        };
-        reference section NamedSection 8, 8;
-        // error - section is off the map entirely
-};
-
 map ErrorColourEmpty {
         background: colour { };
         shape: box {
