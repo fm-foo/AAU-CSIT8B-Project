@@ -8,9 +8,9 @@ namespace Action.Compiler
 {
     public class SemErrorMapWithoutBSVisitor : NodeVisitor<IEnumerable<DiagnosticResult>>
     {
-        public IEnumerable<DiagnosticResult> Visit(List<ComplexNode> nodes)
+        public IEnumerable<DiagnosticResult> VisitFile(FileNode nodes)
         {
-            foreach (var node in nodes)
+            foreach (var node in nodes.nodes)
             {
                 foreach (var symbol in Visit(node))
                     yield return symbol;

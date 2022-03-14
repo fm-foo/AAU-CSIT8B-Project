@@ -7,9 +7,9 @@ namespace Action.Compiler
 {
     public class SectionSymbolTableGenerator : NodeVisitor<IEnumerable<SectionSymbolEntry>>
     {
-        public IEnumerable<SectionSymbolEntry> Visit(List<ComplexNode> nodes)
+        public IEnumerable<SectionSymbolEntry> VisitFile(FileNode nodes)
         {
-            foreach (var node in nodes)
+            foreach (var node in nodes.nodes)
             {
                 foreach (var symbol in Visit(node))
                     yield return symbol;

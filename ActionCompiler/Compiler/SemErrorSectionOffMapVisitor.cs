@@ -8,9 +8,9 @@ namespace Action.Compiler
 {
     public class SemErrorSectionOffMapVisitor : NodeVisitor<IEnumerable<DiagnosticResult>>
     {
-        public IEnumerable<DiagnosticResult> Visit(List<ComplexNode> nodes)
+        public IEnumerable<DiagnosticResult> VisitFile(FileNode nodes)
          {
-            IEnumerable<MapNode> query1 = nodes.OfType<MapNode>();
+            IEnumerable<MapNode> query1 = nodes.nodes.OfType<MapNode>();
             foreach (var node in query1)
             {
                 foreach (var symbol in Visit(node))
