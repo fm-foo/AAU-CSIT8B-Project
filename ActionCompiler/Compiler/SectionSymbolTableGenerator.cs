@@ -7,7 +7,7 @@ namespace Action.Compiler
 {
     public class SectionSymbolTableGenerator : NodeVisitor<IEnumerable<SectionSymbolEntry>>
     {
-        public IEnumerable<SectionSymbolEntry> VisitFile(FileNode nodes)
+        public override IEnumerable<SectionSymbolEntry> VisitFile(FileNode nodes)
         {
             foreach (var node in nodes.nodes)
             {

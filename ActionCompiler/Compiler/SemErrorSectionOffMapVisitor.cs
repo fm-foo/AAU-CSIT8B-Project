@@ -8,7 +8,7 @@ namespace Action.Compiler
 {
     public class SemErrorSectionOffMapVisitor : NodeVisitor<IEnumerable<DiagnosticResult>>
     {
-        public IEnumerable<DiagnosticResult> VisitFile(FileNode nodes)
+        public override IEnumerable<DiagnosticResult> VisitFile(FileNode nodes)
          {
             IEnumerable<MapNode> query1 = nodes.nodes.OfType<MapNode>();
             foreach (var node in query1)

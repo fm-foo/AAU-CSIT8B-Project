@@ -8,7 +8,7 @@ namespace Action.Compiler
 {
     public class SemErrorCoordinateSectionVisitor : NodeVisitor<IEnumerable<DiagnosticResult>>
     {
-        public IEnumerable<DiagnosticResult> VisitFile(FileNode nodes)
+        public override IEnumerable<DiagnosticResult> VisitFile(FileNode nodes)
         {
             IEnumerable<SectionNode> query1 = nodes.nodes.OfType<SectionNode>();
             foreach (var node in query1)

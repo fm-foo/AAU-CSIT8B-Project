@@ -8,7 +8,7 @@ namespace Action.Compiler
 {
     public class SemErrorMapWithoutBSVisitor : NodeVisitor<IEnumerable<DiagnosticResult>>
     {
-        public IEnumerable<DiagnosticResult> VisitFile(FileNode nodes)
+        public override IEnumerable<DiagnosticResult> VisitFile(FileNode nodes)
         {
             foreach (var node in nodes.nodes)
             {
