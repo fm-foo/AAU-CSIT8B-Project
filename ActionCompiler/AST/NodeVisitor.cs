@@ -1,11 +1,13 @@
 using System;
+using System.Collections.Generic;
 
 namespace Action.AST
 {
     public class NodeVisitor<T>
     {
         public virtual T Default => default;
-        public T Visit(ValueNode node) => node.Accept(this);
+        public T Visit(SymbolNode node) => node.Accept(this);
+        public virtual T VisitFile(FileNode file) => Default;
         public virtual T VisitComplex(ComplexNode complexNode) => Default;
         public virtual T VisitMap(MapNode mapNode) => Default;
         public virtual T VisitSection(SectionNode sectionNode) => Default;

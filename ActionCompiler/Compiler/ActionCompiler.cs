@@ -32,7 +32,7 @@ namespace Action.Compiler
             logger.BeginScope("compilation");
             logger.LogInformation("Beginning compilation");
             List<DiagnosticResult> diagnostics = new List<DiagnosticResult>();
-            List<ComplexNode>? ast = Parse(input, logger, diagnostics);
+            FileNode? ast = Parse(input, logger, diagnostics);
             if (ast is null)
                 return CompilationResult.Failure(diagnostics);
 
@@ -51,7 +51,7 @@ namespace Action.Compiler
 
         // add diagnostics to the list if there's warnings/errors
         // return null if parsing did not succeed
-        private List<ComplexNode>? Parse(Stream input, ILogger<ActionCompiler> logger, List<DiagnosticResult> diagnostics)
+        private FileNode? Parse(Stream input, ILogger<ActionCompiler> logger, List<DiagnosticResult> diagnostics)
         {
             using var scope = logger.BeginScope("parsing");
             logger.LogInformation("Beginning parse");
@@ -71,35 +71,26 @@ namespace Action.Compiler
         // put semantics error checking here
         // recommendation: create a Visitor pattern class
         // maybe subclass it for different types of errors?
-        private bool SemanticsErrorCheck(List<ComplexNode> ast, ILogger<ActionCompiler> logger, List<DiagnosticResult> diagnostics)
+        private bool SemanticsErrorCheck(FileNode ast, ILogger<ActionCompiler> logger, List<DiagnosticResult> diagnostics)
         {
-            var visitor = new SemErrorNoIdentifierSectionVisitor();
-            var errorHandling = visitor.Visit(ast);
-            var visitor2 = new SemErrorEmptyBackgroundVisitor();
-            var errorHandling2 = visitor2.Visit(ast);
-            var visitor3 = new SemErrorCoordinateSectionVisitor();
-            var errorHandling3 = visitor3.Visit(ast);
-            var visitor4 = new SemErrorEmptySizeBoxVisitor();
-            var errorHandling4 = visitor4.Visit(ast);
-            var visitor5 = new SemErrorMapWithoutBSVisitor();
-            var errorHandling5 = visitor5.Visit(ast);
-            var visitor6 = new SemErrorSectionOffMapVisitor();
-            var errorHandling6 = visitor6.Visit(ast);
-            diagnostics.AddRange(errorHandling);
-            diagnostics.AddRange(errorHandling2);
-            diagnostics.AddRange(errorHandling3);
-            diagnostics.AddRange(errorHandling4);
-            diagnostics.AddRange(errorHandling5);
-            diagnostics.AddRange(errorHandling6);
-            if(diagnostics.Any(error => error.severity == Severity.Error)){
-                return false;
-            }else{
-                return true;
+            var visitors = new NodeVisitor<IEnumerable<DiagnosticResult>>[]
+            {
+                new SemErrorNoIdentifierSectionVisitor(),
+                new SemErrorEmptyBackgroundVisitor(),
+                new SemErrorCoordinateSectionVisitor(),
+                new SemErrorEmptySizeBoxVisitor(),
+                new SemErrorMapWithoutBSVisitor(),
+                new SemErrorSectionOffMapVisitor(),
+            };
+            foreach (var visitor in visitors)
+            {
+                var result = visitor.Visit(ast);
+                diagnostics.AddRange(result);
             }
- 
+            return !diagnostics.Any(error => error.severity == Severity.Error);
         }
 
-        private List<ComplexNode>? ResolveReferences(List<ComplexNode> ast, ILogger<ActionCompiler> logger, List<DiagnosticResult> diagnostics)
+        private FileNode? ResolveReferences(FileNode ast, ILogger<ActionCompiler> logger, List<DiagnosticResult> diagnostics)
         {
             using var scope = logger.BeginScope("reference");
             logger.LogInformation("Resolving references");
@@ -108,7 +99,7 @@ namespace Action.Compiler
             Debug.Assert(visitor.Visit(ast).Count() == symboltable.Count);
             List<ComplexNode> newnodes = new List<ComplexNode>();
             bool valid = true;
-            foreach (ComplexNode node in ast)
+            foreach (ComplexNode node in ast.nodes)
             {   
                 // the stack scope stuff should balance itself
                 // but we create a new one each time just to make sure
@@ -120,31 +111,31 @@ namespace Action.Compiler
                 else
                     newnodes.Add(newnode);
             }
-            return valid ? newnodes : null;
+            return valid ? new FileNode(newnodes) : null;
         }
 
-        private List<ComplexNode> TrimSections(List<ComplexNode> ast, ILogger<ActionCompiler> logger)
+        private FileNode TrimSections(FileNode ast, ILogger<ActionCompiler> logger)
         {
             using var scope = logger.BeginScope("trimming");
             logger.LogInformation("Section trimming");
             SectionTrimmerVisitor trimmer = new SectionTrimmerVisitor();
             List<ComplexNode> newnodes = new List<ComplexNode>();
-            foreach (var node in ast)
+            foreach (var node in ast.nodes)
             {
                 var newnode = trimmer.Visit(node);
                 if (newnode is not null)
                     newnodes.Add(newnode);
             }
-            return newnodes;
+            return new FileNode(newnodes);
         }
 
-        private CompilationResult CompileToImages(List<ComplexNode> ast, ILogger<ActionCompiler> logger, List<DiagnosticResult> diagnostics)
+        private CompilationResult CompileToImages(FileNode ast, ILogger<ActionCompiler> logger, List<DiagnosticResult> diagnostics)
         {
             using var scope = logger.BeginScope("compile");
             logger.LogInformation("Compiling to image");
             List<ImageFile> images = new List<ImageFile>();
             bool success = true;
-            foreach (MapNode map in ast.Cast<MapNode>())
+            foreach (MapNode map in ast.nodes.Cast<MapNode>())
             {
                 var imagefile = CompileMap(map, logger, diagnostics);
                 if (imagefile is not null)

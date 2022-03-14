@@ -13,12 +13,12 @@ namespace Action.AST
     public class ASTGenerator : ActionBaseVisitor<object>
     {
 
-        public override List<ComplexNode> VisitFile([NotNull] ActionParser.FileContext context)
+        public override FileNode VisitFile([NotNull] ActionParser.FileContext context)
         {
-            return context.map_or_section()
+            return new FileNode(context.map_or_section()
                 .Select(this.Visit)
                 .Cast<ComplexNode>()
-                .ToList();
+                .ToList());
         }
 
 
