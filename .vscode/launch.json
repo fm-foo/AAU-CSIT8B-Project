@@ -8,7 +8,7 @@
             "type": "antlr-debug",
             "request": "launch",
             "name": "Debug Current Grammar",
-            "input": "ActionCompiler/map examples.txt",
+            "input": "ActionCompiler/game.txt",
             "grammar": "ActionCompiler/Action.g4",
             "visualParseTree": true
         },

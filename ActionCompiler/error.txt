@@ -1,0 +1,5 @@
+map ErrorNoBackground {
+        shape: box {
+                height: 7; width: 7;
+        };
+}
