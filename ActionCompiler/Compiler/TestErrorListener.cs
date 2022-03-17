@@ -18,7 +18,7 @@ namespace Action.Compiler
         {
             string error = e switch
             {
-                InputMismatchException m => $"Unexpected input. Got '{offendingSymbol.Text}' but expected {GetExpectedTokens(m)}.",
+                InputMismatchException m => $"Unexpected input. Got '{offendingSymbol.Text}' ({(ActionToken)offendingSymbol.Type}) but expected {GetExpectedTokens(m)}.",
                 _ => "Unexpected error",
             };
             string linestr = $"({line}, {charPositionInLine})";
