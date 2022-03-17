@@ -61,11 +61,16 @@ namespace Action.Compiler
             ActionParser parser = new ActionParser(tokens);
             parser.BuildParseTree = true;
             var listener = new TestErrorListener(diagnostics);
-            //parser.RemoveErrorListeners();
+            parser.RemoveErrorListeners();
             parser.AddErrorListener(listener);
             ActionParser.FileContext tree = parser.file();
             var visitor = new ASTGenerator();
-            return visitor.VisitFile(tree);
+            if(!diagnostics.Any()){
+                return visitor.VisitFile(tree);
+            }else{
+                return null;
+            }
+            
         }
 
         // put semantics error checking here
@@ -81,6 +86,8 @@ namespace Action.Compiler
                 new SemErrorEmptySizeBoxVisitor(),
                 new SemErrorMapWithoutBSVisitor(),
                 new SemErrorSectionOffMapVisitor(),
+                new SemErrorLineOnlyOneCoordinate(),
+                new SemErrorCoordinateOffMapVisitor(),
             };
             foreach (var visitor in visitors)
             {

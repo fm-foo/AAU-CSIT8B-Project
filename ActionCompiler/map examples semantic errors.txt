@@ -1,3 +1,37 @@
+section ErrorLineOneCoord {
+                                // red
+        background: colour { hex: #FF0000; };
+        shape: box {
+                height: 5;
+                width: 5;
+        };
+        section 0, 0 {
+                                        // green
+                background: colour { hex: #00FF00; };
+                shape: line {
+                        0, 0;
+                };
+        };
+        // error - line has only one coordinate
+};
+
+map SectionMap2 {
+        background: image { path: "./grass.png"; };
+        shape: box {
+                height: 10;
+                width: 10;
+        };
+        section 2, 1 {
+                background: image { path: "./stone.png"; };
+                // coordinates shape type
+                // specifies individual points, no relation between them
+                shape: coordinates {
+                        11, 11;
+                };
+        };
+};
+
+
 map ErrorSectionReference {
         background: colour { hex: #0000FF; };
         shape: box {

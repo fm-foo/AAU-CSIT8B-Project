@@ -16,13 +16,35 @@ namespace Action.Compiler
                     yield return symbol;
             }
         }
-        public override IEnumerable<DiagnosticResult> VisitComplex(ComplexNode complexNode)
+
+        public override IEnumerable<DiagnosticResult> VisitMap(MapNode mapNode){
+            return CheckLine(mapNode);
+        }
+
+        public override IEnumerable<DiagnosticResult> VisitSection(SectionNode sectionNode)
         {
-            if (complexNode.type is not LineKeywordNode)
-                yield break;
-            var numOfCoords = complexNode.values.Count();
-            if (numOfCoords == 1)
-                yield return new DiagnosticResult(Severity.Error, "cannot have a line node with only a single point");
+            return CheckLine(sectionNode);
+        }
+
+        public IEnumerable<DiagnosticResult> CheckLine(ComplexNode node){
+            foreach (var property in node.properties){
+                if (property.identifier is ShapeKeywordNode){
+                    ComplexNode val = (ComplexNode)property.value;
+                    if (val.type is LineKeywordNode){
+                        var numOfCoords = val.values.Count();
+                        if (numOfCoords == 1){
+                            yield return new DiagnosticResult(Severity.Error, "cannot have a line node with only a single point");
+                        }  
+                    }
+                }
+            }
+            if(node.values.Any()){
+                foreach(var sec in node.values.OfType<SectionNode>()){
+                    foreach(var val in Visit(sec)){
+                        yield return val;
+                    }
+                }
+            }   
         }
     }
 }
