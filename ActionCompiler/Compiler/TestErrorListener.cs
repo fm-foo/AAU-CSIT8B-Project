@@ -1,6 +1,9 @@
 using Antlr4.Runtime;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using Action.Parser;
+using System;
 
 namespace Action.Compiler
 {
@@ -13,8 +16,19 @@ namespace Action.Compiler
         public override void SyntaxError(TextWriter output, IRecognizer recognizer, IToken offendingSymbol, 
             int line, int charPositionInLine, string msg, RecognitionException e)
         {
-            diagnostics.Add(new DiagnosticResult(Severity.Error, $"In position { line } : {charPositionInLine} {recognizer} is expected but {offendingSymbol.Text} is given"));
-            //base.SyntaxError(output, recognizer, offendingSymbol, line, charPositionInLine, msg, e);
+            string error = e switch
+            {
+                InputMismatchException m => $"Unexpected input. Got '{offendingSymbol.Text}' but expected {GetExpectedTokens(m)}.",
+                _ => "Unexpected error",
+            };
+            string linestr = $"({line}, {charPositionInLine})";
+            diagnostics.Add(new DiagnosticResult(Severity.Error, $"{linestr}: {error}"));
+        }
+
+        private static string GetExpectedTokens(InputMismatchException ex)
+        {
+            var expected = ex.GetExpectedTokens().ToList().Cast<ActionToken>();
+            return string.Join(" or ", expected.Select(s => s.ToString()));
         }
     }
 }
