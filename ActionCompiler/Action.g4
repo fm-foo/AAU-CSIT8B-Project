@@ -44,7 +44,6 @@ game                : GAME IDENTIFIER OPEN_BRACE (func_def | field_dec)* CLOSE_B
 field_dec           : type IDENTIFIER (EQUALS expr)? SEMICOLON;
 
 func_def            : IDENTIFIER COLON FUNCTION OPEN_PAREN args? CLOSE_PAREN block;
-func_body           : statement*;
 args                : arg | arg COMMA args;
 arg                 : type IDENTIFIER;
 
@@ -91,22 +90,22 @@ multiplicative_expr : unary_expr
                     | multiplicative_expr DIVIDE unary_expr;
 
 unary_expr          : primary_expr 
-                        | PLUS unary_expr 
-                        | MINUS unary_expr 
-                        | BANG unary_expr
-                        | PLUSPLUS unary_expr
-                        | MINUSMINUS unary_expr;
+                    | PLUS unary_expr 
+                    | MINUS unary_expr 
+                    | BANG unary_expr
+                    | PLUSPLUS unary_expr
+                    | MINUSMINUS unary_expr;
 
 primary_expr        : literal #lit
-                        | IDENTIFIER #identifier
-                        | OPEN_PAREN expr CLOSE_PAREN #parens_expr
-                        | primary_expr PLUSPLUS #postfix_increment
-                        | primary_expr MINUSMINUS #postfix_decrement
-                        | primary_expr OPEN_PAREN func_args? CLOSE_PAREN #func_call
-                        | primary_expr DOT IDENTIFIER #member_access
-                        | TYPEOF OPEN_PAREN IDENTIFIER CLOSE_PAREN #typeof_expr
-                        | NEW IDENTIFIER OPEN_PAREN func_args? CLOSE_PAREN #new_object
-                        ;
+                    | IDENTIFIER #identifier
+                    | OPEN_PAREN expr CLOSE_PAREN #parens_expr
+                    | primary_expr PLUSPLUS #postfix_increment
+                    | primary_expr MINUSMINUS #postfix_decrement
+                    | primary_expr OPEN_PAREN func_args? CLOSE_PAREN #func_call
+                    | primary_expr DOT IDENTIFIER #member_access
+                    | TYPEOF OPEN_PAREN IDENTIFIER CLOSE_PAREN #typeof_expr
+                    | NEW IDENTIFIER OPEN_PAREN func_args? CLOSE_PAREN #new_object
+                    ;
 
 func_args           : expr | expr COMMA func_args;
 
@@ -191,9 +190,9 @@ GAME                : 'game';
 
 STRING              : DQ_STRING | SQ_STRING;
 COORD_LIT           : INTEGER WS*? ',' WS*? INTEGER;
-FLOAT_LIT           : '-'? ('0' | NZ_DIGIT DIGIT*) ('.' DIGIT+) 'f';
+FLOAT_LIT           : '-'? NATURAL_NUMBER '.' DIGIT+;
 IDENTIFIER          : LETTER ALPHANUM*;
-INTEGER             : '-'? ('0' | NATURAL_NUMBER);
+INTEGER             : '-'? NATURAL_NUMBER;
 NATURAL_NUMBER      : ('0' | NZ_DIGIT DIGIT*);
 // this is the only way to match exactly 6 hexes
 COLOUR_LIT          : '#' HEX_LIT HEX_LIT HEX_LIT HEX_LIT HEX_LIT HEX_LIT;
