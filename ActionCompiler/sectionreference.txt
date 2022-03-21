@@ -18,7 +18,7 @@ section NamedSection {
                 shape: line {
                         0, 0;
                         // coordinates are relative
-                        -4, 4;
+                        4, -4;
                 };
         };
         // final section should look like this
