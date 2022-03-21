@@ -3,10 +3,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -25,9 +23,13 @@ public class TokenEnumGenerator : ISourceGenerator
             Dictionary<int, string> values = new Dictionary<int, string>();
             while (!reader.EndOfStream)
             {
-                string[] line = reader.ReadLine().Split('=');
-                string identifier = line[0];
-                int id = int.Parse(line[1]);
+                string line = reader.ReadLine();
+                int lastIndex = line.LastIndexOf('='); // Use this instead of line.Split('=') because we have the '=' character (e.g. '='=16)
+
+                string[] splitLine = new string[] {line.Substring(0, lastIndex), line.Substring(lastIndex + 1)};
+
+                string identifier = splitLine[0];
+                int id = int.Parse(splitLine[1]);
                 if (!values.ContainsKey(id))
                 {
                     values[id] = identifier;

@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 
+
 namespace Action.AST
 {
     public class ASTGenerator : ActionBaseVisitor<object>
@@ -41,9 +42,9 @@ namespace Action.AST
 
         public override SectionNode VisitSection([NotNull] ActionParser.SectionContext context)
         {
-            CoordinateNode? coords = context.POINT_LIT() is null
+            CoordinateNode? coords = context.COORD_LIT() is null
                 ? null
-                : (CoordinateNode)this.Visit(context.POINT_LIT());
+                : (CoordinateNode)this.Visit(context.COORD_LIT());
             IdentifierNode? identifier = context.IDENTIFIER() is null
                 ? null
                 : (IdentifierNode)this.Visit(context.IDENTIFIER());
@@ -75,12 +76,12 @@ namespace Action.AST
 
         public override object VisitLine([NotNull] ActionParser.LineContext context)
         {
-            return ComplexNode<LineKeywordNode>(Empty, context.point_statements);
+            return ComplexNode<LineKeywordNode>(Empty, context.coord_statements);
         }
 
         public override object VisitCoordinates([NotNull] ActionParser.CoordinatesContext context)
         {
-            return ComplexNode<CoordinatesKeywordNode>(Empty, context.point_statements);
+            return ComplexNode<CoordinatesKeywordNode>(Empty, context.coord_statements);
         }
 
         public override object VisitPoint_shape([NotNull] ActionParser.Point_shapeContext context)
@@ -93,7 +94,7 @@ namespace Action.AST
             return new ReferenceNode(
                 new SectionKeywordNode(),
                 (IdentifierNode)this.Visit(context.IDENTIFIER()),
-                (CoordinateNode)this.Visit(context.POINT_LIT())
+                (CoordinateNode)this.Visit(context.COORD_LIT())
             );
         }
 
@@ -178,7 +179,7 @@ namespace Action.AST
             return token switch
             {
                 ActionToken.STRING => VisitString(node),
-                ActionToken.POINT_LIT => VisitPoint(node),
+                ActionToken.COORD_LIT => VisitPoint(node),
                 ActionToken.IDENTIFIER => VisitIdentifier(node),
                 ActionToken.INTEGER => VisitInteger(node),
                 ActionToken.COLOUR_LIT => VisitColour(node),
@@ -215,7 +216,7 @@ namespace Action.AST
             RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private static CoordinateNode VisitPoint(ITerminalNode node)
         {
-            Debug.Assert((ActionToken)node.Symbol.Type == ActionToken.POINT_LIT);
+            Debug.Assert((ActionToken)node.Symbol.Type == ActionToken.COORD_LIT);
             Match result = pointRegex.Match(node.GetText());
             Debug.Assert(result.Success);
             return new CoordinateNode(
