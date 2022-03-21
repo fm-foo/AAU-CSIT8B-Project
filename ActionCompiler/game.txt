@@ -1,4 +1,4 @@
-map BasicMap {
+/*map BasicMap {
         background: colour { hex: #222222; };
         shape: box {
                 height: 10; width: 10;
@@ -18,18 +18,20 @@ entity Apple {
     destroy: function() {
         // create new apple?
     }
-}
+};*/
 
 entity Player {
     create: function() {
-        this.length = 3;
+        //this.length = 3;
+        1 + (1);
+        //newPosition = position + (1, 0);
     }
 
     act: function() {
-        // receive input take action
-        var key = GetKeyPress();
-        var position = map.getPosition(this);
-        var newPosition;
+        //receive input take action
+        string key = GetKeyPress();
+        coord position = Map.getPosition(this);
+        coord newPosition;
         if (key == "left")
         {
             newPosition = position + (1, 0);
@@ -38,26 +40,26 @@ entity Player {
             newPosition = position + (0, 1);
         } else if (key == "down") {
             newPosition = position + (0, -1);
-        } else if (key == "right) {
+        } else if (key == "right") {
             newPosition = position + (-1, 0);
         } else {
             // don't do anything I guess
             newPosition = position;
         }
-        map.move(this, newPosition);
+        Map.move(this, newPosition);
         // handle placing a snakebody where you left
         var body = new SnakeBody(this.length);
-        map.place(body, position);
+        Map.place(body, position);
         // handle collision
-        var entities = map.getAt(newPosition);
-        foreach (var entity in entities)
+        var entities = Map.getAt(newPosition);
+        foreach (var Entity in entities)
         {
-            if (entity.getType() == typeof(Apple))
+            if (Entity.getType() == typeof(Apple))
             {
-                entity.kill();
+                Entity.kill();
                 this.length = length + 1;
             }
-            if (entity.getType() == typeof(SnakeBody))
+            if (Entity.getType() == typeof(SnakeBody))
             {
                 // you lose
             }
@@ -69,7 +71,7 @@ entity Player {
         // even do anything
     }
 
-}
+};
 
 entity SnakeBody {
     create: function(int life) {
@@ -88,14 +90,14 @@ entity SnakeBody {
     destroy: function() {
 
     }
-}
+};
 
 game Snake {
     initialize: function() {
         setMap(new BasicMap());
-        var player = new Player();
-        map.place(player, (0, 0));
-        var apple = new Apple();
-        map.place(apple, (3, 3));
+        Player player = new Player();
+        Map.place(player, (0, 0));
+        Apple apple = new Apple();
+        Map.place(apple, (3, 3));
     }
-}
+};
