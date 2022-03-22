@@ -9,15 +9,15 @@ file                : map_or_section*;
 map_or_section      : (map | section | entity | game) SEMICOLON;
 
 map                 : MAP IDENTIFIER OPEN_BRACE (section_properties|section_statements)* CLOSE_BRACE;
-section             : SECTION IDENTIFIER? COORD_LIT? OPEN_BRACE 
+section             : SECTION IDENTIFIER? POINT_LIT? OPEN_BRACE 
                         (section_properties|section_statements)* CLOSE_BRACE;
 colour              : COLOUR OPEN_BRACE (colour_properties)* CLOSE_BRACE;
 image               : IMAGE OPEN_BRACE (image_properties)* CLOSE_BRACE;
 box                 : BOX OPEN_BRACE (box_properties)* CLOSE_BRACE;
 line                : LINE OPEN_BRACE (coord_statements)* CLOSE_BRACE;
 coordinates         : COORDINATES OPEN_BRACE (coord_statements)* CLOSE_BRACE;
-point_shape         : POINT;
-reference_section   : REFERENCE SECTION IDENTIFIER COORD_LIT;
+unit_shape          : UNIT;
+reference_section   : REFERENCE SECTION IDENTIFIER POINT_LIT;
 
 section_properties  : (background_property | shape_property) SEMICOLON;
 box_properties      : (height_property | width_property) SEMICOLON;
@@ -28,14 +28,14 @@ background_property : BACKGROUND COLON background_values;
 background_values   : colour | image;
 
 shape_property      : SHAPE COLON shape_values;
-shape_values        : box | line | coordinates | point_shape;
+shape_values        : box | line | coordinates | unit_shape;
 
 height_property     : HEIGHT COLON INTEGER;
 width_property      : WIDTH COLON INTEGER;
 hex_property        : HEX COLON COLOUR_LIT;
 path_property       : PATH COLON STRING;
 
-coord_statements    : COORD_LIT SEMICOLON;
+coord_statements    : POINT_LIT SEMICOLON;
 section_statements  : (section | reference_section) SEMICOLON;
 
 entity              : ENTITY IDENTIFIER OPEN_BRACE (func_def | field_dec)* CLOSE_BRACE;
@@ -59,7 +59,7 @@ for                 : FOR OPEN_PAREN (assignment | declaration)? SEMICOLON expr?
 foreach             : FOREACH OPEN_PAREN type IDENTIFIER IN expr CLOSE_PAREN statement;
 
 
-literal             : STRING | COORD_LIT | INTEGER | FLOAT_LIT | BOOL_LIT;
+literal             : STRING | POINT_LIT | INTEGER | FLOAT_LIT | BOOL_LIT;
 
 type                : INT | BOOL | STRING_KW | FLOAT | COORD | IDENTIFIER;
 
@@ -168,7 +168,7 @@ HEX                 : 'hex';
 HEIGHT              : 'height';
 WIDTH               : 'width';
 PATH                : 'path';
-POINT               : 'point';
+UNIT                : 'unit';
 SHAPE               : 'shape';
 ENTITY              : 'entity';
 FUNCTION            : 'function';
@@ -189,7 +189,7 @@ NEW                 : 'new';
 GAME                : 'game';
 
 STRING              : DQ_STRING | SQ_STRING;
-COORD_LIT           : INTEGER WS*? ',' WS*? INTEGER;
+POINT_LIT           : INTEGER WS*? ',' WS*? INTEGER;
 FLOAT_LIT           : '-'? NATURAL_NUMBER '.' DIGIT+;
 IDENTIFIER          : LETTER ALPHANUM*;
 INTEGER             : '-'? NATURAL_NUMBER;
