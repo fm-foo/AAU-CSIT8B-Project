@@ -113,17 +113,17 @@ func_args           : expr | expr COMMA func_args;
 
 fragment NEWLINE    : '\r\n' | '\n';
 fragment CHARACTER  : ~[ \t\r\n];
-fragment WS         : [ \t\r\n];
+fragment WS         : ' ' | '\t';
 fragment LETTER     : [a-zA-Z];
 fragment DIGIT      : [0-9];
 fragment NZ_DIGIT   : [1-9];
 fragment ALPHANUM   : [a-zA-Z0-9];
 fragment HEX_LIT    : [0-9a-fA-F];
-fragment DQ_STRING  : '"' CHARACTER*? '"';
-fragment SQ_STRING  : '\'' CHARACTER*? '\'';
+fragment DQ_STRING  : '"' (CHARACTER | WS)*? '"';
+fragment SQ_STRING  : '\'' (CHARACTER | WS)*? '\'';
 
 
-WHITESPACE          : WS+ -> skip;
+WHITESPACE          : (WS | NEWLINE)+ -> skip;
 SINGLELINE_COMMENT  : '//' (CHARACTER|[\t ])* NEWLINE -> skip;
 MULTILINE_COMMENT   : '/*' .*? '*/' -> skip;
 
