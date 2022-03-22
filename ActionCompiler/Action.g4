@@ -43,9 +43,9 @@ game                : GAME IDENTIFIER OPEN_BRACE (func_def | field_dec)* CLOSE_B
 
 field_dec           : type IDENTIFIER (EQUALS expr)? SEMICOLON;
 
-func_def            : IDENTIFIER COLON FUNCTION OPEN_PAREN args? CLOSE_PAREN block;
-args                : arg | arg COMMA args;
-arg                 : type IDENTIFIER;
+func_def            : IDENTIFIER COLON FUNCTION OPEN_PAREN func_def_args? CLOSE_PAREN block;
+func_def_args       : func_def_arg | func_def_arg COMMA func_def_args;
+func_def_arg        : type IDENTIFIER;
 
 statement           : block | if | while | for | foreach | semicolon_statement;
 semicolon_statement : (declaration | assignment | expr) SEMICOLON;
