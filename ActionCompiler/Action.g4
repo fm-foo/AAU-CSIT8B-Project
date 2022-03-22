@@ -122,11 +122,9 @@ fragment HEX_LIT    : [0-9a-fA-F];
 fragment DQ_STRING  : '"' (CHARACTER | WS)*? '"';
 fragment SQ_STRING  : '\'' (CHARACTER | WS)*? '\'';
 
-
 WHITESPACE          : (WS | NEWLINE)+ -> skip;
-SINGLELINE_COMMENT  : '//' (CHARACTER|[\t ])* NEWLINE -> skip;
+SINGLELINE_COMMENT  : '//' (CHARACTER | WS)* NEWLINE -> skip;
 MULTILINE_COMMENT   : '/*' .*? '*/' -> skip;
-
 
 OPEN_BRACE          : '{';
 CLOSE_BRACE         : '}';
