@@ -58,11 +58,9 @@ while               : WHILE OPEN_PAREN expr CLOSE_PAREN statement;
 for                 : FOR OPEN_PAREN (assignment | declaration)? SEMICOLON expr? SEMICOLON expr? statement;
 foreach             : FOREACH OPEN_PAREN type IDENTIFIER IN expr CLOSE_PAREN statement;
 
-
 literal             : STRING | POINT_LIT | INTEGER | FLOAT_LIT | BOOL_LIT;
 
 type                : INT | BOOL | STRING_KW | FLOAT | COORD | IDENTIFIER;
-
 
 expr                : boolean_expr; // parens expr
 
@@ -108,8 +106,6 @@ primary_expr        : literal #lit
                     ;
 
 func_args           : expr | expr COMMA func_args;
-
-
 
 fragment NEWLINE    : '\r\n' | '\n';
 fragment CHARACTER  : ~[ \t\r\n];
