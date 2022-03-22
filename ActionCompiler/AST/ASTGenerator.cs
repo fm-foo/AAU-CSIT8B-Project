@@ -42,9 +42,9 @@ namespace Action.AST
 
         public override SectionNode VisitSection([NotNull] ActionParser.SectionContext context)
         {
-            CoordinateNode? coords = context.COORD_LIT() is null
+            CoordinateNode? coords = context.POINT_LIT() is null
                 ? null
-                : (CoordinateNode)this.Visit(context.COORD_LIT());
+                : (CoordinateNode)this.Visit(context.POINT_LIT());
             IdentifierNode? identifier = context.IDENTIFIER() is null
                 ? null
                 : (IdentifierNode)this.Visit(context.IDENTIFIER());
@@ -84,9 +84,9 @@ namespace Action.AST
             return ComplexNode<CoordinatesKeywordNode>(Empty, context.coord_statements);
         }
 
-        public override object VisitPoint_shape([NotNull] ActionParser.Point_shapeContext context)
+        public override object VisitUnit_shape([NotNull] ActionParser.Unit_shapeContext context)
         {
-            return new PointKeywordNode();
+            throw new NotImplementedException();
         }
 
         public override object VisitReference_section([NotNull] ActionParser.Reference_sectionContext context)
@@ -94,7 +94,7 @@ namespace Action.AST
             return new ReferenceNode(
                 new SectionKeywordNode(),
                 (IdentifierNode)this.Visit(context.IDENTIFIER()),
-                (CoordinateNode)this.Visit(context.COORD_LIT())
+                (CoordinateNode)this.Visit(context.POINT_LIT())
             );
         }
 
@@ -179,7 +179,7 @@ namespace Action.AST
             return token switch
             {
                 ActionToken.STRING => VisitString(node),
-                ActionToken.COORD_LIT => VisitPoint(node),
+                ActionToken.POINT_LIT => VisitPoint(node),
                 ActionToken.IDENTIFIER => VisitIdentifier(node),
                 ActionToken.INTEGER => VisitInteger(node),
                 ActionToken.COLOUR_LIT => VisitColour(node),
@@ -216,7 +216,7 @@ namespace Action.AST
             RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private static CoordinateNode VisitPoint(ITerminalNode node)
         {
-            Debug.Assert((ActionToken)node.Symbol.Type == ActionToken.COORD_LIT);
+            Debug.Assert((ActionToken)node.Symbol.Type == ActionToken.POINT_LIT);
             Match result = pointRegex.Match(node.GetText());
             Debug.Assert(result.Success);
             return new CoordinateNode(

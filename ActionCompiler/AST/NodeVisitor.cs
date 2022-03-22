@@ -19,5 +19,6 @@ namespace Action.AST
         public virtual T VisitProperty(PropertyNode propertyNode) => Default;
         public virtual T VisitReference(ReferenceNode referenceNode) => Default;
         public virtual T VisitString(StringNode stringNode) => Default;
+        public virtual T VisitEntity(EntityNode entityNode) => Default;
     }
 }

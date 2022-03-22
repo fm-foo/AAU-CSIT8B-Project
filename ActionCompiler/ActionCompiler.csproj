@@ -40,6 +40,9 @@
     <None Update="map examples.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="entity.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="sectionreference.mp">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>

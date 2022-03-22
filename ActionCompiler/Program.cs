@@ -13,7 +13,7 @@ namespace Action
     {
         public static void Main()
         {
-            using Stream stream = new FileStream("sectionreference.txt", FileMode.Open);
+            using Stream stream = new FileStream("entity.txt", FileMode.Open);
             using var factory = LoggerFactory.Create(builder => builder.AddConsole());
             var compiler = new ActionCompiler();
             var result = compiler.Compile(stream, factory.CreateLogger<ActionCompiler>());

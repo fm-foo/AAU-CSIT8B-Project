@@ -16,4 +16,6 @@ namespace Action.AST
     public record PathKeywordNode() : KeywordNode("path");
     public record PointKeywordNode() : KeywordNode("point");
     public record ShapeKeywordNode() : KeywordNode("shape");
+    public record EntityKeywordNode() : KeywordNode("entity");
+    public record GameKeywordNode() : KeywordNode("game");
 }
