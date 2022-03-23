@@ -55,14 +55,14 @@ declaration         : type IDENTIFIER (EQUALS expr)?;
 assignment          : expr EQUALS expr;
 if                  : IF OPEN_PAREN expr CLOSE_PAREN statement (ELSE statement)?;
 while               : WHILE OPEN_PAREN expr CLOSE_PAREN statement;
-for                 : FOR OPEN_PAREN (assignment | declaration)? SEMICOLON expr? SEMICOLON expr? statement;
+for                 : FOR OPEN_PAREN (assignment | declaration)? SEMICOLON expr? SEMICOLON (expr | assignment)? statement;
 foreach             : FOREACH OPEN_PAREN type IDENTIFIER IN expr CLOSE_PAREN statement;
 
 literal             : STRING | POINT_LIT | INTEGER | FLOAT_LIT | BOOL_LIT;
 
 type                : INT | BOOL | STRING_KW | FLOAT | COORD | IDENTIFIER;
 
-expr                : boolean_expr; // parens expr
+expr                : boolean_expr;
 
 boolean_expr        : equality_expr
                     | boolean_expr ANDAND equality_expr
