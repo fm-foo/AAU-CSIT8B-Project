@@ -62,37 +62,43 @@ literal             : STRING | POINT_LIT | INTEGER | FLOAT_LIT | BOOL_LIT;
 
 type                : INT | BOOL | STRING_KW | FLOAT | COORD | IDENTIFIER;
 
-expr                : boolean_expr; // parens expr
+expr                : bool_expr;
 
-boolean_expr        : equality_expr
-                    | boolean_expr ANDAND equality_expr
-                    | boolean_expr OROR equality_expr;
+bool_expr           : equality_expr #eq_expr
+                    | bool_expr ANDAND equality_expr #andand_expr
+                    | bool_expr OROR equality_expr #oror_expr
+                    ;
 
-equality_expr       : relational_expr
-                    | equality_expr EQUALSEQUALS relational_expr
-                    | equality_expr NOTEQUALS relational_expr;
+equality_expr       : relational_expr #rel_expr
+                    | equality_expr EQUALSEQUALS relational_expr #equalsequals_expr
+                    | equality_expr NOTEQUALS relational_expr #notequals_expr
+                    ;
 
-relational_expr     : additive_expr
-                    | relational_expr LESSTHAN additive_expr
-                    | relational_expr GREATERTHAN additive_expr
-                    | relational_expr LESSTHANEQUAL additive_expr
-                    | relational_expr GREATERTHANEQUAL additive_expr;
+relational_expr     : additive_expr #add_expr
+                    | relational_expr LESSTHAN additive_expr #lessthan_expr
+                    | relational_expr GREATERTHAN additive_expr #greaterthan_expr
+                    | relational_expr LESSTHANEQUAL additive_expr #lessthanequal_expr
+                    | relational_expr GREATERTHANEQUAL additive_expr #greaterthanequal_expr
+                    ;
 
 
-additive_expr       : multiplicative_expr
-                    | additive_expr PLUS multiplicative_expr
-                    | additive_expr MINUS multiplicative_expr;
+additive_expr       : multiplicative_expr #mult_expr
+                    | additive_expr PLUS multiplicative_expr #plus_expr
+                    | additive_expr MINUS multiplicative_expr #minus_expr
+                    ;
 
-multiplicative_expr : unary_expr
-                    | multiplicative_expr TIMES unary_expr
-                    | multiplicative_expr DIVIDE unary_expr;
+multiplicative_expr : unary_expr #un_expr
+                    | multiplicative_expr TIMES unary_expr #times_expr
+                    | multiplicative_expr DIVIDE unary_expr #divide_expr
+                    ;
 
-unary_expr          : primary_expr 
-                    | PLUS unary_expr 
-                    | MINUS unary_expr 
-                    | BANG unary_expr
-                    | PLUSPLUS unary_expr
-                    | MINUSMINUS unary_expr;
+unary_expr          : primary_expr #prim_expr
+                    | PLUS unary_expr #plus_unary_expr
+                    | MINUS unary_expr #minus_unary_expr
+                    | BANG unary_expr #bang_expr
+                    | PLUSPLUS unary_expr #plusplus_expr
+                    | MINUSMINUS unary_expr #minusminus_expr
+                    ;
 
 primary_expr        : literal #lit
                     | IDENTIFIER #identifier
@@ -185,9 +191,9 @@ GAME                : 'game';
 STRING              : DQ_STRING | SQ_STRING;
 POINT_LIT           : INTEGER WS*? ',' WS*? INTEGER;
 FLOAT_LIT           : '-'? NATURAL_NUMBER '.' DIGIT+;
+BOOL_LIT            : 'true' | 'false';
 IDENTIFIER          : LETTER ALPHANUM*;
 INTEGER             : '-'? NATURAL_NUMBER;
 NATURAL_NUMBER      : ('0' | NZ_DIGIT DIGIT*);
 // this is the only way to match exactly 6 hexes
 COLOUR_LIT          : '#' HEX_LIT HEX_LIT HEX_LIT HEX_LIT HEX_LIT HEX_LIT;
-BOOL_LIT            : 'true' | 'false';

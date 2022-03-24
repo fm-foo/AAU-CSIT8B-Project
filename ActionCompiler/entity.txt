@@ -1,3 +1,8 @@
 entity MyEntity {
+	bool f = false || (true && false);
+	int myInt = 1; 
+	int myOtherInt = 2;
+	coord myCoord;
 
+//	myFunc: function(int in) {};
 };

@@ -59,6 +59,17 @@ namespace Action.AST
             return new SectionNode(coords, identifier, properties, sections);
         }
 
+        public override object VisitEntity([NotNull] ActionParser.EntityContext context)
+        {
+            IdentifierNode identifier = (IdentifierNode)this.Visit(context.IDENTIFIER());
+
+            List<FieldNode> fieldNodes = context.field_dec().Select(this.Visit).Cast<FieldNode>().ToList();
+
+            List<PropertyNode> funcDecs = new List<PropertyNode>();
+
+            return new EntityNode(identifier, fieldNodes, funcDecs);
+        }
+
         public override ComplexNode VisitColour([NotNull] ActionParser.ColourContext context)
         {
             return ComplexNode<ColourKeywordNode>(context.colour_properties, Empty);
@@ -167,7 +178,290 @@ namespace Action.AST
                 (ValueNode)this.Visit(context.STRING())
             );
         }
+
+        public override object VisitField_dec([NotNull] ActionParser.Field_decContext context)
+        {
+            IdentifierNode identifierNode = (IdentifierNode)this.Visit(context.IDENTIFIER());
+            TypeNode type = (TypeNode)this.Visit(context.type());
+
+            if (context.expr() != null)
+            {
+                return new FieldNode(identifierNode, type, (ExprNode)this.Visit(context.expr()));
+            }
+            else
+            {
+                return new FieldNode(identifierNode, type);
+            }
+        }
         #endregion
+
+        public override object VisitExpr([NotNull] ActionParser.ExprContext context)
+        {
+            return this.Visit(context.bool_expr());
+        }
+
+        #region bool_expr
+        public override object VisitEq_expr([NotNull] ActionParser.Eq_exprContext context)
+        {
+            //return new BoolExprNode((EqualityExprNode)this.Visit(context.equality_expr()));
+            return this.Visit(context.equality_expr());
+        }
+
+        public override object VisitAndand_expr([NotNull] ActionParser.Andand_exprContext context)
+        {
+            //EqualityExprNode equalityExprNode = (EqualityExprNode)this.Visit(context.equality_expr());
+            ExprNode expr = (ExprNode)this.Visit(context.equality_expr());
+            //BoolExprNode boolExprNode = (BoolExprNode)this.Visit(context.bool_expr());
+            ExprNode boolExprNode = (ExprNode)this.Visit(context.bool_expr());
+
+            return new BoolExprNode(expr, boolExprNode, BooleanOperator.AND);
+        }
+
+        public override object VisitOror_expr([NotNull] ActionParser.Oror_exprContext context)
+        {
+            //EqualityExprNode equalityExprNode = (EqualityExprNode)this.Visit(context.equality_expr());
+            ExprNode expr = (ExprNode)this.Visit(context.equality_expr());
+            //BoolExprNode boolExprNode = (BoolExprNode)this.Visit(context.bool_expr());
+            ExprNode boolExprNode = (ExprNode)this.Visit(context.bool_expr());
+
+            return new BoolExprNode(expr, boolExprNode, BooleanOperator.OR);
+        }
+
+        #endregion
+        #region equality_expr
+
+        public override object VisitRel_expr([NotNull] ActionParser.Rel_exprContext context)
+        {
+            //return new EqualityExprNode((RelationalExprNode)this.Visit(context.relational_expr()));
+            return this.Visit(context.relational_expr());
+        }
+
+        public override object VisitEqualsequals_expr([NotNull] ActionParser.Equalsequals_exprContext context)
+        {
+            //RelationalExprNode relationalExpr = (RelationalExprNode)this.Visit(context.relational_expr());
+            ExprNode expr = (ExprNode)this.Visit(context.relational_expr());
+            //EqualityExprNode equalityExpr = (EqualityExprNode)this.Visit(context.equality_expr());
+            ExprNode equalityExpr = (ExprNode)this.Visit(context.equality_expr());
+
+            return new EqualityExprNode(expr, equalityExpr, EqualityOperator.EQUALS);
+        }
+
+        public override object VisitNotequals_expr([NotNull] ActionParser.Notequals_exprContext context)
+        {
+            //RelationalExprNode relationalExpr = (RelationalExprNode)this.Visit(context.relational_expr());
+            ExprNode expr = (ExprNode)this.Visit(context.relational_expr());
+            //EqualityExprNode equalityExpr = (EqualityExprNode)this.Visit(context.equality_expr());
+            ExprNode equalityExpr = (ExprNode)this.Visit(context.equality_expr());
+
+            return new EqualityExprNode(expr, equalityExpr, EqualityOperator.NOTEQUALS);
+        }
+
+        #endregion
+        #region relational_expr
+
+        public override object VisitAdd_expr([NotNull] ActionParser.Add_exprContext context)
+        {
+            //return new RelationalExprNode((AdditiveExprNode)this.Visit(context.additive_expr()));
+            return this.Visit(context.additive_expr());
+
+        }
+
+        public override object VisitLessthan_expr([NotNull] ActionParser.Lessthan_exprContext context)
+        {
+           // AdditiveExprNode additiveExpr = (AdditiveExprNode)this.Visit(context.additive_expr());
+            ExprNode expr = (ExprNode)this.Visit(context.additive_expr());
+            // RelationalExprNode relationalExpr = (RelationalExprNode)this.Visit(context.relational_expr());
+            ExprNode relationalExpr = (ExprNode)this.Visit(context.relational_expr());
+
+            return new RelationalExprNode(expr, relationalExpr, RelationalOper.LESSTHAN);
+        }
+
+        public override object VisitGreaterthan_expr([NotNull] ActionParser.Greaterthan_exprContext context)
+        {
+            // AdditiveExprNode additiveExpr = (AdditiveExprNode)this.Visit(context.additive_expr());
+            ExprNode expr = (ExprNode)this.Visit(context.additive_expr());
+            // RelationalExprNode relationalExpr = (RelationalExprNode)this.Visit(context.relational_expr());
+            ExprNode relationalExpr = (ExprNode)this.Visit(context.relational_expr());
+
+            return new RelationalExprNode(expr, relationalExpr, RelationalOper.GREATERTHAN);
+        }
+
+        public override object VisitLessthanequal_expr([NotNull] ActionParser.Lessthanequal_exprContext context)
+        {
+            // AdditiveExprNode additiveExpr = (AdditiveExprNode)this.Visit(context.additive_expr());
+            ExprNode expr = (ExprNode)this.Visit(context.additive_expr());
+            // RelationalExprNode relationalExpr = (RelationalExprNode)this.Visit(context.relational_expr());
+            ExprNode relationalExpr = (ExprNode)this.Visit(context.relational_expr());
+
+            return new RelationalExprNode(expr, relationalExpr, RelationalOper.LESSTHANOREQUAL);
+        }
+
+        public override object VisitGreaterthanequal_expr([NotNull] ActionParser.Greaterthanequal_exprContext context)
+        {
+            // AdditiveExprNode additiveExpr = (AdditiveExprNode)this.Visit(context.additive_expr());
+            ExprNode expr = (ExprNode)this.Visit(context.additive_expr());
+            // RelationalExprNode relationalExpr = (RelationalExprNode)this.Visit(context.relational_expr());
+            ExprNode relationalExpr = (ExprNode)this.Visit(context.relational_expr());
+
+            return new RelationalExprNode(expr, relationalExpr, RelationalOper.GREATERTHANOREQUAL);
+        }
+
+        #endregion
+        #region additive_expr
+
+        public override object VisitMult_expr([NotNull] ActionParser.Mult_exprContext context)
+        {
+             //return new AdditiveExprNode((MultiplicativeExprNode)this.Visit(context.multiplicative_expr()));
+             return this.Visit(context.multiplicative_expr());
+
+        }
+
+        public override object VisitPlus_expr([NotNull] ActionParser.Plus_exprContext context)
+        {
+            // MultiplicativeExprNode multiplicativeExpr = (MultiplicativeExprNode)this.Visit(context.multiplicative_expr());
+            ExprNode expr = (ExprNode)this.Visit(context.multiplicative_expr());
+            //AdditiveExprNode additiveExpr = (AdditiveExprNode)this.Visit(context.additive_expr());
+            ExprNode additiveExpr = (ExprNode)this.Visit(context.additive_expr());
+
+            return new AdditiveExprNode(expr, additiveExpr, AdditiveOper.PLUS);
+        }
+
+        public override object VisitMinus_expr([NotNull] ActionParser.Minus_exprContext context)
+        {
+            // MultiplicativeExprNode multiplicativeExpr = (MultiplicativeExprNode)this.Visit(context.multiplicative_expr());
+            ExprNode expr = (ExprNode)this.Visit(context.multiplicative_expr());
+            //AdditiveExprNode additiveExpr = (AdditiveExprNode)this.Visit(context.additive_expr());
+            ExprNode additiveExpr = (ExprNode)this.Visit(context.additive_expr());
+
+            return new AdditiveExprNode(expr, additiveExpr, AdditiveOper.MINUS);
+        }
+
+        #endregion
+        #region multiplicative_expr
+
+        public override object VisitUn_expr([NotNull] ActionParser.Un_exprContext context)
+        {
+            //return new MultiplicativeExprNode((UnaryExprNode)this.Visit(context.unary_expr()));
+            return this.Visit(context.unary_expr());
+        }
+
+        public override object VisitTimes_expr([NotNull] ActionParser.Times_exprContext context)
+        {
+            //UnaryExprNode unaryExpr = (UnaryExprNode)this.Visit(context.unary_expr());
+            ExprNode expr = (ExprNode)this.Visit(context.unary_expr());
+            //MultiplicativeExprNode multiplicativeExpr = (MultiplicativeExprNode)(this.Visit(context.multiplicative_expr()));
+            ExprNode multiplicativeExpr = (ExprNode)this.Visit(context.multiplicative_expr());
+
+            return new MultiplicativeExprNode(expr, multiplicativeExpr, MultOper.TIMES);
+        }
+
+        public override object VisitDivide_expr([NotNull] ActionParser.Divide_exprContext context)
+        {
+            //UnaryExprNode unaryExpr = (UnaryExprNode)this.Visit(context.unary_expr());
+            ExprNode expr = (ExprNode)this.Visit(context.unary_expr());
+            //MultiplicativeExprNode multiplicativeExpr = (MultiplicativeExprNode)(this.Visit(context.multiplicative_expr()));
+            ExprNode multiplicativeExpr = (ExprNode)this.Visit(context.multiplicative_expr());
+
+            return new MultiplicativeExprNode(expr, multiplicativeExpr, MultOper.DIV);
+        }
+
+        #endregion
+        #region unary_expr
+
+        public override object VisitPrim_expr([NotNull] ActionParser.Prim_exprContext context)
+        {
+            //return new UnaryExprNode((ValueNode)this.Visit(context.primary_expr()));
+            return this.Visit(context.primary_expr());
+        }
+
+        public override object VisitPlus_unary_expr([NotNull] ActionParser.Plus_unary_exprContext context)
+        {
+            ExprNode unaryExpr = (ExprNode)(this.Visit(context.unary_expr()));
+
+            return new UnaryExprNode(unaryExpr, UnaryOper.PLUS);
+        }
+
+        public override object VisitMinus_unary_expr([NotNull] ActionParser.Minus_unary_exprContext context)
+        {
+            ExprNode unaryExpr = (ExprNode)(this.Visit(context.unary_expr()));
+
+            return new UnaryExprNode(unaryExpr, UnaryOper.MINUS);
+        }
+
+        public override object VisitPlusplus_expr([NotNull] ActionParser.Plusplus_exprContext context)
+        {
+            ExprNode unaryExpr = (ExprNode)this.Visit(context.unary_expr());
+
+            return new UnaryExprNode(unaryExpr, UnaryOper.PLUSPLUS);
+        }
+
+        public override object VisitMinusminus_expr([NotNull] ActionParser.Minusminus_exprContext context)
+        {
+            ExprNode unaryExpr = (ExprNode)this.Visit(context.unary_expr());
+
+            return new UnaryExprNode(unaryExpr, UnaryOper.MINUSMINUS);
+        }
+
+        public override object VisitBang_expr([NotNull] ActionParser.Bang_exprContext context)
+        {
+            ExprNode unaryExpr = (ExprNode)this.Visit(context.unary_expr());
+
+            return new UnaryExprNode(unaryExpr, UnaryOper.BANG);
+        }
+
+        #endregion
+        #region primary_expr   
+
+        // TODO: missing postfix_increment, postfix_decrement, func_call, member_access, typeof_expr, new_object
+
+        public override object VisitLit([NotNull] ActionParser.LitContext context)
+        {
+            //return this.Visit(context.literal());
+            return new PrimaryExprNode((ValueNode)this.Visit(context.literal()));
+        }
+
+        public override object VisitIdentifier([NotNull] ActionParser.IdentifierContext context)
+        {
+            // return this.Visit(context.IDENTIFIER());
+            return new PrimaryExprNode((ValueNode)this.Visit(context.IDENTIFIER()));
+        }
+
+        public override object VisitParens_expr([NotNull] ActionParser.Parens_exprContext context)
+        {
+            return this.Visit(context.expr());
+        }
+
+
+        #endregion
+
+        // Could also label the different types in Action.g4 (like expressions)
+        public override object VisitType([NotNull] ActionParser.TypeContext context)
+        {
+            if (context.FLOAT() != null)
+            {
+                return new TypeNode(TypeEnum.FLOAT);
+            }
+            else if (context.INT() != null)
+            {
+                return new TypeNode(TypeEnum.INT);
+            }
+            else if (context.STRING_KW() != null)
+            {
+                return new TypeNode(TypeEnum.STRING);
+            }
+            else if (context.BOOL() != null)
+            {
+                return new TypeNode(TypeEnum.BOOL);
+            }
+            else if (context.COORD() != null)
+            {
+                return new TypeNode(TypeEnum.COORD);
+            }
+            else
+            {
+                return new TypeNode(TypeEnum.IDENTIFIER);
+            }
+        }
 
         /*
          *  Terminals
@@ -183,6 +477,7 @@ namespace Action.AST
                 ActionToken.IDENTIFIER => VisitIdentifier(node),
                 ActionToken.INTEGER => VisitInteger(node),
                 ActionToken.COLOUR_LIT => VisitColour(node),
+                ActionToken.BOOL_LIT => VisitBoolean(node),
                 _ => base.VisitTerminal(node),
             };
         }
@@ -236,6 +531,14 @@ namespace Action.AST
             Debug.Assert((ActionToken)node.Symbol.Type == ActionToken.IDENTIFIER);
             return new IdentifierNode(node.GetText());
         }
+
+        private static BoolNode VisitBoolean(ITerminalNode node)
+        {
+            Debug.Assert((ActionToken)node.Symbol.Type == ActionToken.BOOL_LIT);
+            return new BoolNode(bool.Parse(node.GetText()));
+
+        }
+
         #endregion
 
         // So, the way the visitor works by default: it'll visit every child rule in order

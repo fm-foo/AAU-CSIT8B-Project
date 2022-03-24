@@ -20,5 +20,16 @@ namespace Action.AST
         public virtual T VisitReference(ReferenceNode referenceNode) => Default;
         public virtual T VisitString(StringNode stringNode) => Default;
         public virtual T VisitEntity(EntityNode entityNode) => Default;
+        public virtual T VisitField(FieldNode fieldNode) => Default;
+        public virtual T VisitExpr(ExprNode exprNode) => Default;
+        public virtual T VisitEqualityExpr(EqualityExprNode equalityExprNode) => Default;
+        public virtual T VisitRelationalExpr(RelationalExprNode relationalExprNode) => Default;
+        public virtual T VisitAddativeExpr(AdditiveExprNode addativeExprNode) => Default;
+        public virtual T VisitMultiplicativeExprNode(MultiplicativeExprNode multiplicativeExprNode) => Default;
+        public virtual T VisitUnaryExpr(UnaryExprNode unaryExprNode) => Default;
+        public virtual T VisitBooleanExpr(BoolExprNode boolExprNode) => Default;
+        public virtual T VisitPrimaryExpr(PrimaryExprNode primaryExprNode) => Default;
+        public virtual T VisitBool(BoolNode boolNode) => Default;
+        public virtual T VisitType(TypeNode typeNode) => Default;
     }
 }
