@@ -312,7 +312,6 @@ namespace Action.Compiler
 
         /// <summary>
         /// Get the points that are interescted by the line drawn between <paramref name="p0"/> and <paramref name="p1"/>
-        /// Based on: https://www.redblobgames.com/grids/line-drawing.html
         /// </summary>
         /// <param name="p0">First point.</param>
         /// <param name="p1">Second point.</param>
@@ -333,23 +332,36 @@ namespace Action.Compiler
 
             for ((int ix, int iy) = (0, 0); ix < nx || iy < ny;)
             {
-                int decision = (1 + 2 * ix) * ny - (1 + 2 * iy) * nx;
-                if (decision == 1)
+                if (nx == ny)
                 {
                     p = new CoordinateNode(new IntNode(p.x.integer + sign_x), new IntNode(p.y.integer + sign_y));
                     ix++;
                     iy++;
                 }
-                else if (decision < 0)
-                {
-                    p = new CoordinateNode(new IntNode(p.x.integer + sign_x), new IntNode(p.y.integer));
-                    ix++;
-                }
                 else
                 {
-                    p = new CoordinateNode(new IntNode(p.x.integer), new IntNode(p.y.integer + sign_y));
-                    iy++;
+                    int wx = (1 + ix) * (1 + ny) * 2;
+                    int wy = (1 + iy) * (1 + nx) * 2;
+                    int decision = nx > ny ? wx - wy + ny : wy - wx + nx;
+
+                    if (decision >= 0)
+                    {
+                        p = new CoordinateNode(new IntNode(p.x.integer + sign_x), new IntNode(p.y.integer + sign_y));
+                        ix++;
+                        iy++;
+                    }
+                    else if (nx > ny)
+                    {
+                        p = new CoordinateNode(new IntNode(p.x.integer + sign_x), new IntNode(p.y.integer));
+                        ix++;
+                    }
+                    else
+                    {
+                        p = new CoordinateNode(new IntNode(p.x.integer), new IntNode(p.y.integer + sign_y));
+                        iy++;
+                    }
                 }
+
                 points.Add(p);
             }
 
