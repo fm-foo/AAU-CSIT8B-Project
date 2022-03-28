@@ -171,11 +171,155 @@ namespace Action.AST
             return new FunctionArgumentNode(identifierNode, type);
         }
 
+        #region Statements
         public override object VisitStatement([NotNull] ActionParser.StatementContext context)
         {
-            // TODO: StatementNode
-            return new StatementNode();
+            if (context.block() != null)
+            {
+                return (StatementNode)this.Visit(context.block());
+            }
+            else if (context.@if() is not null)
+            {
+                return (StatementNode)this.Visit(context.@if());
+            }
+            else if (context.@while() is not null)
+            {
+                return (StatementNode)this.Visit(context.@while());
+            }
+            else if (context.@for() is not null)
+            {
+                return (StatementNode)this.Visit(context.@for());
+            }
+            else if (context.@foreach() is not null)
+            {
+                return (StatementNode)this.Visit(context.@foreach());
+            }
+            else if (context.semicolon_statement() is not null)
+            {
+                return (StatementNode)this.Visit(context.semicolon_statement());
+            }
+            else
+            {
+                throw new Exception("Unknown statement!");
+            }
         }
+
+        public override object VisitIf([NotNull] ActionParser.IfContext context)
+        {
+            ExprNode expr = (ExprNode)this.Visit(context.expr());
+
+            StatementNode statement = (StatementNode)this.Visit(context.statement());
+
+            if (context.ELSE() != null)
+            {
+                StatementNode elseStatement = (StatementNode)this.Visit(context.else_statement());
+                return new IfStatementNode(expr, statement, elseStatement);
+            }
+
+            return new IfStatementNode(expr, statement);
+            
+        }
+
+        public override object VisitWhile([NotNull] ActionParser.WhileContext context)
+        {
+            ExprNode expr = (ExprNode)this.Visit(context.expr());
+            StatementNode statement = (StatementNode)this.Visit(context.statement());
+
+            return new WhileStatementNode(expr, statement);
+        }
+
+        public override object VisitFor([NotNull] ActionParser.ForContext context)
+        {
+            StatementNode? initialization = null;
+            if (context.initialization() is not null)
+            {
+                initialization = (StatementNode)this.Visit(context.initialization());
+            }
+
+            ExprNode? condition = null;
+            if (context.cond_expr() is not null)
+            {
+                condition = (ExprNode?)this.Visit(context.cond_expr());
+            }
+
+            ExprNode? control = null;
+            if (context.control_expr() is not null)
+            {
+                control = (ExprNode)this.Visit(context.control_expr());
+            }
+
+            StatementNode statement = (StatementNode)this.Visit(context.statement()); // TODO: shouldn't this be a block?
+
+            return new ForStatementNode(statement, initialization, condition, control);    
+        }
+
+        public override object VisitForeach([NotNull] ActionParser.ForeachContext context)
+        {
+            TypeNode type = (TypeNode)this.Visit(context.type());
+            IdentifierNode identifier = (IdentifierNode)this.Visit(context.IDENTIFIER());
+            ExprNode expr = (ExprNode)this.Visit(context.expr());
+            StatementNode statement = (StatementNode)this.Visit(context.statement());
+
+            return new ForeachStatementNode(type, identifier, expr, statement);
+        }
+
+        public override object VisitDeclaration([NotNull] ActionParser.DeclarationContext context)
+        {
+            TypeNode type = (TypeNode)this.Visit(context.type());
+            IdentifierNode identifier = (IdentifierNode)this.Visit(context.IDENTIFIER());
+
+            if (context.expr() is not null)
+            {
+                ExprNode expr = (ExprNode)this.Visit(context.expr());
+                return new DeclarationNode(type, identifier, expr);
+            }
+
+            return new DeclarationNode(type, identifier);
+        }
+
+        public override object VisitAssignment([NotNull] ActionParser.AssignmentContext context)
+        {
+            ExprNode left = (ExprNode)this.Visit(context.left_expr());
+            ExprNode right = (ExprNode)this.Visit(context.right_expr());
+            
+            return new AssignmentNode(left, right);
+        }
+
+        public override object VisitSemicolon_statement([NotNull] ActionParser.Semicolon_statementContext context)
+        {
+            if (context.declaration() is not null)
+            {
+                return this.Visit(context.declaration());
+            }
+            else if (context.assignment() is not null)
+            {
+                return this.Visit(context.assignment());
+            }
+            else if (context.expr() is not null)
+            {
+                return this.Visit(context.expr());
+            }
+            else
+            {
+                throw new Exception("Unknown SemicolonStatement!");
+            }
+        }
+
+        public override object VisitInitialization([NotNull] ActionParser.InitializationContext context)
+        {
+            return context.assignment() is not null? this.Visit(context.assignment()) : this.Visit(context.declaration());
+        }
+
+        public override object VisitCond_expr([NotNull] ActionParser.Cond_exprContext context)
+        {
+            return (ExprNode)this.Visit(context.expr());
+        }
+
+        public override object VisitControl_expr([NotNull] ActionParser.Control_exprContext context)
+        {
+            return (ExprNode)this.Visit(context.expr());
+        }
+        #endregion
 
         #endregion
 

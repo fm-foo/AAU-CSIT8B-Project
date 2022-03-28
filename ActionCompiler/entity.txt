@@ -1,14 +1,71 @@
 entity MyEntity {
-	MyType t;
-	string s = "lll";
-	bool f = false || (true && false);
-	bool ff = f;
-	int myInt = 1; 
+	//MyType t;
+	//string s = "lll";
+	//bool f = false || (true && false);
+	//bool ff = f;
+	//int myInt = 1; 
 	//int myOtherInt = 2;
 	//coord myCoord;
 
 	entityFunction: function(int myInt, bool boolVal) 
 	{
+		if (true) {
+			bool f = false;
+			f = true;
+
+			if (f) {
+				f = false;
+			}
+
+		}
+		else {
+			bool f = true;
+		}
+
+		while(f) {
+			f = !f;
+		}
+
 		int i = 1;
+		bool x = true;
+
+		for (int i = 1; i < 11; i++) {
+			int v = 10+i;   
+		}
+
+		for (int i = 1; i < 11;) {
+			int v = 10+i;   
+		}
+
+		for (int i = 1; ; i++) {
+			int v = 10+i;   
+		}
+
+		for (; i < 11; i++) {
+			int v = 10+i;   
+		}
+
+		for (; ; i++) {
+			int v = 10+i;   
+		}
+
+		for (int i = 1; ;) {
+			int v = 10+i;   
+		}
+
+		for (; i < 11; ) {
+			int v = 10+i;   
+		}
+
+		for (;;) {
+			int v = 10+i;   
+		}
+
+		foreach (int i in list) {
+			i = i + 1;
+		}
+
+		s = "aaaaaaa";
+
 	}
 };

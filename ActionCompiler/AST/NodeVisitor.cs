@@ -34,6 +34,13 @@ namespace Action.AST
         public virtual T VisitFunction(FunctionNode functionNode) => Default;
         public virtual T VisitBlock(BlockNode blockNode) => Default;
         public virtual T VisitStatement(StatementNode statementNode) => Default;
+        public virtual T VisitIfStatement(IfStatementNode ifStatementNode) => Default;
+        public virtual T VisitWhileStatement(WhileStatementNode whileStatementNode) => Default;
+        public virtual T VisitForStatement(ForStatementNode forStatementNode) => Default;
+        public virtual T VisitForeachStatement(ForeachStatementNode foreachStatementNode) => Default;
+        public virtual T VisitSemicolonStatement(SemicolonStatementNode semicolonStatementNode) => Default; 
+        public virtual T VisitDeclaration(DeclarationNode declarationNode) => Default;
+        public virtual T VisitAssignment(AssignmentNode assignmentNode) => Default;
         public virtual T VisitFunctionArguments(FunctionArgumentsNode functionArgumentsNode) => Default;
         public virtual T VisitFunctionArgument(FunctionArgumentNode functionArgumentNode) => Default;
     }

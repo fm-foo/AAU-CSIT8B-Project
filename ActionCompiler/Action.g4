@@ -52,10 +52,16 @@ semicolon_statement : (declaration | assignment | expr) SEMICOLON;
 
 block               : OPEN_BRACE statement* CLOSE_BRACE;
 declaration         : type IDENTIFIER (EQUALS expr)?;
-assignment          : expr EQUALS expr;
-if                  : IF OPEN_PAREN expr CLOSE_PAREN statement (ELSE statement)?;
+assignment          : left_expr EQUALS right_expr;
+left_expr           : expr;
+right_expr          : expr;
+if                  : IF OPEN_PAREN expr CLOSE_PAREN statement (ELSE else_statement)?;
+else_statement      : statement;
 while               : WHILE OPEN_PAREN expr CLOSE_PAREN statement;
-for                 : FOR OPEN_PAREN (assignment | declaration)? SEMICOLON expr? SEMICOLON expr? statement;
+for                 : FOR OPEN_PAREN initialization? SEMICOLON cond_expr? SEMICOLON control_expr? CLOSE_PAREN statement;
+initialization      : (assignment | declaration);
+cond_expr           : expr;
+control_expr        : expr;
 foreach             : FOREACH OPEN_PAREN type IDENTIFIER IN expr CLOSE_PAREN statement;
 
 literal             : STRING | POINT_LIT | INTEGER | FLOAT_LIT | BOOL_LIT;
