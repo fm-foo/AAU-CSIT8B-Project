@@ -1,8 +1,14 @@
 entity MyEntity {
+	MyType t;
+	string s = "lll";
 	bool f = false || (true && false);
+	bool ff = f;
 	int myInt = 1; 
-	int myOtherInt = 2;
-	coord myCoord;
+	//int myOtherInt = 2;
+	//coord myCoord;
 
-//	myFunc: function(int in) {};
+	entityFunction: function(int myInt, bool boolVal) 
+	{
+		int i = 1;
+	}
 };

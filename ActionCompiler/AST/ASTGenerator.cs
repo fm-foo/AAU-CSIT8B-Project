@@ -63,10 +63,9 @@ namespace Action.AST
         {
             IdentifierNode identifier = (IdentifierNode)this.Visit(context.IDENTIFIER());
 
-            List<FieldNode> fieldNodes = context.field_dec().Select(this.Visit).Cast<FieldNode>().ToList();
+            List<FieldDecNode> fieldNodes = context.field_dec().Select(this.Visit).Cast<FieldDecNode>().ToList();
 
-            List<PropertyNode> funcDecs = new List<PropertyNode>();
-
+            List<PropertyNode> funcDecs = context.func_def().Select(this.Visit).Cast<PropertyNode>().ToList();
             return new EntityNode(identifier, fieldNodes, funcDecs);
         }
 
@@ -127,6 +126,59 @@ namespace Action.AST
             );
         }
 
+        #region func_def
+
+        public override object VisitFunc_def([NotNull] ActionParser.Func_defContext context)
+        {
+            IdentifierNode identifier = (IdentifierNode)this.Visit(context.IDENTIFIER());
+            FunctionArgumentsNode arguments = (FunctionArgumentsNode)this.Visit(context.func_def_args());
+            BlockNode block = (BlockNode)this.Visit(context.block());
+
+            FunctionNode function = new(arguments, block);
+            
+            return new PropertyNode(identifier, function);
+        }
+
+        public override object VisitBlock([NotNull] ActionParser.BlockContext context)
+        {
+            List<StatementNode> statements = context.statement().Select(this.Visit).Cast<StatementNode>().ToList();
+
+            return new BlockNode(statements);
+        }
+
+
+        public override object VisitFunc_def_args([NotNull] ActionParser.Func_def_argsContext context)
+        {
+            FunctionArgumentNode functionArgument = (FunctionArgumentNode)this.Visit(context.func_def_arg());
+
+            if (context.func_def_args() is not null)
+            {
+                FunctionArgumentsNode otherArguments = (FunctionArgumentsNode)this.Visit(context.func_def_args());
+                List<FunctionArgumentNode> args = otherArguments.args;
+                args.Add(functionArgument);
+                return new FunctionArgumentsNode(args);
+            }
+
+            return new FunctionArgumentsNode(new List<FunctionArgumentNode>() { functionArgument});
+        }
+
+        public override object VisitFunc_def_arg([NotNull] ActionParser.Func_def_argContext context)
+        {
+            IdentifierNode identifierNode = (IdentifierNode)this.Visit(context.IDENTIFIER());
+            TypeNode type = (TypeNode)this.Visit(context.type());
+
+
+            return new FunctionArgumentNode(identifierNode, type);
+        }
+
+        public override object VisitStatement([NotNull] ActionParser.StatementContext context)
+        {
+            // TODO: StatementNode
+            return new StatementNode();
+        }
+
+        #endregion
+
         /*
          *  Properties
          */
@@ -184,13 +236,13 @@ namespace Action.AST
             IdentifierNode identifierNode = (IdentifierNode)this.Visit(context.IDENTIFIER());
             TypeNode type = (TypeNode)this.Visit(context.type());
 
-            if (context.expr() != null)
+            if (context.expr() is not null)
             {
-                return new FieldNode(identifierNode, type, (ExprNode)this.Visit(context.expr()));
+                return new FieldDecNode(identifierNode, type, (ExprNode)this.Visit(context.expr()));
             }
             else
             {
-                return new FieldNode(identifierNode, type);
+                return new FieldDecNode(identifierNode, type);
             }
         }
         #endregion
@@ -431,36 +483,81 @@ namespace Action.AST
             return this.Visit(context.expr());
         }
 
-
         #endregion
 
         // Could also label the different types in Action.g4 (like expressions)
         public override object VisitType([NotNull] ActionParser.TypeContext context)
         {
-            if (context.FLOAT() != null)
+            // This should always work, but it is ugly
+
+            //if (context.FLOAT() is not null)
+            //{
+            //    return new TypeNode(TypeEnum.FLOAT);
+            //}
+            //else if (context.INT() is not null)
+            //{
+            //    return new TypeNode(TypeEnum.INT);
+            //}
+            //else if (context.STRING_KW() is not null)
+            //{
+            //    return new TypeNode(TypeEnum.STRING);
+            //}
+            //else if (context.BOOL() is not null)
+            //{
+            //    return new TypeNode(TypeEnum.BOOL);
+            //}
+            //else if (context.COORD() is not null)
+            //{
+            //    return new TypeNode(TypeEnum.COORD);
+            //}
+            //else if (context.IDENTIFIER() is not null)
+            //{
+            //    return new TypeNode(TypeEnum.IDENTIFIER);
+            //}
+            //else
+            //{
+            //    throw new Exception($"Unknown type!");
+            //}
+
+            // This is nicer, but could break if the grammar changes
+            //switch (context.GetText())
+            //{
+            //    case "float":
+            //        return new TypeNode(TypeEnum.FLOAT);
+            //    case "int":
+            //        return new TypeNode(TypeEnum.INT);
+            //    case "string":
+            //        return new TypeNode(TypeEnum.STRING);
+            //    case "bool":
+            //        return new TypeNode(TypeEnum.BOOL);
+            //    case "coord":
+            //        return new TypeNode(TypeEnum.COORD);
+            //    default:
+            //        return new TypeNode(TypeEnum.IDENTIFIER);
+            //}
+
+
+            // My understanding is if we are in this method, there will only be one child node of type ITerminalNode. If that is correct, this should work, otherwise it will probably break.
+            List<IParseTree> children = context.children.ToList();
+            Debug.Assert(children.Count == 1);
+            
+            IParseTree node = children[0];
+            Debug.Assert(node is ITerminalNode);
+
+            ITerminalNode terminalNode = (ITerminalNode)node;
+            ActionToken token = (ActionToken)terminalNode.Symbol.Type;
+
+            return token switch
             {
-                return new TypeNode(TypeEnum.FLOAT);
-            }
-            else if (context.INT() != null)
-            {
-                return new TypeNode(TypeEnum.INT);
-            }
-            else if (context.STRING_KW() != null)
-            {
-                return new TypeNode(TypeEnum.STRING);
-            }
-            else if (context.BOOL() != null)
-            {
-                return new TypeNode(TypeEnum.BOOL);
-            }
-            else if (context.COORD() != null)
-            {
-                return new TypeNode(TypeEnum.COORD);
-            }
-            else
-            {
-                return new TypeNode(TypeEnum.IDENTIFIER);
-            }
+                ActionToken.FLOAT => new TypeNode(TypeEnum.FLOAT),
+                ActionToken.INT => new TypeNode(TypeEnum.INT),
+                ActionToken.STRING_KW => new TypeNode(TypeEnum.STRING),
+                ActionToken.BOOL => new TypeNode(TypeEnum.BOOL),
+                ActionToken.COORD => new TypeNode(TypeEnum.COORD),
+                ActionToken.IDENTIFIER => new TypeNode(TypeEnum.IDENTIFIER),
+                _ => throw new Exception($"Invalid token: {token}")
+            };
+
         }
 
         /*
@@ -481,7 +578,7 @@ namespace Action.AST
                 _ => base.VisitTerminal(node),
             };
         }
-        private static readonly Regex hexColourRegex = new Regex(
+        private static readonly Regex hexColourRegex = new(
             @"#([a-f0-9]{2})([a-f0-9]{2})([a-f0-9]{2})",
             RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private static ColourNode VisitColour(ITerminalNode node)
@@ -495,7 +592,7 @@ namespace Action.AST
                 byte.Parse(result.Groups[3].ValueSpan, NumberStyles.HexNumber)
             );
         }
-        private static readonly Regex stringRegex = new Regex(
+        private static readonly Regex stringRegex = new(
             @"""([^""]*)""|'([^']*)'",
             RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private static StringNode VisitString(ITerminalNode node)
@@ -506,7 +603,7 @@ namespace Action.AST
             return new StringNode(result.Groups[1].Value);
         }
 
-        private static readonly Regex pointRegex = new Regex(
+        private static readonly Regex pointRegex = new(
             @"(-?[0-9]+)\s*,\s*(-?[0-9]+)",
             RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private static CoordinateNode VisitPoint(ITerminalNode node)

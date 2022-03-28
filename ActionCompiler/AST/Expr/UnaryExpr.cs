@@ -19,4 +19,10 @@ namespace Action.AST
         PLUSPLUS,
         MINUSMINUS
     }
+
+    public enum PrimaryOper
+    {
+        PLUSPLUS,
+        MINUSMINUS
+    }
 }

@@ -1,11 +1,10 @@
 ﻿namespace Action.AST
 {
-    public record ExprNode() : ValueNode
+    public record StatementNode() : ValueNode
     {
         public override T Accept<T>(NodeVisitor<T> visitor)
         {
-            return visitor.VisitExpr(this);
+            return visitor.VisitStatement(this);
         }
     }
-
 }
