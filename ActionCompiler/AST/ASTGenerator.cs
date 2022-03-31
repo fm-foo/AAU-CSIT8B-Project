@@ -248,7 +248,7 @@ namespace Action.AST
                 control = (ExprNode)this.Visit(context.control_expr());
             }
 
-            StatementNode statement = (StatementNode)this.Visit(context.statement()); // TODO: shouldn't this be a block?
+            StatementNode statement = (StatementNode)this.Visit(context.statement());
 
             return new ForStatementNode(statement, initialization, condition, control);    
         }
@@ -297,7 +297,7 @@ namespace Action.AST
             }
             else if (context.expr() is not null)
             {
-                return this.Visit(context.expr());
+                return new ExpressionStatementNode((ExprNode)this.Visit(context.expr()));
             }
             else
             {
@@ -613,13 +613,13 @@ namespace Action.AST
         public override object VisitLit([NotNull] ActionParser.LitContext context)
         {
             //return this.Visit(context.literal());
-            return new PrimaryExprNode((ValueNode)this.Visit(context.literal()));
+            return (ValueNode)this.Visit(context.literal());
         }
 
         public override object VisitIdentifier([NotNull] ActionParser.IdentifierContext context)
         {
             // return this.Visit(context.IDENTIFIER());
-            return new PrimaryExprNode((ValueNode)this.Visit(context.IDENTIFIER()));
+            return (ValueNode)this.Visit(context.IDENTIFIER());
         }
 
         public override object VisitParens_expr([NotNull] ActionParser.Parens_exprContext context)
@@ -627,82 +627,75 @@ namespace Action.AST
             return this.Visit(context.expr());
         }
 
+        public override object VisitArray_access([NotNull] ActionParser.Array_accessContext context)
+        {
+            ExprNode arrayExpr = (ExprNode)this.Visit(context.primary_expr());
+            ExprNode expr = (ExprNode)this.Visit(context.expr());
+
+            return new ArrayAccessNode(arrayExpr, expr);
+        }
+
+        public override object VisitArray_creation([NotNull] ActionParser.Array_creationContext context)
+        {
+            ExprNode[] arrayValues = ((List<ExprNode>)this.Visit(context.array_values())).ToArray();
+            return new ArrayNode(arrayValues);
+        }
+
+
+        public override object VisitArray_values([NotNull] ActionParser.Array_valuesContext context)
+        {
+            if (context.array_values() is not null)
+            {
+                List<ExprNode> exprNodes = (List<ExprNode>)this.Visit(context.array_values());
+                ExprNode expr = (ExprNode)this.Visit(context.expr());
+                exprNodes.Insert(0, expr);
+
+                return exprNodes;
+            }
+
+            return new List<ExprNode>() {(ExprNode)this.Visit(context.expr())};
+        }
+
+        #endregion
+        #region Types
+
+        public override object VisitInt_type([NotNull] ActionParser.Int_typeContext context)
+        {
+            return new IntTypeNode();
+        }
+
+        public override object VisitFloat_type([NotNull] ActionParser.Float_typeContext context)
+        {
+            return new FloatTypeNode();
+        }
+
+        public override object VisitBool_type([NotNull] ActionParser.Bool_typeContext context)
+        {
+            return new BoolTypeNode();
+        }
+
+        public override object VisitString_type([NotNull] ActionParser.String_typeContext context)
+        {
+            return new StringTypeNode();
+        }
+
+        public override object VisitCoord_type([NotNull] ActionParser.Coord_typeContext context)
+        {
+            return new CoordTypeNode();
+        }
+
+        public override object VisitSimple_type([NotNull] ActionParser.Simple_typeContext context)
+        {
+            return new SimpleTypeNode();
+        }
+
+        public override object VisitArray_type([NotNull] ActionParser.Array_typeContext context)
+        {
+            return new ArrayTypeNode((TypeNode)this.Visit(context.type()));
+        }
+
         #endregion
 
-        // Could also label the different types in Action.g4 (like expressions)
-        public override object VisitType([NotNull] ActionParser.TypeContext context)
-        {
-            // This should always work, but it is ugly
-
-            //if (context.FLOAT() is not null)
-            //{
-            //    return new TypeNode(TypeEnum.FLOAT);
-            //}
-            //else if (context.INT() is not null)
-            //{
-            //    return new TypeNode(TypeEnum.INT);
-            //}
-            //else if (context.STRING_KW() is not null)
-            //{
-            //    return new TypeNode(TypeEnum.STRING);
-            //}
-            //else if (context.BOOL() is not null)
-            //{
-            //    return new TypeNode(TypeEnum.BOOL);
-            //}
-            //else if (context.COORD() is not null)
-            //{
-            //    return new TypeNode(TypeEnum.COORD);
-            //}
-            //else if (context.IDENTIFIER() is not null)
-            //{
-            //    return new TypeNode(TypeEnum.IDENTIFIER);
-            //}
-            //else
-            //{
-            //    throw new Exception($"Unknown type!");
-            //}
-
-            // This is nicer, but could break if the grammar changes
-            //switch (context.GetText())
-            //{
-            //    case "float":
-            //        return new TypeNode(TypeEnum.FLOAT);
-            //    case "int":
-            //        return new TypeNode(TypeEnum.INT);
-            //    case "string":
-            //        return new TypeNode(TypeEnum.STRING);
-            //    case "bool":
-            //        return new TypeNode(TypeEnum.BOOL);
-            //    case "coord":
-            //        return new TypeNode(TypeEnum.COORD);
-            //    default:
-            //        return new TypeNode(TypeEnum.IDENTIFIER);
-            //}
-
-
-            // My understanding is if we are in this method, there will only be one child node of type ITerminalNode. If that is correct, this should work, otherwise it will probably break.
-            List<IParseTree> children = context.children.ToList();
-            Debug.Assert(children.Count == 1);
-            
-            IParseTree node = children[0];
-            Debug.Assert(node is ITerminalNode);
-
-            ITerminalNode terminalNode = (ITerminalNode)node;
-            ActionToken token = (ActionToken)terminalNode.Symbol.Type;
-
-            return token switch
-            {
-                ActionToken.FLOAT => new TypeNode(TypeEnum.FLOAT),
-                ActionToken.INT => new TypeNode(TypeEnum.INT),
-                ActionToken.STRING_KW => new TypeNode(TypeEnum.STRING),
-                ActionToken.BOOL => new TypeNode(TypeEnum.BOOL),
-                ActionToken.COORD => new TypeNode(TypeEnum.COORD),
-                ActionToken.IDENTIFIER => new TypeNode(TypeEnum.IDENTIFIER),
-                _ => throw new Exception($"Invalid token: {token}")
-            };
-
-        }
 
         /*
          *  Terminals
@@ -719,9 +712,11 @@ namespace Action.AST
                 ActionToken.INTEGER => VisitInteger(node),
                 ActionToken.COLOUR_LIT => VisitColour(node),
                 ActionToken.BOOL_LIT => VisitBoolean(node),
+                ActionToken.FLOAT_LIT => VisitFloat(node),
                 _ => base.VisitTerminal(node),
             };
         }
+
         private static readonly Regex hexColourRegex = new(
             @"#([a-f0-9]{2})([a-f0-9]{2})([a-f0-9]{2})",
             RegexOptions.Compiled | RegexOptions.IgnoreCase);
@@ -777,7 +772,12 @@ namespace Action.AST
         {
             Debug.Assert((ActionToken)node.Symbol.Type == ActionToken.BOOL_LIT);
             return new BoolNode(bool.Parse(node.GetText()));
+        }
 
+        private object VisitFloat(ITerminalNode node)
+        {
+            Debug.Assert((ActionToken)node.Symbol.Type == ActionToken.FLOAT_LIT);
+            return new FloatNode(float.Parse(node.GetText()));
         }
 
         #endregion

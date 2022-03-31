@@ -1,4 +1,4 @@
 namespace Action.AST
 {
-    public abstract record ValueNode : SymbolNode;
+    public abstract record ValueNode : ExprNode;
 }

@@ -1,13 +1,17 @@
 entity MyEntity {
-	//MyType t;
-	//string s = "lll";
-	//bool f = false || (true && false);
-	//bool ff = f;
-	//int myInt = 1; 
-	//int myOtherInt = 2;
-	//coord myCoord;
+/*	MyType t;
+	string s = "lll";
+	bool f = false || (true && false);
+	bool ff = f;
+	int myInt = 1; 
+	int myOtherInt = 2;
+	coord myCoord; */
+	//int[] array = [1, 2, 3];
+	bool[] boolArray = [true, false, true, x()];
+	//float x = 1.2;
+	bool x = boolArray[1];
 
-	entityFunction: function(int myInt, bool boolVal) 
+	/*entityFunction: function(int myInt, bool boolVal) 
 	{
 		if (true) {
 			bool f = false;
@@ -67,5 +71,5 @@ entity MyEntity {
 
 		s = "aaaaaaa";
 
-	}
+	}*/
 };

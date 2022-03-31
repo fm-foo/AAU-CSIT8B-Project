@@ -1,10 +1,11 @@
 ﻿namespace Action.AST
 {
-    public record ExprNode() : SymbolNode
+    public record StringTypeNode() : TypeNode
     {
         public override T Accept<T>(NodeVisitor<T> visitor)
         {
-            return visitor.VisitExpr(this);
+            return visitor.VisitStringType(this);
         }
     }
+
 }

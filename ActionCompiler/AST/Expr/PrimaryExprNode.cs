@@ -14,7 +14,6 @@ namespace Action.AST
     public enum PrimaryExprOper
     {
         POSTFIX_INCREMENT,
-        POSTFIX_DECREMENT,
-
+        POSTFIX_DECREMENT
     }
 }
