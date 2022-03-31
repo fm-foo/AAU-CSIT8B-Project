@@ -61,12 +61,19 @@ while               : WHILE OPEN_PAREN expr CLOSE_PAREN statement;
 for                 : FOR OPEN_PAREN initialization? SEMICOLON cond_expr? SEMICOLON control_expr? CLOSE_PAREN statement;
 initialization      : (assignment | declaration);
 cond_expr           : expr;
-control_expr        : expr;
+control_expr        : expr | assignment;
 foreach             : FOREACH OPEN_PAREN type IDENTIFIER IN expr CLOSE_PAREN statement;
 
 literal             : STRING | POINT_LIT | INTEGER | FLOAT_LIT | BOOL_LIT;
 
-type                : INT | BOOL | STRING_KW | FLOAT | COORD | IDENTIFIER;
+type                : INT #int_type 
+                    | BOOL #bool_type
+                    | STRING_KW #string_type
+                    | FLOAT #float_type
+                    | COORD #coord_type
+                    | IDENTIFIER #simple_type
+                    | type OPEN_SQBRACKET CLOSE_SQBRACKET #array_type
+                    ;
 
 expr                : bool_expr;
 
@@ -115,6 +122,7 @@ primary_expr        : literal #lit
                     | primary_expr DOT IDENTIFIER #member_access
                     | TYPEOF OPEN_PAREN IDENTIFIER CLOSE_PAREN #typeof_expr
                     | NEW IDENTIFIER OPEN_PAREN func_args? CLOSE_PAREN #new_object
+                    | primary_expr OPEN_SQBRACKET expr CLOSE_SQBRACKET #array_access
                     ;
 
 func_args           : expr | expr COMMA func_args;
@@ -136,6 +144,8 @@ MULTILINE_COMMENT   : '/*' .*? '*/' -> skip;
 
 OPEN_BRACE          : '{';
 CLOSE_BRACE         : '}';
+OPEN_SQBRACKET      : '[';
+CLOSE_SQBRACKET     : ']';
 OPEN_PAREN          : '(';
 CLOSE_PAREN         : ')';
 SEMICOLON           : ';';
