@@ -123,7 +123,10 @@ primary_expr        : literal #lit
                     | TYPEOF OPEN_PAREN IDENTIFIER CLOSE_PAREN #typeof_expr
                     | NEW IDENTIFIER OPEN_PAREN func_args? CLOSE_PAREN #new_object
                     | primary_expr OPEN_SQBRACKET expr CLOSE_SQBRACKET #array_access
+                    | OPEN_SQBRACKET array_values CLOSE_SQBRACKET #array_creation
                     ;
+
+array_values        : expr | expr COMMA array_values;
 
 func_args           : expr | expr COMMA func_args;
 
