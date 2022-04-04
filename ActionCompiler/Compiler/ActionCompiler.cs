@@ -92,6 +92,10 @@ namespace Action.Compiler
                 new SemErrorOnlyOneShapeProperty(),
                 new SemErrorObjectNotNamedTheSame(),
                 new SemErrorOnlyOneBackgroundProperty(),
+                new SemErrorOnlyOneWidthProperty(),
+                new SemErrorOnlyOneHeightProperty(),
+                new SemErrorOnlyOneHexProperty(),
+                new SemErrorOnlyOnePathProperty()
             };
             foreach (var visitor in visitors)
             {

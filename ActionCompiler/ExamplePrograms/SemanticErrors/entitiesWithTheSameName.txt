@@ -10,6 +10,16 @@ map MyMap {
         shape: box {
                 height: 10;
                 width: 10;
+
         };
-        background: colour { hex: #0000FF; };
+        background: colour { hex: #FF0000; hex: #FF0000;};
+};
+
+section Sect {
+        background: image { path: "./grass.png"; path: "./grass.png";};
+        shape: box {
+                height: 10;
+                width: 10;
+
+        };
 };

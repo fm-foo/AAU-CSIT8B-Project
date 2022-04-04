@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -58,7 +57,7 @@ public class TokenEnumGenerator : ISourceGenerator
             );
 
         SourceText text = SourceText.From(unit.NormalizeWhitespace().ToFullString(), Encoding.UTF8);
-        context.AddSource($"{name}.cs", text);
+        context.AddSource($"{name}.cs", text); 
     }
 
     public void Initialize(GeneratorInitializationContext context)
