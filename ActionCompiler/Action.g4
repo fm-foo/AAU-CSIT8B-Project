@@ -78,8 +78,8 @@ type                : INT #int_type
 expr                : bool_expr;
 
 bool_expr           : equality_expr #eq_expr
-                    | bool_expr ANDAND equality_expr #andand_expr
-                    | bool_expr OROR equality_expr #oror_expr
+                    | 
+                | bool_expr OROR equality_expr #oror_expr
                     ;
 
 equality_expr       : relational_expr #rel_expr
@@ -208,7 +208,11 @@ NEW                 : 'new';
 GAME                : 'game';
 
 STRING              : DQ_STRING | SQ_STRING;
+<<<<<<< HEAD
 POINT_LIT           : OPEN_PAREN INTEGER WS*? ',' WS*? INTEGER CLOSE_PAREN;
+=======
+POINT_LIT           : INTEGER WS* ',' WS* INTEGER;
+>>>>>>> 478bccc (remove redundant ? in grammar)
 FLOAT_LIT           : '-'? NATURAL_NUMBER '.' DIGIT+;
 BOOL_LIT            : 'true' | 'false';
 IDENTIFIER          : LETTER ALPHANUM*;
