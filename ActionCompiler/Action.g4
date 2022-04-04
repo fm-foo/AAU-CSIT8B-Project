@@ -208,11 +208,7 @@ NEW                 : 'new';
 GAME                : 'game';
 
 STRING              : DQ_STRING | SQ_STRING;
-<<<<<<< HEAD
-POINT_LIT           : OPEN_PAREN INTEGER WS*? ',' WS*? INTEGER CLOSE_PAREN;
-=======
-POINT_LIT           : INTEGER WS* ',' WS* INTEGER;
->>>>>>> 478bccc (remove redundant ? in grammar)
+POINT_LIT           : OPEN_PAREN INTEGER WS* ',' WS* INTEGER CLOSE_PAREN;
 FLOAT_LIT           : '-'? NATURAL_NUMBER '.' DIGIT+;
 BOOL_LIT            : 'true' | 'false';
 IDENTIFIER          : LETTER ALPHANUM*;
