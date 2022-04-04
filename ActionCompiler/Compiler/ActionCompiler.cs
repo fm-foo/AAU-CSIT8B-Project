@@ -17,6 +17,7 @@ using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp.Drawing;
 using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.Formats;
+using ActionCompiler.Compiler.SemanticErrorChecking;
 
 namespace Action.Compiler
 {
@@ -88,6 +89,9 @@ namespace Action.Compiler
                 new SemErrorSectionOffMapVisitor(),
                 new SemErrorLineOnlyOneCoordinate(),
                 new SemErrorCoordinateOffMapVisitor(),
+                new SemErrorOnlyOneShapeProperty(),
+                new SemErrorObjectNotNamedTheSame(),
+                new SemErrorOnlyOneBackgroundProperty(),
             };
             foreach (var visitor in visitors)
             {

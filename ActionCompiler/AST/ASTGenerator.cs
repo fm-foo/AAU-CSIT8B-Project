@@ -759,7 +759,7 @@ namespace Action.AST
         private static IntNode VisitInteger(ITerminalNode node)
         {
             Debug.Assert((ActionToken)node.Symbol.Type == ActionToken.INTEGER);
-            return new IntNode(int.Parse(node.GetText()));
+            return new IntNode(int.Parse(node.GetText())); 
         }
 
         private static IdentifierNode VisitIdentifier(ITerminalNode node)

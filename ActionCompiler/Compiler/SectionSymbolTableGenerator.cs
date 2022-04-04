@@ -7,9 +7,12 @@ namespace Action.Compiler
 {
     public class SectionSymbolTableGenerator : NodeVisitor<IEnumerable<SectionSymbolEntry>>
     {
+        // Section symbol entries should only be generated when we see a SectionNode or MapNode (?) 
         public override IEnumerable<SectionSymbolEntry> VisitFile(FileNode nodes)
         {
-            foreach (var node in nodes.nodes)
+            var combinedNodes = nodes.nodes.Where(n => n.GetType() == typeof(MapNode) || n.GetType() == typeof(SectionNode)); 
+
+            foreach (var node in combinedNodes)
             {
                 foreach (var symbol in Visit(node))
                     yield return symbol;

@@ -1,0 +1,15 @@
+entity MyEntity {
+
+};
+
+entity MyEntity {
+};
+
+
+map MyMap {
+        shape: box {
+                height: 10;
+                width: 10;
+        };
+        background: colour { hex: #0000FF; };
+};

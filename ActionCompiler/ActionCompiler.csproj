@@ -31,25 +31,34 @@
     <None Update="chest.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="grass.png">
+    <None Update="ExamplePrograms\grass.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="image.png">
+    <None Update="ExamplePrograms\image.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="map examples.txt">
+    <None Update="ExamplePrograms\SemanticErrors\map examples syntax errors.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="entity.txt">
+    <None Update="ExamplePrograms\map examples.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="ExamplePrograms\entity.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="ExamplePrograms\SemanticErrors\entitiesWithTheSameName.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="sectionreference.mp">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
-    <None Update="sectionreference.txt">
+    <None Update="ExamplePrograms\sectionreference.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-	<None Update="lines.txt">
+	<None Update="ExamplePrograms\lines.txt">
+	  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	</None>
+	<None Update="ExamplePrograms\SemanticErrors\mapsAndSectionsWithTheSameName.txt">
 	  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	</None>
     <None Update="stone.png">

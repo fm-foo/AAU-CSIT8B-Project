@@ -1,0 +1,60 @@
+map MyMap {
+        background: colour { hex: #0000FF; };
+        shape: box {
+                height: 10; width: 10;
+        };
+};
+
+map MyMap {
+        background: image { path: "./grass.png"; };
+        shape: box {
+                height: 10;
+                width: 10;
+        };
+};
+// 2 maps with the same name
+
+
+section MySection {
+        background: colour { hex: #FF0000; };
+        shape: box {
+                height: 5;
+                width: 5;
+        };
+        section (0, 0) {
+                background: colour { hex: #00FF00; };
+                shape: line {
+                        (0, 0);
+                        (4, 4);
+                };
+        };
+        section (0, 4) {
+                background: colour { hex: #00FF00; };
+                shape: line {
+                        (0, 0);
+                        (-4, 4);
+                };
+        };
+};
+
+section MySection {
+        background: colour { hex: #FF0000; };
+        shape: box {
+                height: 5;
+                width: 5;
+        };
+        section (0, 0) {
+                background: colour { hex: #00FF00; };
+                shape: line {
+                        (0, 0);
+                        (4, 4);
+                };
+        };
+        section (0, 4) {
+                background: colour { hex: #00FF00; };
+                shape: line {
+                        (0, 0);
+                        (-4, 4);
+                };
+        };
+};

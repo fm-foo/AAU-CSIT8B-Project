@@ -13,10 +13,10 @@ namespace Action
     {
         public static void Main()
         {
-            using Stream stream = new FileStream("entity.txt", FileMode.Open);
+            using Stream stream = new FileStream(@"ExamplePrograms\SemanticErrors\entitiesWithTheSameName.txt", FileMode.Open);
             using var factory = LoggerFactory.Create(builder => builder.AddConsole());
-            var compiler = new ActionCompiler();
-            var result = compiler.Compile(stream, factory.CreateLogger<ActionCompiler>());
+            var compiler = new Compiler.ActionCompiler();
+            var result = compiler.Compile(stream, factory.CreateLogger<Compiler.ActionCompiler>());
             if (result.Success)
             {
                 Debug.Assert(result.Success);
