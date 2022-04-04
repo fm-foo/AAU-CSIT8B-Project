@@ -78,8 +78,8 @@ type                : INT #int_type
 expr                : bool_expr;
 
 bool_expr           : equality_expr #eq_expr
-                    | 
-                | bool_expr OROR equality_expr #oror_expr
+                    | bool_expr ANDAND equality_expr #andand_expr
+                    | bool_expr OROR equality_expr #oror_expr
                     ;
 
 equality_expr       : relational_expr #rel_expr
