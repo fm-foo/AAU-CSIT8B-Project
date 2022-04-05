@@ -131,10 +131,16 @@ namespace Action.AST
         public override object VisitFunc_def([NotNull] ActionParser.Func_defContext context)
         {
             IdentifierNode identifier = (IdentifierNode)this.Visit(context.IDENTIFIER());
-            FunctionArgumentsNode arguments = (FunctionArgumentsNode)this.Visit(context.func_def_args());
+            List<FunctionArgumentNode> args = new List<FunctionArgumentNode>();
+
+            if (context.func_def_args() is not null)
+            {
+                args = (List<FunctionArgumentNode>)this.Visit(context.func_def_args());
+            }
+
             BlockNode block = (BlockNode)this.Visit(context.block());
 
-            FunctionNode function = new(arguments, block);
+            FunctionNode function = new(args, block);
             
             return new PropertyNode(identifier, function);
         }
@@ -149,24 +155,27 @@ namespace Action.AST
 
         public override object VisitFunc_def_args([NotNull] ActionParser.Func_def_argsContext context)
         {
-            FunctionArgumentNode functionArgument = (FunctionArgumentNode)this.Visit(context.func_def_arg());
+            List<FunctionArgumentNode> args = new List<FunctionArgumentNode>();
+
+            GetArgumentList(args, context);
+
+            return args;
+        }
+
+        private void GetArgumentList(List<FunctionArgumentNode> args, ActionParser.Func_def_argsContext context)
+        {
+            args.Add((FunctionArgumentNode)this.Visit(context.func_def_arg()));
 
             if (context.func_def_args() is not null)
             {
-                FunctionArgumentsNode otherArguments = (FunctionArgumentsNode)this.Visit(context.func_def_args());
-                List<FunctionArgumentNode> args = otherArguments.args;
-                args.Add(functionArgument);
-                return new FunctionArgumentsNode(args);
+                GetArgumentList(args, context.func_def_args());
             }
-
-            return new FunctionArgumentsNode(new List<FunctionArgumentNode>() { functionArgument});
         }
 
         public override object VisitFunc_def_arg([NotNull] ActionParser.Func_def_argContext context)
         {
             IdentifierNode identifierNode = (IdentifierNode)this.Visit(context.IDENTIFIER());
             TypeNode type = (TypeNode)this.Visit(context.type());
-
 
             return new FunctionArgumentNode(identifierNode, type);
         }

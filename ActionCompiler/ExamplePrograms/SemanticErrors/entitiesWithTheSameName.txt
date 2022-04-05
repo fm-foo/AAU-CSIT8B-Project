@@ -1,5 +1,11 @@
 entity MyEntity {
 
+    act: function(int a, float b, bool c, coord d, string e) {
+    }
+
+    delete: function(float[] values) {
+    }
+
 };
 
 entity MyEntity {
