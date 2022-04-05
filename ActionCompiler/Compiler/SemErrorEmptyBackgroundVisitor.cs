@@ -41,10 +41,15 @@ namespace Action.Compiler
                             yield return new DiagnosticResult(Severity.Error, "missing image path");
                         }
                     }
-
                 }
-
             }
+            if(node.values.Any()){
+                foreach(var sec in node.values.OfType<SectionNode>()){
+                    foreach(var val in Visit(sec)){
+                        yield return val;
+                    }
+                }
+            } 
         }
     }
 }

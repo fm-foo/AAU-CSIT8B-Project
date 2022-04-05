@@ -45,6 +45,13 @@ namespace Action.Compiler
             if(testShape == false){
                 yield return new DiagnosticResult(Severity.Error, "missing shape property");
             }
+            if(node.values.Any()){
+                foreach(var sec in node.values.OfType<SectionNode>()){
+                    foreach(var val in Visit(sec)){
+                        yield return val;
+                    }
+                }
+            } 
         }
     }
 }

@@ -24,6 +24,8 @@ namespace Action.Compiler
                 if(sec is ReferenceNode valRef){
                     if(valRef.coords.x.integer > size[0] && valRef.coords.y.integer > size[1]){
                         yield return new DiagnosticResult(Severity.Error, "section is off the map");
+                    }else if(valRef.coords.x.integer > size[0] || valRef.coords.y.integer > size[1]){
+                        yield return new DiagnosticResult(Severity.Warning, "section is not entirely inside the map");
                     }
                 }
                 if(sec is SectionNode valSec){
