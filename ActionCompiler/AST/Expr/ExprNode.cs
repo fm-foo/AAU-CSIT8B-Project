@@ -1,4 +1,6 @@
-﻿namespace Action.AST
+﻿using System;
+
+namespace Action.AST
 {
     public record ExprNode() : SymbolNode
     {

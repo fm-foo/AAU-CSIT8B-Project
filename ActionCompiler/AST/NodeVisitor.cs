@@ -8,6 +8,10 @@ namespace Action.AST
         public virtual T Default => default;
         public T Visit(SymbolNode node) => node.Accept(this);
         public virtual T VisitFile(FileNode file) => Default;
+
+        public virtual T VisitFunctionCallExpr(FunctionCallExprNode funcCallExprNode) => Default;
+        public virtual T VistPostFixExpr(PostFixExprNode postFixExprNode) => Default;
+        public virtual T VisitAddativeExpr(AdditiveExprNode additiveExprNode) => Default;
         public virtual T VisitComplex(ComplexNode complexNode) => Default;
         public virtual T VisitMap(MapNode mapNode) => Default;
         public virtual T VisitSection(SectionNode sectionNode) => Default;
@@ -25,7 +29,6 @@ namespace Action.AST
         public virtual T VisitExpr(ExprNode exprNode) => Default;
         public virtual T VisitEqualityExpr(EqualityExprNode equalityExprNode) => Default;
         public virtual T VisitRelationalExpr(RelationalExprNode relationalExprNode) => Default;
-        public virtual T VisitAddativeExpr(AdditiveExprNode addativeExprNode) => Default;
         public virtual T VisitMultiplicativeExprNode(MultiplicativeExprNode multiplicativeExprNode) => Default;
         public virtual T VisitUnaryExpr(UnaryExprNode unaryExprNode) => Default;
         public virtual T VisitBooleanExpr(BoolExprNode boolExprNode) => Default;

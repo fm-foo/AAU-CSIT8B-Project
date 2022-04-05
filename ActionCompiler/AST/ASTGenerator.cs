@@ -617,7 +617,7 @@ namespace Action.AST
         #endregion
         #region primary_expr   
 
-        // TODO: missing postfix_increment, postfix_decrement, func_call, member_access, typeof_expr, new_object
+        // TODO: missing , member_access, typeof_expr, new_object
 
         public override object VisitLit([NotNull] ActionParser.LitContext context)
         {
@@ -664,6 +664,43 @@ namespace Action.AST
 
             return new List<ExprNode>() {(ExprNode)this.Visit(context.expr())};
         }
+
+        public override object VisitPostfix_increment([NotNull] ActionParser.Postfix_incrementContext context) {
+            ExprNode expr = (ExprNode) this.Visit(context.primary_expr());
+            return new PostFixExprNode(expr, PostFixOperator.PLUSPLUS);
+        }
+
+        public override object VisitPostfix_decrement([NotNull] ActionParser.Postfix_decrementContext context) { // TODO: finish this 
+            ExprNode expr = (ExprNode)this.Visit(context.primary_expr());
+            return new PostFixExprNode(expr, PostFixOperator.MINUSMINUS);
+        }
+
+        public override object VisitFunc_call([NotNull] ActionParser.Func_callContext context) {
+            ExprNode expr = (ExprNode)this.Visit(context.primary_expr());
+            List<ExprNode> exprArgs = new();
+
+            if (context.func_args() is not null) {
+                exprArgs = (List<ExprNode>) this.Visit(context.func_args());
+            }
+
+            return new FunctionCallExprNode(expr, exprArgs);
+        }
+
+        public override object VisitFunc_args([NotNull] ActionParser.Func_argsContext context) {
+            List<ExprNode> exprArgs = new ();
+
+            GetFunctionArgsList(exprArgs, context);
+
+            return new List<ExprNode>();
+        }
+
+        private void GetFunctionArgsList(List<ExprNode> exprArgs, ActionParser.Func_argsContext context) {
+            exprArgs.Add((ExprNode)this.Visit(context.expr()));
+            if (context.func_args() is not null) {
+                GetFunctionArgsList(exprArgs, context.func_args());
+            }
+        }
+
 
         #endregion
         #region Types
