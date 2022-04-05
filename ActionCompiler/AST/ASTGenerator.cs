@@ -69,6 +69,16 @@ namespace Action.AST
             return new EntityNode(identifier, fieldNodes, funcDecs);
         }
 
+        public override object VisitGame([NotNull] ActionParser.GameContext context)
+        {
+            IdentifierNode identifier = (IdentifierNode)this.Visit(context.IDENTIFIER());
+
+            List<FieldDecNode> fieldNodes = context.field_dec().Select(this.Visit).Cast<FieldDecNode>().ToList();
+
+            List<PropertyNode> funcDecs = context.func_def().Select(this.Visit).Cast<PropertyNode>().ToList();
+            return new GameNode(identifier, fieldNodes, funcDecs);
+        }
+
         public override ComplexNode VisitColour([NotNull] ActionParser.ColourContext context)
         {
             return ComplexNode<ColourKeywordNode>(context.colour_properties, Empty);
@@ -617,7 +627,7 @@ namespace Action.AST
         #endregion
         #region primary_expr   
 
-        // TODO: missing , member_access, typeof_expr, new_object
+        // TODO: missing member_access, typeof_expr, new_object
 
         public override object VisitLit([NotNull] ActionParser.LitContext context)
         {
@@ -691,7 +701,7 @@ namespace Action.AST
 
             GetFunctionArgsList(exprArgs, context);
 
-            return new List<ExprNode>();
+            return exprArgs;
         }
 
         private void GetFunctionArgsList(List<ExprNode> exprArgs, ActionParser.Func_argsContext context) {

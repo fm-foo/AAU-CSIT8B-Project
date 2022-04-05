@@ -37,6 +37,9 @@
     <None Update="ExamplePrograms\image.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="ExamplePrograms\SemanticErrors\semanticErrors.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="ExamplePrograms\SemanticErrors\map examples syntax errors.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

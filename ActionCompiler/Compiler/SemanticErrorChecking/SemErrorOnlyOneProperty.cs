@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace ActionCompiler.Compiler.SemanticErrorChecking
 {
-    internal class OnlyOneProperty : NodeVisitor<IEnumerable<DiagnosticResult>>
+    internal class SemErrorOnlyOneProperty : NodeVisitor<IEnumerable<DiagnosticResult>>
     {
         public override IEnumerable<DiagnosticResult> VisitFile(FileNode file)
         {
@@ -21,6 +21,11 @@ namespace ActionCompiler.Compiler.SemanticErrorChecking
         public override IEnumerable<DiagnosticResult> VisitMap(MapNode mapNode)
         {
             return VisitComplex(mapNode);
+        }
+
+        public override IEnumerable<DiagnosticResult> VisitGame(GameNode gameNode)
+        {
+            return VisitComplex(gameNode);
         }
 
         public override IEnumerable<DiagnosticResult> VisitSection(SectionNode node)

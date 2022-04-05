@@ -1,6 +1,6 @@
 ﻿namespace Action.AST
 {
-    public record ExpressionStatementNode(ExprNode expr) : SymbolNode
+    public record ExpressionStatementNode(ExprNode expr) : StatementNode //SymbolNode
     {
         public override T Accept<T>(NodeVisitor<T> visitor)
         {

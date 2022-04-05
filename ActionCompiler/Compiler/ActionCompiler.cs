@@ -89,13 +89,8 @@ namespace Action.Compiler
                 new SemErrorSectionOffMapVisitor(),
                 new SemErrorLineOnlyOneCoordinate(),
                 new SemErrorCoordinateOffMapVisitor(),
-                new SemErrorOnlyOneShapeProperty(),
                 new SemErrorObjectNotNamedTheSame(),
-                new SemErrorOnlyOneBackgroundProperty(),
-                new SemErrorOnlyOneWidthProperty(),
-                new SemErrorOnlyOneHeightProperty(),
-                new SemErrorOnlyOneHexProperty(),
-                new SemErrorOnlyOnePathProperty()
+                new SemErrorOnlyOneProperty(),
             };
             foreach (var visitor in visitors)
             {

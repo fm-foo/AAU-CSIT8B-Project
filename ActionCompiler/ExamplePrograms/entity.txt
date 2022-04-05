@@ -1,5 +1,6 @@
-entity MyEntity {
+game MyGame {
 	
-	
-	
+	func: function() {
+		myFunc(1, 2, 3);
+	}
 };

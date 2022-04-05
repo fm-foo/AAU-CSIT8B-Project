@@ -13,7 +13,7 @@ namespace Action
     {
         public static void Main()
         {
-            using Stream stream = new FileStream(@"ExamplePrograms\entity.txt", FileMode.Open);
+            using Stream stream = new FileStream(@"ExamplePrograms\SemanticErrors\semanticErrors.txt", FileMode.Open);
             using var factory = LoggerFactory.Create(builder => builder.AddConsole());
             var compiler = new Compiler.ActionCompiler();
             var result = compiler.Compile(stream, factory.CreateLogger<Compiler.ActionCompiler>());
