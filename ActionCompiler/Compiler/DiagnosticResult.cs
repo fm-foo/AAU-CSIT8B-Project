@@ -1,4 +1,10 @@
 namespace Action.Compiler
 {
-    public record DiagnosticResult(Severity severity, string message);
+    public record DiagnosticResult(Severity severity, string message, Error error = Error.Unspecified);
+
+    public enum Error
+    {
+        Unspecified,
+        MultipleProperties
+    }
 }
