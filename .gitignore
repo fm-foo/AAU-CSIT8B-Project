@@ -10,3 +10,5 @@
 .vs/Action/v17/Browse.VC.db-wal
 .vs/Action/v17/Browse.VC.db-shm
 .vs/Action/v17/Browse.VC.db
+*.manifest
+*.testlog
