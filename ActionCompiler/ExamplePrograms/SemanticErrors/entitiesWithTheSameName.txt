@@ -1,3 +1,4 @@
+
 entity MyEntity {
 
     act: function(int a, float b, bool c, coord d, string e) {

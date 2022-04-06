@@ -91,6 +91,9 @@ namespace Action.Compiler
                 new SemErrorCoordinateOffMapVisitor(),
                 new SemErrorObjectNotNamedTheSame(),
                 new SemErrorOnlyOneProperty(),
+                new SemErrorEntitiesFunctionVisitor(),
+                new SemErrorGameFunctionMissingVisitor(),
+                new SemErrorMultipleGameVisitor()
             };
             foreach (var visitor in visitors)
             {

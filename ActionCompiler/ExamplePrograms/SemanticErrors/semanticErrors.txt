@@ -1,3 +1,25 @@
+game TheOtherSnake {
+    test: function(){
+
+    }
+};
+// more than one game element
+
+game Snake {
+    test: function(){
+
+    }
+};
+// game without initialize function
+
+entity Apple {
+
+    create: function() {
+        // do nothing
+    }
+};
+// entity with missing functions
+
 entity MyEntity {
 
     act: function(int a, float b, bool c, coord d, string e) {
