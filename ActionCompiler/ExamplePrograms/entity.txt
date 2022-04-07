@@ -1,11 +1,24 @@
 game MyGame {
 	
-	coord x = (-15465135131351351, 21444546464646463267);
+	coord x = (-1, 2);
 
 	func: function() {
 		myFunc(1, 2, 3);
 		x = 1.3;
+		 //myEntity.field = 2;
+		2 = 3;
 	}
+};
 
 
+entity MyEntity {
+	
+	coord x = (-1, 2);
+
+	func: function() {
+		myFunc(1, 2, 3);
+		x = 1.3;
+		 //myEntity.field = 2;
+		2 = 3;
+	}
 };

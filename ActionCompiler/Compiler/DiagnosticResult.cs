@@ -9,6 +9,7 @@ namespace Action.Compiler
         IntegerOverflow,
         IntegerUnderflow,
         FloatOverflow,
-        FloatUnderflow
+        FloatUnderflow,
+        InvalidAssignment
     }
 }

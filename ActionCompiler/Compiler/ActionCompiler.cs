@@ -96,6 +96,7 @@ namespace Action.Compiler
                 new SemErrorEntitiesFunctionVisitor(),
                 new SemErrorGameFunctionMissingVisitor(),
                 new SemErrorMultipleGameVisitor(),
+                new SemErrorValidAssignment(),
             };
             foreach (var visitor in visitors)
             {
