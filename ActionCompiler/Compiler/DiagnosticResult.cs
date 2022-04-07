@@ -5,6 +5,10 @@ namespace Action.Compiler
     public enum Error
     {
         Unspecified,
-        MultipleProperties
+        MultipleProperties,
+        IntegerOverflow,
+        IntegerUnderflow,
+        FloatOverflow,
+        FloatUnderflow
     }
 }

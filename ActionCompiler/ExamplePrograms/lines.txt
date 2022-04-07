@@ -1,5 +1,4 @@
 ﻿map Lines {
-                                // blue
         background: colour { hex: #0000FF; };
         shape: box {
                 height: 20; width: 20;
@@ -13,7 +12,7 @@
                 };
         };
 
-        section (6, 0) {
+       section (6, 0) {
                 background: colour { hex: #00FF00; };
                 shape: line {
                         (0, 0);
@@ -52,4 +51,5 @@
                         (10, 10);
                 };
         };
+
 };

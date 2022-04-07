@@ -21,11 +21,12 @@ entity Apple {
 // entity with missing functions
 
 entity MyEntity {
+    
+    int x = 2656468434165464563546;
+    int xx = -2147483649;
 
     act: function(int a, float b, bool c, coord d, string e) {
-    }
-
-    act: function(int a) {
+        a = -2147483649;
     }
 
     delete: function(float[] values) {

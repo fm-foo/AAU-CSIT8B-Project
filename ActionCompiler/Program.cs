@@ -11,9 +11,15 @@ namespace Action
 {
     public class Program
     {
+        private static readonly string mapExampleTxt = @"ExamplePrograms\map examples.txt";
+        private static readonly string semanticErrorTxt = @"ExamplePrograms\SemanticErrors\semanticErrors.txt";
+        private static readonly string linesTxt = @"ExamplePrograms\lines.txt";
+        private static readonly string entity =  @"ExamplePrograms\entity.txt";
+
+
         public static void Main()
         {
-            using Stream stream = new FileStream(@"ExamplePrograms\SemanticErrors\semanticErrors.txt", FileMode.Open);
+            using Stream stream = new FileStream(entity, FileMode.Open);
             using var factory = LoggerFactory.Create(builder => builder.AddConsole());
             var compiler = new Compiler.ActionCompiler();
             var result = compiler.Compile(stream, factory.CreateLogger<Compiler.ActionCompiler>());

@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 
-
 namespace Action.AST
 {
     public class ASTGenerator : ActionBaseVisitor<object>

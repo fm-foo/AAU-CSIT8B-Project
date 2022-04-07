@@ -25,7 +25,7 @@ namespace Action.AST
         public virtual T VisitString(StringNode stringNode) => Default;
         public virtual T VisitEntity(EntityNode entityNode) => Default;
         public virtual T VisitGame(GameNode gameNode) => Default;
-        public virtual T VisitField(FieldDecNode fieldNode) => Default;
+        public virtual T VisitFieldDeclaration(FieldDecNode fieldNode) => Default;
         public virtual T VisitExpr(ExprNode exprNode) => Default;
         public virtual T VisitEqualityExpr(EqualityExprNode equalityExprNode) => Default;
         public virtual T VisitRelationalExpr(RelationalExprNode relationalExprNode) => Default;

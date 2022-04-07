@@ -39,7 +39,7 @@ map SectionMap {
         //                   V 
         // section defines the coordinate in the 
         // definition here
-        section 3, 3 {
+        section (3, 3) {
                 background: image { path: "./stone.png"; };
                 shape: box {
                         // disallow negative sizes?
@@ -68,15 +68,15 @@ map SectionMap2 {
                 height: 10;
                 width: 10;
         };
-        section 2, 1 {
+        section (2, 1) {
                 background: image { path: "./stone.png"; };
                 // coordinates shape type
                 // specifies individual points, no relation between them
                 shape: coordinates {
-                        0, 0;
-                        0, 1;
-                        5, 0;
-                        5, 1;
+                        (0, 0);
+                        (0, 1);
+                        (5, 0);
+                        (5, 1);
                 };
         };
         // section
@@ -84,15 +84,15 @@ map SectionMap2 {
         //   012345
         // 0 #....#
         // 1 #....#
-        section 1, 6 {
+        section (1, 6) {
                 background: image { path: "./stone.png"; };
                 // line shape type
                 // draws a line between the points, in order
                 shape: line {
-                        0, 0;
-                        0, 2;
-                        7, 2;
-                        7, 0;
+                        (0, 0);
+                        (0, 2);
+                        (7, 2);
+                        (7, 0);
                 };
         };
         // section
@@ -130,20 +130,20 @@ section NamedSection {
                 height: 5;
                 width: 5;
         };
-        section 0, 0 {
+        section (0, 0) {
                                         // green
                 background: colour { hex: #00FF00; };
                 shape: line {
-                        0, 0;
-                        4, 4;
+                        (0, 0);
+                        (4, 4);
                 };
         };
-        section 0, 4 {
+        section (0, 4) {
                 background: colour { hex: #00FF00; };
                 shape: line {
-                        0, 0;
+                        (0, 0);
                         // coordinates are relative
-                        -4, 4;
+                        (-4, 4);
                 };
         };
         // final section should look like this
@@ -163,7 +163,7 @@ map SectionReference {
                 height: 7; width: 7;
         };
         // reference to named section
-        reference section NamedSection 1, 1;
+        reference section NamedSection (1, 1);
         // final map should look like this
         // where B is blue, r is red, and G is green
         //
@@ -181,7 +181,7 @@ map WarningSectionReference {
         shape: box {
                 height: 7; width: 7;
         };
-        reference section NamedSection 3, 3;
+        reference section NamedSection (3, 3);
         // can raise a warning - section reaching off of map
         // final map should look like this
         // where B is blue, r is red, and G is green
@@ -224,10 +224,10 @@ map SectionReferenceFun {
                 shape: box { height: 2; width: 2; };
         };
         // can reference sections in the same map
-        reference section WhiteBox 2, 2;
-        reference section WhiteBox 2, 7;
-        reference section WhiteBox 7, 2;
-        reference section WhiteBox 7, 7;
+        reference section WhiteBox (2, 2);
+        reference section WhiteBox (2, 7);
+        reference section WhiteBox (7, 2);
+        reference section WhiteBox (7, 7);
         // final map should look like this
         // . for black, @ for white
         //
@@ -249,15 +249,15 @@ map SectionReferenceFun2 {
                 height: 10; width: 10;
         };
         // section WITH coordinates is rendered
-        section WhiteBox 2, 2 {
+        section WhiteBox (2, 2) {
                 background: colour { hex: #FFFFFF; };
                 shape: box { height: 2; width: 2; };
         };
         // can reference sections in the same map
         // reference coordinates override original coordinates
-        reference section WhiteBox 2, 7;
-        reference section WhiteBox 7, 2;
-        reference section WhiteBox 7, 7;
+        reference section WhiteBox (2, 7);
+        reference section WhiteBox (7, 2);
+        reference section WhiteBox (7, 7);
         // final map should look like this
         // . for black, @ for white
         //
@@ -275,7 +275,7 @@ map SectionReferenceFun2 {
 
 // has coordinates, but is just a bare section
 // error - those coordinates can't mean anything
-/*section BareSectionError 2, 3 {
+/*section BareSectionError (2, 3) {
         background: colour { hex: #FFFFFF; };
         shape: box { height: 2; width: 2; };
 };*/
@@ -294,7 +294,7 @@ map OverlappingSections {
                 height: 10;
                 width: 10;
         };
-        section 2, 2 {
+        section (2, 2) {
                 background: image { path: "./stone.png"; };
                 shape: box {
                         height: 5;
@@ -302,7 +302,7 @@ map OverlappingSections {
                 };
                 
         };
-        section 5, 5 {
+        section (5, 5) {
                 background: image { path: "./water.png"; };
                 shape: box {
                         height: 3;
@@ -328,20 +328,20 @@ map OverlappingSections {
         // **********
 };
 
-map SectionMap3 {
+/*map SectionMap3 {
         background: image { path: "./grass.png"; };
         shape: box {
                 height: 4;
                 width: 4;
         };
-        section 1, 1 {
+        section (1, 1) {
                 background: image { path: "./chest.png"; };
                 // point shape - has no block
-                shape: point;
+                shape: unit;
         };
-        section 1, 1 {
+        section (1, 1) {
                 background: image { path: "./chest.png"; };
-                shape: coordinates { 0, 0; };
+                shape: coordinates { (0, 0); };
         };
         // final map should look like this
         // where * is the grass texture and $ is the chest texture
@@ -350,7 +350,7 @@ map SectionMap3 {
         // *$**
         // ****
         // ****
-};
+};*/
 
 /* multi-line comment block!
 

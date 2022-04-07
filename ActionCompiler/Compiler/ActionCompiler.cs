@@ -65,14 +65,16 @@ namespace Action.Compiler
             parser.RemoveErrorListeners();
             parser.AddErrorListener(listener);
             ActionParser.FileContext tree = parser.file();
+            var diagnosticVisitor = new NumberDiagnosticVisitor();
+            diagnostics.AddRange(diagnosticVisitor.Visit(tree));
             var visitor = new ASTGenerator();
             if(!diagnostics.Any()){
                 return visitor.VisitFile(tree);
             }else{
                 return null;
             }
-            
         }
+
 
         // put semantics error checking here
         // recommendation: create a Visitor pattern class
@@ -93,7 +95,7 @@ namespace Action.Compiler
                 new SemErrorOnlyOneProperty(),
                 new SemErrorEntitiesFunctionVisitor(),
                 new SemErrorGameFunctionMissingVisitor(),
-                new SemErrorMultipleGameVisitor()
+                new SemErrorMultipleGameVisitor(),
             };
             foreach (var visitor in visitors)
             {
@@ -340,7 +342,7 @@ namespace Action.Compiler
             {
                 if (nx == ny)
                 {
-                    p = new CoordinateNode(new IntNode(p.x.integer + sign_x), new IntNode(p.y.integer + sign_y));
+                    p = new CoordinateNode(new IntNode((p.x.integer + sign_x)), new IntNode((p.y.integer + sign_y)));
                     ix++;
                     iy++;
                 }
