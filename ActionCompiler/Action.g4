@@ -92,8 +92,8 @@ relational_expr     : additive_expr #add_expr
                     | relational_expr GREATERTHAN additive_expr #greaterthan_expr
                     | relational_expr LESSTHANEQUAL additive_expr #lessthanequal_expr
                     | relational_expr GREATERTHANEQUAL additive_expr #greaterthanequal_expr
+                    | relational_expr IS type #is_expr
                     ;
-
 
 additive_expr       : multiplicative_expr #mult_expr
                     | additive_expr PLUS multiplicative_expr #plus_expr
@@ -120,7 +120,6 @@ primary_expr        : literal #lit
                     | primary_expr MINUSMINUS #postfix_decrement
                     | primary_expr OPEN_PAREN func_args? CLOSE_PAREN #func_call
                     | primary_expr DOT IDENTIFIER #member_access
-                    | TYPEOF OPEN_PAREN IDENTIFIER CLOSE_PAREN #typeof_expr
                     | NEW IDENTIFIER OPEN_PAREN func_args? CLOSE_PAREN #new_object
                     | primary_expr OPEN_SQBRACKET expr CLOSE_SQBRACKET #array_access
                     | OPEN_SQBRACKET array_values CLOSE_SQBRACKET #array_creation
@@ -202,10 +201,9 @@ BOOL                : 'bool';
 STRING_KW           : 'string';
 FLOAT               : 'float';
 COORD               : 'coord';
-NULL                : 'null';
-TYPEOF              : 'typeof';
 NEW                 : 'new';
 GAME                : 'game';
+IS                  : 'is';
 
 STRING              : DQ_STRING | SQ_STRING;
 POINT_LIT           : OPEN_PAREN INTEGER WS* ',' WS* INTEGER CLOSE_PAREN;

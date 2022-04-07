@@ -1,11 +1,10 @@
 namespace Action.AST
 {
-
-    public record FloatTypeNode() : TypeNode
+    public record ArrayTypeNode(TypeNode type) : TypeNode
     {
         public override T Accept<T>(NodeVisitor<T> visitor)
         {
-            return visitor.VisitFloatType(this);
+            return visitor.VisitArrayType(this);
         }
     }
 }

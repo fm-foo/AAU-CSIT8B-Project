@@ -5,7 +5,7 @@ namespace Action.AST
 {
     public class NodeVisitor<T>
     {
-        public virtual T Default => default;
+        public virtual T Default => throw new NotImplementedException();
         public T Visit(SymbolNode node) => node.Accept(this);
         public virtual T VisitFile(FileNode file) => Default;
         public virtual T VisitFunctionCallExpr(FunctionCallExprNode funcCallExprNode) => Default;
@@ -56,5 +56,6 @@ namespace Action.AST
         public virtual T VisitAssignment(AssignmentNode assignmentNode) => Default;
         public virtual T VisitFunctionArguments(FunctionArgumentsNode functionArgumentsNode) => Default;
         public virtual T VisitFunctionArgument(FunctionArgumentNode functionArgumentNode) => Default;
+        public virtual T VisitIs(IsNode isexpr) => Default;
     }
 }

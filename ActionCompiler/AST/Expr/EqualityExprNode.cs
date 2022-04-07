@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Action.AST
 {
-    public record EqualityExprNode(ExprNode expr, ExprNode? equaluityExpr = null, EqualityOperator? oper = null) : ExprNode
+    public record EqualityExprNode(ExprNode left, ExprNode right, EqualityOperator oper) : ExprNode
     {
         public override T Accept<T>(NodeVisitor<T> visitor)
         {

@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Action.AST
 {
-    public record UnaryExprNode(ExprNode primaryExpr, UnaryOper? oper = null) : ExprNode
+    public record UnaryExprNode(ExprNode primaryExpr, UnaryOper oper) : ExprNode
     {
         public override T Accept<T>(NodeVisitor<T> visitor)
         {
@@ -15,14 +15,8 @@ namespace Action.AST
     {
         PLUS,
         MINUS,
-        BANG,
-        PLUSPLUS,
-        MINUSMINUS
-    }
-
-    public enum PrimaryOper
-    {
-        PLUSPLUS,
-        MINUSMINUS
+        NEGATE,
+        INCREMENT,
+        DECREMENT
     }
 }

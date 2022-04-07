@@ -54,12 +54,12 @@ entity Player {
         var entities = Map.getAt(newPosition);
         foreach (var Entity in entities)
         {
-            if (Entity.getType() == typeof(Apple))
+            if (Entity is Apple)
             {
                 Entity.kill();
                 this.length = length + 1;
             }
-            if (Entity.getType() == typeof(SnakeBody))
+            if (Entity is SnakeBody)
             {
                 // you lose
             }
