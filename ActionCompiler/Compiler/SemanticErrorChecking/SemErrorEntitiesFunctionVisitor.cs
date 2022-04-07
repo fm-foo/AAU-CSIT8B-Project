@@ -10,7 +10,7 @@ namespace Action.Compiler
     {
         public override IEnumerable<DiagnosticResult> VisitFile(FileNode nodes)
         {
-            var combinedNodes = nodes.nodes.Where(n => n is EntityNode);
+            var combinedNodes = nodes.nodes.OfType<EntityNode>();
 
             foreach (var node in combinedNodes)
             {
