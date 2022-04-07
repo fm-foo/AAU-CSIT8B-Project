@@ -1,6 +1,6 @@
 ﻿namespace Action.AST
 {
-    public record SimpleTypeNode() : TypeNode
+    public record SimpleTypeNode(IdentifierNode identifier) : TypeNode
     {
         public override T Accept<T>(NodeVisitor<T> visitor)
         {

@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Action.AST
 {
-    public record BoolExprNode(ExprNode expr, ExprNode? boolExpr = null, BooleanOperator? oper = null) : ExprNode
+    public record BoolExprNode(ExprNode left, ExprNode right, BooleanOperator oper) : ExprNode
     {
         public override T Accept<T>(NodeVisitor<T> visitor)
         {
