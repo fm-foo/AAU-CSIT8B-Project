@@ -10,7 +10,7 @@ namespace Action.Compiler
     {
         public override IEnumerable<DiagnosticResult> VisitFile(FileNode nodes)
         {
-            var gameNodes = nodes.nodes.Where(n => n.GetType() == typeof(GameNode));
+            var gameNodes = nodes.nodes.OfType<GameNode>();
 
             if(gameNodes.Count() > 1){
                 yield return new DiagnosticResult(Severity.Error, "You can't have more than one game element");

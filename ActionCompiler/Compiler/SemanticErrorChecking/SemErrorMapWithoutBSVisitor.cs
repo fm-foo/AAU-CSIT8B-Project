@@ -10,7 +10,7 @@ namespace Action.Compiler
     {
         public override IEnumerable<DiagnosticResult> VisitFile(FileNode nodes)
         {
-            var combinedNodes = nodes.nodes.Where(n => n.GetType() == typeof(MapNode) || n.GetType() == typeof(SectionNode));
+            var combinedNodes = nodes.nodes.Where(n => n is MapNode || n is SectionNode);
 
             foreach (var node in combinedNodes)
             {
