@@ -115,7 +115,7 @@ namespace Action.Compiler
             Debug.Assert(visitor.Visit(ast).Count() == symboltable.Count);
             List<ComplexNode> newnodes = new List<ComplexNode>();
             bool valid = true;
-            foreach (ComplexNode node in ast.nodes.Where(n => n is SectionNode || n is MapNode))
+            foreach (ComplexNode node in ast.nodes)
             {   
                 // the stack scope stuff should balance itself
                 // but we create a new one each time just to make sure
