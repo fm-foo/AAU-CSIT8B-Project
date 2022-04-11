@@ -29,7 +29,7 @@ namespace Action.Compiler
 
         public IEnumerable<DiagnosticResult> VisitEntityOrGame(ComplexNode node)
         {
-
+            throw new NotImplementedException();
         }
     }
 }
