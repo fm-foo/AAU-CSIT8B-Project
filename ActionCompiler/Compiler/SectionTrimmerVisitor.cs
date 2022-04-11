@@ -31,5 +31,15 @@ namespace Action.Compiler
             }
             return newsections;
         }
+
+        public override ComplexNode VisitGame(GameNode gameNode)
+        {
+            return gameNode;
+        }
+
+        public override ComplexNode VisitEntity(EntityNode entityNode)
+        {
+            return entityNode;
+        }
     }
 }
