@@ -62,5 +62,15 @@ namespace Action.Compiler
             diagnostics.Add(new DiagnosticResult(Severity.Error, $"Could not resolve reference {referenceNode.reference.identifier}"));
             return null;
         }
+
+        public override ComplexNode VisitGame(GameNode gameNode)
+        {
+            return gameNode;
+        }
+
+        public override ComplexNode VisitEntity(EntityNode entityNode)
+        {
+            return entityNode;
+        }
     }
 }
