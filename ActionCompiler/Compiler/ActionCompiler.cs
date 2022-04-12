@@ -99,6 +99,7 @@ namespace Action.Compiler
                 new SemErrorValidAssignment(),
                 new SemErrorLoneExpressions(),
                 new SemErrorVariableDeclarationsAsInternalStatement()
+                new SemErrorVariableUnassignedVisitor(),
             };
             foreach (var visitor in visitors)
             {
