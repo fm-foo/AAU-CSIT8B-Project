@@ -10,7 +10,7 @@ namespace Action.AST
         public virtual T VisitFile(FileNode file) => Default;
         public virtual T VisitFunctionCallExpr(FunctionCallExprNode funcCallExprNode) => Default;
         public virtual T VistPostFixExpr(PostFixExprNode postFixExprNode) => Default;
-        public virtual T VisitAddativeExpr(AdditiveExprNode additiveExprNode) => Default;
+        public virtual T VisitAdditiveExpr(AdditiveExprNode additiveExprNode) => Default;
         public virtual T VisitComplex(ComplexNode complexNode) => Default;
         public virtual T VisitMap(MapNode mapNode) => Default;
         public virtual T VisitSection(SectionNode sectionNode) => Default;

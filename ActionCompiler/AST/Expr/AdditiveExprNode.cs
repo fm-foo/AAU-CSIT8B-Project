@@ -7,7 +7,7 @@ namespace Action.AST
     {
         public override T Accept<T>(NodeVisitor<T> visitor)
         {
-            return visitor.VisitAddativeExpr(this);
+            return visitor.VisitAdditiveExpr(this);
         }
     }
 
