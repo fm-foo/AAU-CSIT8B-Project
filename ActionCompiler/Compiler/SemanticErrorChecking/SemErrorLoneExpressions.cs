@@ -15,6 +15,8 @@ namespace ActionCompiler.Compiler.SemanticErrorChecking
     /// </summary>
     internal class SemErrorLoneExpressions : NodeVisitor<IEnumerable<DiagnosticResult>>
     {
+        public override IEnumerable<DiagnosticResult> Default => Enumerable.Empty<DiagnosticResult>();
+
         public override IEnumerable<DiagnosticResult> VisitFile(FileNode file)
         {
             IEnumerable<ValueNode> entityAndGameNodes = file.nodes.Where(n => n is GameNode || n is EntityNode);

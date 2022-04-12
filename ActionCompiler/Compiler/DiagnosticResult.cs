@@ -12,6 +12,7 @@ namespace Action.Compiler
         FloatUnderflow,
         InvalidAssignment,
         IdentifierAlreadyDefined,
-        InvalidLoneStatement
+        InvalidLoneStatement,
+        InvalidDeclarationInEmbeddedStatement
     }
 }

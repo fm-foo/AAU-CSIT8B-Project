@@ -597,7 +597,7 @@ namespace Action.AST
         {
             ExprNode unaryExpr = (ExprNode)this.Visit(context.unary_expr());
 
-            return new UnaryExprNode(unaryExpr, UnaryOper.NEGATE);
+            return new UnaryExprNode(unaryExpr, UnaryOper.NEGATE); 
         }
 
         #endregion

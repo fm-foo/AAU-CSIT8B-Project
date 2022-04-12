@@ -4,16 +4,30 @@ game MyGame {
 	int a;
 
 	initialize: function() {
-		a++; 
-		f();
-
-		if (true) {
-			a++;
-		} 
-		else {
-			a;
+		if (true)
+		{
+			if (true)
+				x++;
 		}
+		else
+			int b = 1;
 
+		for(;;)
+			int c = 1;
+		
+		foreach(int o in os) 
+			int d = 2;
+
+		while(false)
+			int e = 3;
+
+		while(true)
+			if(true) {
+				for(;;) {
+					if (true)
+						int x = 2;
+				}
+			}
 	}
 };
 
