@@ -10,6 +10,8 @@ namespace Action.Compiler
         IntegerUnderflow,
         FloatOverflow,
         FloatUnderflow,
-        InvalidAssignment
+        InvalidAssignment,
+        IdentifierAlreadyDefined,
+        InvalidLoneStatement
     }
 }

@@ -97,6 +97,7 @@ namespace Action.Compiler
                 new SemErrorGameFunctionMissingVisitor(),
                 new SemErrorMultipleGameVisitor(),
                 new SemErrorValidAssignment(),
+                new SemErrorLoneExpressions()
             };
             foreach (var visitor in visitors)
             {
@@ -151,7 +152,7 @@ namespace Action.Compiler
             logger.LogInformation("Compiling to image");
             List<ImageFile> images = new List<ImageFile>();
             bool success = true;
-            foreach (MapNode map in ast.nodes.Cast<MapNode>())
+            foreach (MapNode map in ast.nodes.Where(n => n is MapNode || n is SectionNode))
             {
                 var imagefile = CompileMap(map, logger, diagnostics);
                 if (imagefile is not null)

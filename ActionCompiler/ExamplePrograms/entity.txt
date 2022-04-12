@@ -1,24 +1,19 @@
 game MyGame {
 	
-	coord x = (-1, 2);
 
-	func: function() {
-		myFunc(1, 2, 3);
-		x = 1.3;
-		 //myEntity.field = 2;
-		2 = 3;
+	int a;
+
+	initialize: function() {
+		a++; 
+		f();
+
+		if (true) {
+			a++;
+		} 
+		else {
+			a;
+		}
+
 	}
 };
 
-
-entity MyEntity {
-	
-	coord x = (-1, 2);
-
-	func: function() {
-		myFunc(1, 2, 3);
-		x = 1.3;
-		 //myEntity.field = 2;
-		2 = 3;
-	}
-};
