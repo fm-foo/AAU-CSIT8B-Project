@@ -1,10 +1,45 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using Action.Compiler;
 
 namespace Action.AST
 {
+    public abstract class DiagnosticsVisitor : AutomaticNodeVisitor<IEnumerable<DiagnosticResult>>
+    {
+        public override IEnumerable<DiagnosticResult> Default => Array.Empty<DiagnosticResult>();
+        public override IEnumerable<DiagnosticResult> MergeValues(IEnumerable<DiagnosticResult> oldValue, IEnumerable<DiagnosticResult> newValue)
+        {
+            return (oldValue, newValue) switch
+            {
+                // both are empty arrays (Default)
+                (Array { Length: 0 }, Array { Length: 0 }) => Default,
+                // oldValue is empty array 
+                (Array { Length: 0 }, _) => newValue,
+                // newValue is empty array
+                (_, Array { Length: 0 }) => oldValue,
+                // neither is empty array
+                _ => Enumerable.Concat(oldValue, newValue) 
+            };
+        }
+    }
+
     public abstract class AutomaticNodeVisitor<T> : NodeVisitor<T>
     {
+#if DEBUG
+        static AutomaticNodeVisitor()
+        {
+            Type type = typeof(AutomaticNodeVisitor<T>);
+            Debug.Assert(type.GetMethods(BindingFlags.Instance)
+                .Where(m => m.IsVirtual)
+                .Where(m => m.DeclaringType != type)
+                .Any() == false, "Not every member implemented on AutomaticNodeVisitor");  
+        }
+#endif
+
         public override T Default => default;
         public override T VisitFile(FileNode file)
         {
@@ -173,27 +208,133 @@ namespace Action.AST
             }
             return value;
         }
-        public override T VisitType(TypeNode typeNode) => Default;
         public override T VisitIntType(IntTypeNode intTypeNode) => Default;
         public override T VisitFloatType(FloatTypeNode floatTypeNode) => Default;
         public override T VisitBoolType(BoolTypeNode boolTypeNode) => Default;
         public override T VisitCoordType(CoordTypeNode coordTypeNode) => Default;
         public override T VisitStringType(StringTypeNode stringTypeNode) => Default;
-        public override T VisitSimpleType(SimpleTypeNode simpleTypeNode) => Default;
-        public override T VisitArrayType(ArrayTypeNode arrayType) => Default;
-        public override T VisitFunction(FunctionNode functionNode) => Default;
-        public override T VisitBlock(BlockNode blockNode) => Default;
-        public override T VisitStatement(StatementNode statementNode) => Default;
-        public override T VisitIfStatement(IfStatementNode ifStatementNode) => Default;
-        public override T VisitWhileStatement(WhileStatementNode whileStatementNode) => Default;
-        public override T VisitForStatement(ForStatementNode forStatementNode) => Default;
-        public override T VisitForeachStatement(ForeachStatementNode foreachStatementNode) => Default;
-        public override T VisitExpressionStatement(ExpressionStatementNode expressionStatementNode) => Default;
-        public override T VisitDeclaration(DeclarationNode declarationNode) => Default;
-        public override T VisitAssignment(AssignmentNode assignmentNode) => Default;
-        public override T VisitFunctionArguments(FunctionArgumentsNode functionArgumentsNode) => Default;
-        public override T VisitFunctionArgument(FunctionArgumentNode functionArgumentNode) => Default;
-        public override T VisitIs(IsNode isexpr) => Default;
+        public override T VisitSimpleType(SimpleTypeNode simpleTypeNode) => Visit(simpleTypeNode.identifier);
+        public override T VisitArrayType(ArrayTypeNode arrayType) => Visit(arrayType.type);
+        public override T VisitFunction(FunctionNode functionNode)
+        {
+            bool valueSet = false;
+            T value = Default;
+            foreach (var args in functionNode.args)
+            {
+                if (!valueSet)
+                {
+                    value = Visit(args);
+                    valueSet = true;
+                }
+                else
+                {
+                    value = MergeValues(value, Visit(args));
+                }
+            }
+            if (!valueSet)
+            {
+                value = Visit(functionNode.block);
+                valueSet = true;
+            }
+            else
+            {
+                value = MergeValues(value, Visit(functionNode.block));
+            }
+            return value;
+        }
+        public override T VisitBlock(BlockNode blockNode)
+        {
+            bool valueSet = false;
+            T value = Default;
+            foreach (var statement in blockNode.statements)
+            {
+                if (!valueSet)
+                {
+                    value = Visit(statement);
+                    valueSet = true;
+                }
+                else
+                {
+                    value = MergeValues(value, Visit(statement));
+                }
+            }
+            return value;
+        }
+        public override T VisitIfStatement(IfStatementNode ifStatementNode)
+        {
+            T value = Visit(ifStatementNode.test);
+            value = MergeValues(value, Visit(ifStatementNode.primaryStatement));
+            if (ifStatementNode.elseStatement is not null)
+                value = MergeValues(value, Visit(ifStatementNode.elseStatement));
+            return value;
+        }
+        public override T VisitWhileStatement(WhileStatementNode whileStatementNode) => MergeValues(Visit(whileStatementNode.expr), Visit(whileStatementNode.statement));
+        public override T VisitForStatement(ForStatementNode forStatementNode)
+        {
+            bool valueSet = false;
+            T value = Default;
+            if (forStatementNode.initialization is not null)
+            {
+                value = Visit(forStatementNode.initialization);
+                valueSet = true;
+            }
+            if (forStatementNode.condition is not null)
+            {
+                if (!valueSet)
+                {
+                    value = Visit(forStatementNode.condition);
+                    valueSet = true;
+                }
+                else
+                {
+                    value = MergeValues(value, Visit(forStatementNode.condition));
+                }
+            }
+            if (forStatementNode.control is not null)
+            {
+                if (!valueSet)
+                {
+                    value = Visit(forStatementNode.control);
+                    valueSet = true;
+                }
+                else
+                {
+                    value = MergeValues(value, Visit(forStatementNode.control));
+                }
+            }
+            if (!valueSet)
+            {
+                value = Visit(forStatementNode.statement);
+                valueSet = true;
+            }
+            else
+            {
+                value = MergeValues(value, Visit(forStatementNode.statement));
+            }
+            return value;
+        }
+        public override T VisitForeachStatement(ForeachStatementNode foreachStatementNode)
+        {
+            T value = Visit(foreachStatementNode.type);
+            value = MergeValues(value, Visit(foreachStatementNode.identifier));
+            value = MergeValues(value, Visit(foreachStatementNode.iterable));
+            value = MergeValues(value, Visit(foreachStatementNode.statement));
+            return value;
+        }
+        public override T VisitExpressionStatement(ExpressionStatementNode expressionStatementNode) => Visit(expressionStatementNode.expr);
+        public override T VisitDeclaration(DeclarationNode declarationNode)
+        {
+            T value = Visit(declarationNode.type);
+            value = MergeValues(value, Visit(declarationNode.identifier));
+            if (declarationNode.expr is not null)
+            {
+                value = MergeValues(value, Visit(declarationNode.expr));
+            }
+            return value;
+        }
+        public override T VisitAssignment(AssignmentNode assignmentNode) => MergeValues(Visit(assignmentNode.leftSide), Visit(assignmentNode.rightSide));
+        public override T VisitFunctionArgument(FunctionArgumentNode functionArgumentNode) => MergeValues(Visit(functionArgumentNode.identifier), Visit(functionArgumentNode.typeNode));
+        public override T VisitIs(IsNode isexpr) => MergeValues(Visit(isexpr.expr), Visit(isexpr.type));
         public abstract T MergeValues(T oldValue, T newValue);
     }
 
@@ -228,7 +369,6 @@ namespace Action.AST
         public virtual T VisitArrayAccess(ArrayAccessNode arrayAccessNode) => Default;
         public virtual T VisitBool(BoolNode boolNode) => Default;
         public virtual T VisitArray(ArrayNode arrayNode) => Default;
-        public virtual T VisitType(TypeNode typeNode) => Default;
         public virtual T VisitIntType(IntTypeNode intTypeNode) => Default;
         public virtual T VisitFloatType(FloatTypeNode floatTypeNode) => Default;
         public virtual T VisitBoolType(BoolTypeNode boolTypeNode) => Default;
@@ -238,7 +378,6 @@ namespace Action.AST
         public virtual T VisitArrayType(ArrayTypeNode arrayType) => Default;
         public virtual T VisitFunction(FunctionNode functionNode) => Default;
         public virtual T VisitBlock(BlockNode blockNode) => Default;
-        public virtual T VisitStatement(StatementNode statementNode) => Default;
         public virtual T VisitIfStatement(IfStatementNode ifStatementNode) => Default;
         public virtual T VisitWhileStatement(WhileStatementNode whileStatementNode) => Default;
         public virtual T VisitForStatement(ForStatementNode forStatementNode) => Default;
@@ -246,7 +385,6 @@ namespace Action.AST
         public virtual T VisitExpressionStatement(ExpressionStatementNode expressionStatementNode) => Default;
         public virtual T VisitDeclaration(DeclarationNode declarationNode) => Default;
         public virtual T VisitAssignment(AssignmentNode assignmentNode) => Default;
-        public virtual T VisitFunctionArguments(FunctionArgumentsNode functionArgumentsNode) => Default;
         public virtual T VisitFunctionArgument(FunctionArgumentNode functionArgumentNode) => Default;
         public virtual T VisitIs(IsNode isexpr) => Default;
     }

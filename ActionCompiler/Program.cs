@@ -19,7 +19,7 @@ namespace Action
 
         public static void Main()
         {
-            using Stream stream = new FileStream(entity, FileMode.Open);
+            using Stream stream = new FileStream("ExamplePrograms/lines.txt", FileMode.Open);
             using var factory = LoggerFactory.Create(builder => builder.AddConsole());
             var compiler = new Compiler.ActionCompiler();
             var result = compiler.Compile(stream, factory.CreateLogger<Compiler.ActionCompiler>());

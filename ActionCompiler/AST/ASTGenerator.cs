@@ -234,7 +234,7 @@ namespace Action.AST
                 return new IfStatementNode(expr, statement, elseStatement);
             }
 
-            return new IfStatementNode(expr, statement);
+            return new IfStatementNode(expr, statement, null);
             
         }
 
@@ -260,15 +260,15 @@ namespace Action.AST
                 condition = (ExprNode?)this.Visit(context.cond_expr());
             }
 
-            ExprNode? control = null;
+            StatementNode? control = null;
             if (context.control_expr() is not null)
             {
-                control = (ExprNode)this.Visit(context.control_expr());
+                control = (StatementNode)this.Visit(context.control_expr());
             }
 
             StatementNode statement = (StatementNode)this.Visit(context.statement());
 
-            return new ForStatementNode(statement, initialization, condition, control);    
+            return new ForStatementNode(initialization, condition, control, statement);    
         }
 
         public override object VisitForeach([NotNull] ActionParser.ForeachContext context)
@@ -404,7 +404,7 @@ namespace Action.AST
             }
             else
             {
-                return new FieldDecNode(identifierNode, type);
+                return new FieldDecNode(identifierNode, type, null);
             }
         }
         #endregion

@@ -6,59 +6,32 @@ using System.Linq;
 
 namespace Action.Compiler
 {
-    public class SemErrorCoordinateOffMapVisitor : NodeVisitor<IEnumerable<DiagnosticResult>>
+    public class SemErrorCoordinateOffMapVisitor : DiagnosticsVisitor
     {
-        public override IEnumerable<DiagnosticResult> VisitFile(FileNode nodes)
+        // TODO: This does not take into account sub-sub-sections - it only checks maps
+        //      It needs to be extended to check every sub-section in any section
+        // TODO: This does not take into account the relative coordinates of 
+        // TODO: This does not check reference sections - does this happen after reference sections are resolved?
+        public override IEnumerable<DiagnosticResult> VisitMap(MapNode mapNode)
         {
-            IEnumerable<MapNode> query1 = nodes.nodes.OfType<MapNode>();
-            foreach (var node in query1)
-            {
-                foreach (var symbol in Visit(node))
-                    yield return symbol;
-            }
-        }
-
-        public override IEnumerable<DiagnosticResult> VisitMap(MapNode mapNode){
             var size = GetSize(mapNode);
-            foreach(var sec in mapNode.sections){
-                if(sec is SectionNode valSec){
-                    foreach(var property in valSec.properties){
-                        if(property.identifier is ShapeKeywordNode){
-                            ComplexNode val = (ComplexNode)property.value;
-                            if(val.type is CoordinatesKeywordNode){
-                                foreach(var coord in val.values){
-                                    CoordinateNode coordinate = (CoordinateNode)coord;
-                                    if(coordinate.x.integer > size[0] && coordinate.y.integer > size[1]){
-                                        yield return new DiagnosticResult(Severity.Error, "The given coordinates are off the map");
-                                    }
-                                }
-                            }
-                        }
-                    } 
-                }   
-            }
+            var result = mapNode.sections
+                .OfType<SectionNode>()
+                .Select(s => s.GetProperty<ShapeKeywordNode, ComplexNode>())
+                .Where(s => s.type is CoordinatesKeywordNode)
+                .SelectMany(s => s.values)
+                .Cast<CoordinateNode>()
+                .Where(c => c.x.integer > size.width || c.y.integer > size.height)
+                .Select(c => new DiagnosticResult(Severity.Error, "The given coordinates are off the map"));
+            return result;
         }
 
-        public int[] GetSize(ComplexNode node){
-            int[] size = new int[] {0,0};
-            foreach(var property in node.properties){
-                if(property.identifier is ShapeKeywordNode){
-                    ComplexNode val = (ComplexNode)property.value;
-                    if(val.type is BoxKeywordNode){
-                        foreach(var prop in val.properties){
-                            if(prop.identifier is HeightKeywordNode){
-                                IntNode res = (IntNode)prop.value;
-                                size[0] = res.integer;
-                            }
-                            if(prop.identifier is WidthKeywordNode){
-                                IntNode res = (IntNode)prop.value;
-                                size[1] = res.integer;
-                            }
-                        } 
-                    }
-                }
-            }
-            return size;
+        public (int width, int height) GetSize(ComplexNode node)
+        {
+            ComplexNode shape = node.GetProperty<ShapeKeywordNode, ComplexNode>();
+            int height = shape.GetProperty<HeightKeywordNode, IntNode>().integer;
+            int width = shape.GetProperty<WidthKeywordNode, IntNode>().integer;
+            return (width, height);
         }
 
     }
