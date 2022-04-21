@@ -6,6 +6,7 @@ using System.IO;
 using Action.Compiler;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
+using System.Linq;
 
 namespace Action
 {
@@ -17,9 +18,20 @@ namespace Action
         private static readonly string entity =  @"ExamplePrograms\entity.txt";
 
 
-        public static void Main()
+        public static int Main(string[] args)
         {
-            using Stream stream = new FileStream("ExamplePrograms/lines.txt", FileMode.Open);
+            if (args.Length == 0)
+            {
+                Console.WriteLine("usage: program [filename]");
+                return 1;
+            }
+            FileInfo file = new FileInfo(args.First());
+            if (!file.Exists)
+            {
+                Console.WriteLine($"file {file.FullName} not found");
+                return 2;
+            }
+            using Stream stream = file.OpenRead();
             using var factory = LoggerFactory.Create(builder => builder.AddConsole());
             var compiler = new Compiler.ActionCompiler();
             var result = compiler.Compile(stream, factory.CreateLogger<Compiler.ActionCompiler>());
@@ -28,13 +40,14 @@ namespace Action
                 Debug.Assert(result.Success);
                 foreach (var image in result.Images)
                 {
-                    FileInfo file = new FileInfo(image.filename);
-                    using var fs = file.Create();
+                    FileInfo output = new FileInfo(image.filename);
+                    using var fs = output.Create();
                     image.file.CopyTo(fs);
                 }
             }
             foreach (var diagnostic in result.Diagnostics)
                 Console.WriteLine(diagnostic);
+            return 0;
         }
     }
 }
