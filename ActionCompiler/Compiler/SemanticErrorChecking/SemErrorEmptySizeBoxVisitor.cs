@@ -1,10 +1,11 @@
 using Action.AST;
+using Action.Compiler;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace Action.Compiler
+namespace ActionCompiler.Compiler.SemanticErrorChecking
 {
     public class SemErrorEmptySizeBoxVisitor : NodeVisitor<IEnumerable<DiagnosticResult>>
     {
@@ -18,7 +19,8 @@ namespace Action.Compiler
             }
         }
 
-        public override IEnumerable<DiagnosticResult> VisitMap(MapNode mapNode){
+        public override IEnumerable<DiagnosticResult> VisitMap(MapNode mapNode)
+        {
             return CheckSize(mapNode);
         }
 
@@ -27,14 +29,19 @@ namespace Action.Compiler
             return CheckSize(sectionNode);
         }
 
-        public IEnumerable<DiagnosticResult> CheckSize(ComplexNode node){
+        public IEnumerable<DiagnosticResult> CheckSize(ComplexNode node)
+        {
 
-            foreach(var property in node.properties){
-                if(property.identifier is ShapeKeywordNode){
+            foreach (var property in node.properties)
+            {
+                if (property.identifier is ShapeKeywordNode)
+                {
                     ComplexNode val = (ComplexNode)property.value;
-                    if(val.type is BoxKeywordNode){
-                        if(!val.properties.Any()){
-                            yield return new DiagnosticResult(Severity.Error, "missing height and/or width of the box");
+                    if (val.type is BoxKeywordNode)
+                    {
+                        if (!(val.properties.Count() == 2) && !(val.properties.OfType<WidthKeywordNode>().Count() == 1 && val.properties.OfType<HeightKeywordNode>().Count() == 1))
+                        {
+                            yield return new DiagnosticResult(Severity.Error, "Missing height and/or width of the box", Error.MissingBoxWidthHeight);
                         }
                     }
                 }

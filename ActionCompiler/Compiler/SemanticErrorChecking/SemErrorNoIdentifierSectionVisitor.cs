@@ -1,9 +1,10 @@
 using Action.AST;
+using Action.Compiler;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace Action.Compiler
+namespace ActionCompiler.Compiler.SemanticErrorChecking
 {
     public class SemErrorNoIdentifierSectionVisitor : NodeVisitor<IEnumerable<DiagnosticResult>>
     {
@@ -18,9 +19,10 @@ namespace Action.Compiler
         }
         public override IEnumerable<DiagnosticResult> VisitSection(SectionNode sectionNode)
         {
-            if(sectionNode.identifier == null){
+            if (sectionNode.identifier == null)
+            {
                 yield return new DiagnosticResult(Severity.Error, "missing section identifier");
-            } 
+            }
         }
     }
 }

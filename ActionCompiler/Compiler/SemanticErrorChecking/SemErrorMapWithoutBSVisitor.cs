@@ -1,10 +1,11 @@
 using Action.AST;
+using Action.Compiler;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace Action.Compiler
+namespace ActionCompiler.Compiler.SemanticErrorChecking
 {
     public class SemErrorMapWithoutBSVisitor : NodeVisitor<IEnumerable<DiagnosticResult>>
     {
@@ -19,7 +20,8 @@ namespace Action.Compiler
             }
         }
 
-        public override IEnumerable<DiagnosticResult> VisitMap(MapNode mapNode){
+        public override IEnumerable<DiagnosticResult> VisitMap(MapNode mapNode)
+        {
             return CheckProperties(mapNode);
         }
 
@@ -28,23 +30,29 @@ namespace Action.Compiler
             return CheckProperties(sectionNode);
         }
 
-        public IEnumerable<DiagnosticResult> CheckProperties(ComplexNode node){
+        public IEnumerable<DiagnosticResult> CheckProperties(ComplexNode node)
+        {
 
             var testBack = false;
             var testShape = false;
 
-            foreach(var property in node.properties){
-                if(property.identifier is BackgroundKeywordNode){
+            foreach (var property in node.properties)
+            {
+                if (property.identifier is BackgroundKeywordNode)
+                {
                     testBack = true;
                 }
-                if(property.identifier is ShapeKeywordNode){
+                if (property.identifier is ShapeKeywordNode)
+                {
                     testShape = true;
                 }
             }
-            if(testBack == false){
+            if (testBack == false)
+            {
                 yield return new DiagnosticResult(Severity.Error, "missing background property");
             }
-            if(testShape == false){
+            if (testShape == false)
+            {
                 yield return new DiagnosticResult(Severity.Error, "missing shape property");
             }
         }

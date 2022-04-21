@@ -1,9 +1,10 @@
 using Action.AST;
+using Action.Compiler;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace Action.Compiler
+namespace ActionCompiler.Compiler.SemanticErrorChecking
 {
     public class SemErrorLineOnlyOneCoordinate : NodeVisitor<IEnumerable<DiagnosticResult>>
     {
@@ -19,7 +20,8 @@ namespace Action.Compiler
             }
         }
 
-        public override IEnumerable<DiagnosticResult> VisitMap(MapNode mapNode){
+        public override IEnumerable<DiagnosticResult> VisitMap(MapNode mapNode)
+        {
             return CheckLine(mapNode);
         }
 
@@ -28,25 +30,33 @@ namespace Action.Compiler
             return CheckLine(sectionNode);
         }
 
-        public IEnumerable<DiagnosticResult> CheckLine(ComplexNode node){
-            foreach (var property in node.properties){
-                if (property.identifier is ShapeKeywordNode){
+        public IEnumerable<DiagnosticResult> CheckLine(ComplexNode node)
+        {
+            foreach (var property in node.properties)
+            {
+                if (property.identifier is ShapeKeywordNode)
+                {
                     ComplexNode val = (ComplexNode)property.value;
-                    if (val.type is LineKeywordNode){
+                    if (val.type is LineKeywordNode)
+                    {
                         var numOfCoords = val.values.Count();
-                        if (numOfCoords == 1){
+                        if (numOfCoords == 1)
+                        {
                             yield return new DiagnosticResult(Severity.Error, "cannot have a line node with only a single point");
-                        }  
+                        }
                     }
                 }
             }
-            if(node.values.Any()){
-                foreach(var sec in node.values.OfType<SectionNode>()){
-                    foreach(var val in Visit(sec)){
+            if (node.values.Any())
+            {
+                foreach (var sec in node.values.OfType<SectionNode>())
+                {
+                    foreach (var val in Visit(sec))
+                    {
                         yield return val;
                     }
                 }
-            }   
+            }
         }
     }
 }

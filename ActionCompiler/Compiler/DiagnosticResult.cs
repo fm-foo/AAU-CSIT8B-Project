@@ -13,6 +13,11 @@ namespace Action.Compiler
         InvalidAssignment,
         IdentifierAlreadyDefined,
         InvalidLoneStatement,
-        InvalidDeclarationInEmbeddedStatement
+        InvalidDeclarationInEmbeddedStatement,
+        StandaloneSectionWithCoordinates,
+        MissingBackgroundColorValue,
+        MissingBackgroundImagePathValue,
+        MissingBoxWidthHeight,
+        CoordinatesOffMap
     }
 }

@@ -92,13 +92,13 @@ namespace Action.Compiler
                 new SemErrorLineOnlyOneCoordinate(),
                 new SemErrorCoordinateOffMapVisitor(),
                 new SemErrorObjectNotNamedTheSame(),
-                new SemErrorOnlyOneProperty(),
+                new SemErrorOnlyOnePropertyVisitor(),
                 new SemErrorEntitiesFunctionVisitor(),
                 new SemErrorGameFunctionMissingVisitor(),
                 new SemErrorMultipleGameVisitor(),
                 new SemErrorValidAssignment(),
                 new SemErrorLoneExpressions(),
-                new SemErrorVariableDeclarationsAsInternalStatement()
+                new SemErrorVariableDeclarationsAsInternalStatement(),
                 new SemErrorVariableUnassignedVisitor(),
             };
             foreach (var visitor in visitors)

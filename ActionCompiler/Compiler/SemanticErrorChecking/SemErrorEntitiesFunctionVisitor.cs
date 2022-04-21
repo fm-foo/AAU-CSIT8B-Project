@@ -1,10 +1,11 @@
 using Action.AST;
+using Action.Compiler;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace Action.Compiler
+namespace ActionCompiler.Compiler.SemanticErrorChecking
 {
     public class SemErrorEntitiesFunctionVisitor : NodeVisitor<IEnumerable<DiagnosticResult>>
     {
@@ -19,17 +20,24 @@ namespace Action.Compiler
             }
         }
 
-        public override IEnumerable<DiagnosticResult> VisitEntity(EntityNode entity){
+        public override IEnumerable<DiagnosticResult> VisitEntity(EntityNode entity)
+        {
             List<string> func = new List<string>();
 
-            foreach(var fun in entity.funcDecs){
+            foreach (var fun in entity.funcDecs)
+            {
                 func.Add(fun.identifier.identifier);
             }
-            if(!func.Contains("act")){
+            if (!func.Contains("act"))
+            {
                 yield return new DiagnosticResult(Severity.Error, "The act function is missing");
-            }if(!func.Contains("create")){
+            }
+            if (!func.Contains("create"))
+            {
                 yield return new DiagnosticResult(Severity.Error, "The create function is missing");
-            }if(!func.Contains("destroy")){
+            }
+            if (!func.Contains("destroy"))
+            {
                 yield return new DiagnosticResult(Severity.Error, "The destroy function is missing");
             }
         }
