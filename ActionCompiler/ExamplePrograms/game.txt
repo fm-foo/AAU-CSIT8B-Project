@@ -1,5 +1,5 @@
 /*map BasicMap {
-        background: colour { hex: #222222; };
+        background: color { hex: #222222; };
         shape: box {
                 height: 10; width: 10;
         };
