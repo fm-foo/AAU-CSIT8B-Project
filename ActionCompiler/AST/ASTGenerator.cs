@@ -672,6 +672,18 @@ namespace Action.AST
             return new FunctionCallExprNode(expr, exprArgs);
         }
 
+        public override object VisitNew_object([NotNull] ActionParser.New_objectContext context) {
+            IdentifierNode identifier = (IdentifierNode)this.Visit(context.IDENTIFIER());
+
+            List<ExprNode> exprArgs = new();
+
+            if (context.func_args() is not null) {
+                exprArgs = (List<ExprNode>)this.Visit(context.func_args());
+            }
+
+            return new NewObjectExprNode(identifier, exprArgs);
+        }
+
         public override object VisitFunc_args([NotNull] ActionParser.Func_argsContext context) {
             List<ExprNode> exprArgs = new ();
 
@@ -686,6 +698,10 @@ namespace Action.AST
                 GetFunctionArgsList(exprArgs, context.func_args());
             }
         }
+
+        
+
+        
 
 
         #endregion
