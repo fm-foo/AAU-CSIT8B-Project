@@ -1,10 +1,11 @@
 using Action.AST;
+using Action.Compiler;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace Action.Compiler
+namespace ActionCompiler.Compiler.SemanticErrorChecking
 {
     public class SemErrorGameFunctionMissingVisitor : NodeVisitor<IEnumerable<DiagnosticResult>>
     {
@@ -19,9 +20,12 @@ namespace Action.Compiler
             }
         }
 
-        public override IEnumerable<DiagnosticResult> VisitGame(GameNode game){
-            foreach(var fun in game.funcDecs){
-                if(fun.identifier.identifier.Equals("initialize")){
+        public override IEnumerable<DiagnosticResult> VisitGame(GameNode game)
+        {
+            foreach (var fun in game.funcDecs)
+            {
+                if (fun.identifier.identifier.Equals("initialize"))
+                {
                     yield break;
                 }
             }

@@ -1,24 +1,33 @@
 game MyGame {
 	
-	coord x = (-1, 2);
 
-	func: function() {
-		myFunc(1, 2, 3);
-		x = 1.3;
-		 //myEntity.field = 2;
-		2 = 3;
+	int a;
+
+	initialize: function() {
+		if (true)
+		{
+			if (true)
+				x++;
+		}
+		else
+			int b = 1;
+
+		for(;;)
+			int c = 1;
+		
+		foreach(int o in os) 
+			int d = 2;
+
+		while(false)
+			int e = 3;
+
+		while(true)
+			if(true) {
+				for(;;) {
+					if (true)
+						int x = 2;
+				}
+			}
 	}
 };
 
-
-entity MyEntity {
-	
-	coord x = (-1, 2);
-
-	func: function() {
-		myFunc(1, 2, 3);
-		x = 1.3;
-		 //myEntity.field = 2;
-		2 = 3;
-	}
-};

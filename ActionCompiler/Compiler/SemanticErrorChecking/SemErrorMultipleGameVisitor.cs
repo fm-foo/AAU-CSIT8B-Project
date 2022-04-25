@@ -1,10 +1,11 @@
 using Action.AST;
+using Action.Compiler;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace Action.Compiler
+namespace ActionCompiler.Compiler.SemanticErrorChecking
 {
     public class SemErrorMultipleGameVisitor : NodeVisitor<IEnumerable<DiagnosticResult>>
     {
@@ -12,7 +13,8 @@ namespace Action.Compiler
         {
             var gameNodes = nodes.nodes.OfType<GameNode>();
 
-            if(gameNodes.Count() > 1){
+            if (gameNodes.Count() > 1)
+            {
                 yield return new DiagnosticResult(Severity.Error, "You can't have more than one game element");
             }
         }

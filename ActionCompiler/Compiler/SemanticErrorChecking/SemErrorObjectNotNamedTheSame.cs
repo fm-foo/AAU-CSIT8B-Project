@@ -12,45 +12,42 @@ namespace ActionCompiler.Compiler.SemanticErrorChecking
     {
         public override IEnumerable<DiagnosticResult> VisitFile(FileNode file)
         {
-            IEnumerable<MapNode> mapNodes = file.nodes.OfType<MapNode>();
-            IEnumerable<SectionNode> sectionNodes = file.nodes.OfType<SectionNode>();
-            IEnumerable<EntityNode> entityNodes = file.nodes.OfType<EntityNode>();
-
-            // TODO: Game Node is missing
-
             HashSet<string> identifiers = new HashSet<string>();
 
             foreach (var node in file.nodes)
             {
-                switch (node.GetType().Name)
+                switch (node)
                 {
-                    case nameof(MapNode):
-                        var map = (MapNode)node;
-                        if (!identifiers.Add(map.identifier.identifier))
+                    case MapNode mapNode:
+                        if (!identifiers.Add(mapNode.identifier.identifier))
                         {
-                            yield return new DiagnosticResult(Severity.Error, $"The identifier {map.identifier.identifier} has already been defined!");
+                            yield return new DiagnosticResult(Severity.Error, $"The identifier {mapNode.identifier.identifier} has already been defined!");
                         }
                         break;
-                    case nameof(SectionNode):
-                        var section = (SectionNode)node;
-                        if (section.identifier is null)
+                    case SectionNode sectionNode:
+                        if (sectionNode.identifier is null)
                         {
                             continue;
                         }
-                        if (!identifiers.Add(section.identifier.identifier))
+                        if (!identifiers.Add(sectionNode.identifier.identifier))
                         {
-                            yield return new DiagnosticResult(Severity.Error, $"The identifier {section.identifier.identifier} has already been defined!");
+                            yield return new DiagnosticResult(Severity.Error, $"The identifier {sectionNode.identifier.identifier} has already been defined!", Error.IdentifierAlreadyDefined);
                         }
                         break;
-                    case nameof(EntityNode):
-                        var entity = (EntityNode)node;
-                        if (!identifiers.Add(entity.identifier.identifier))
+                    case EntityNode entityNode:
+                        if (!identifiers.Add(entityNode.identifier.identifier))
                         {
-                            yield return new DiagnosticResult(Severity.Error, $"The identifier {entity.identifier.identifier} has already been defined!");
+                            yield return new DiagnosticResult(Severity.Error, $"The identifier {entityNode.identifier.identifier} has already been defined!", Error.IdentifierAlreadyDefined);
+                        }
+                        break;
+                    case GameNode gameNode:
+                        if (!identifiers.Add(gameNode.identifier.identifier))
+                        {
+                            yield return new DiagnosticResult(Severity.Error, $"The identifier {gameNode.identifier.identifier} has already been defined!", Error.IdentifierAlreadyDefined);
                         }
                         break;
                     default:
-                        break;
+                        throw new Exception($"Unknown type: {node.GetType()}");
                 }
             }
         }

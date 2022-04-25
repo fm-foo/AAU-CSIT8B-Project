@@ -16,7 +16,7 @@ namespace Action
         private static readonly string semanticErrorTxt = @"ExamplePrograms\SemanticErrors\semanticErrors.txt";
         private static readonly string linesTxt = @"ExamplePrograms\lines.txt";
         private static readonly string entity =  @"ExamplePrograms\entity.txt";
-
+        private static readonly string map = @"ExamplePrograms\map.txt";
 
         public static int Main(string[] args)
         {

@@ -11,6 +11,14 @@ namespace Action.Compiler
         FloatOverflow,
         FloatUnderflow,
         InvalidAssignment,
-        MultipleDeclaration
+        MultipleDeclaration,
+        IdentifierAlreadyDefined,
+        InvalidLoneStatement,
+        InvalidDeclarationInEmbeddedStatement,
+        StandaloneSectionWithCoordinates,
+        MissingBackgroundColorValue,
+        MissingBackgroundImagePathValue,
+        MissingBoxWidthHeight,
+        CoordinatesOffMap
     }
 }

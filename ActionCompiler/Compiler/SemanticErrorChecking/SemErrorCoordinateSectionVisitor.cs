@@ -1,10 +1,11 @@
 using Action.AST;
+using Action.Compiler;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace Action.Compiler
+namespace ActionCompiler.Compiler.SemanticErrorChecking
 {
     public class SemErrorCoordinateSectionVisitor : NodeVisitor<IEnumerable<DiagnosticResult>>
     {
@@ -19,9 +20,10 @@ namespace Action.Compiler
         }
         public override IEnumerable<DiagnosticResult> VisitSection(SectionNode sectionNode)
         {
-            if(sectionNode.coords != null){
-                yield return new DiagnosticResult(Severity.Error, "A section defined outside a map or another section, cannot be defined with coordinates");
-            } 
+            if (sectionNode.coords != null)
+            {
+                yield return new DiagnosticResult(Severity.Error, "A section defined outside a map or another section, cannot be defined with coordinates", Error.StandaloneSectionWithCoordinates);
+            }
         }
     }
 }

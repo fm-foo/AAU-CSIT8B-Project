@@ -1,4 +1,14 @@
-game TheOtherSnake {
+entity Snake {
+    initialize: function(){
+        int b = 12;
+        int a;
+        a = b + (3*4);
+        test(b);
+
+    }
+};
+
+/*game TheOtherSnake {
     test: function(){
 
     }
@@ -32,4 +42,11 @@ entity MyEntity {
     delete: function(float[] values) {
     }
     
-};
+};*/
+
+test(a);
+        int a;
+        a = 12;
+        if(true){
+            int b;
+        }

@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace ActionCompiler.Compiler.SemanticErrorChecking
 {
-    internal class SemErrorOnlyOneProperty : NodeVisitor<IEnumerable<DiagnosticResult>>
+    public class SemErrorOnlyOnePropertyVisitor : NodeVisitor<IEnumerable<DiagnosticResult>>
     {
         public override IEnumerable<DiagnosticResult> VisitFile(FileNode file)
         {
