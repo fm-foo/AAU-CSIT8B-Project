@@ -1,5 +1,6 @@
 using System;
-using System.Collections.Generic;
+using System.Reflection;
+using System.Threading.Tasks;
 
 namespace Action.AST
 {
@@ -10,7 +11,7 @@ namespace Action.AST
         public virtual T VisitFile(FileNode file) => Default;
         public virtual T VisitFunctionCallExpr(FunctionCallExprNode funcCallExprNode) => Default;
         public virtual T VistPostFixExpr(PostFixExprNode postFixExprNode) => Default;
-        public virtual T VisitAddativeExpr(AdditiveExprNode additiveExprNode) => Default;
+        public virtual T VisitAdditiveExpr(AdditiveExprNode additiveExprNode) => Default;
         public virtual T VisitComplex(ComplexNode complexNode) => Default;
         public virtual T VisitMap(MapNode mapNode) => Default;
         public virtual T VisitSection(SectionNode sectionNode) => Default;
@@ -26,17 +27,14 @@ namespace Action.AST
         public virtual T VisitEntity(EntityNode entityNode) => Default;
         public virtual T VisitGame(GameNode gameNode) => Default;
         public virtual T VisitFieldDeclaration(FieldDecNode fieldNode) => Default;
-        public virtual T VisitExpr(ExprNode exprNode) => Default;
         public virtual T VisitEqualityExpr(EqualityExprNode equalityExprNode) => Default;
         public virtual T VisitRelationalExpr(RelationalExprNode relationalExprNode) => Default;
         public virtual T VisitMultiplicativeExprNode(MultiplicativeExprNode multiplicativeExprNode) => Default;
         public virtual T VisitUnaryExpr(UnaryExprNode unaryExprNode) => Default;
         public virtual T VisitBooleanExpr(BoolExprNode boolExprNode) => Default;
-        public virtual T VisitPrimaryExpr(PrimaryExprNode primaryExprNode) => Default;
         public virtual T VisitArrayAccess(ArrayAccessNode arrayAccessNode) => Default;
         public virtual T VisitBool(BoolNode boolNode) => Default;
         public virtual T VisitArray(ArrayNode arrayNode) => Default;
-        public virtual T VisitType(TypeNode typeNode) => Default;
         public virtual T VisitIntType(IntTypeNode intTypeNode) => Default;
         public virtual T VisitFloatType(FloatTypeNode floatTypeNode) => Default;
         public virtual T VisitBoolType(BoolTypeNode boolTypeNode) => Default;
@@ -46,7 +44,6 @@ namespace Action.AST
         public virtual T VisitArrayType(ArrayTypeNode arrayType) => Default;
         public virtual T VisitFunction(FunctionNode functionNode) => Default;
         public virtual T VisitBlock(BlockNode blockNode) => Default;
-        public virtual T VisitStatement(StatementNode statementNode) => Default;
         public virtual T VisitIfStatement(IfStatementNode ifStatementNode) => Default;
         public virtual T VisitWhileStatement(WhileStatementNode whileStatementNode) => Default;
         public virtual T VisitForStatement(ForStatementNode forStatementNode) => Default;
@@ -54,7 +51,6 @@ namespace Action.AST
         public virtual T VisitExpressionStatement(ExpressionStatementNode expressionStatementNode) => Default;
         public virtual T VisitDeclaration(DeclarationNode declarationNode) => Default;
         public virtual T VisitAssignment(AssignmentNode assignmentNode) => Default;
-        public virtual T VisitFunctionArguments(FunctionArgumentsNode functionArgumentsNode) => Default;
         public virtual T VisitFunctionArgument(FunctionArgumentNode functionArgumentNode) => Default;
         public virtual T VisitIs(IsNode isexpr) => Default;
     }

@@ -11,6 +11,7 @@ namespace Action.Compiler
         FloatOverflow,
         FloatUnderflow,
         InvalidAssignment,
+        MultipleDeclaration,
         IdentifierAlreadyDefined,
         InvalidLoneStatement,
         InvalidDeclarationInEmbeddedStatement,

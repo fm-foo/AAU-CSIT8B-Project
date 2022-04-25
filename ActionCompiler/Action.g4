@@ -177,7 +177,7 @@ MAP                 : 'map';
 SECTION             : 'section';
 REFERENCE           : 'reference';
 BACKGROUND          : 'background';
-COLOUR              : 'colour';
+COLOUR              : 'colour' | 'color';
 BOX                 : 'box';
 IMAGE               : 'image';
 COORDINATES         : 'coordinates';

@@ -27,6 +27,9 @@ namespace Action.Compiler
         {
         }
 
+        // TODO: Some semantics error checks should run before references are resolved,
+        //      some should run after.
+
         public CompilationResult Compile(Stream input, ILogger<ActionCompiler>? logger = null)
         {
             logger ??= NullLogger<ActionCompiler>.Instance;

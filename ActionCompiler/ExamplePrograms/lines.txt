@@ -6,9 +6,9 @@
 
         section (0, 4) {
                 background: colour { hex: #00FF00; };
-                shape: line {
+                shape: coordinates {
                         (0, 0);
-                        (4, -4);
+                        (4, 2324);
                 };
         };
 

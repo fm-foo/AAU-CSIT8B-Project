@@ -2,7 +2,7 @@
 
 namespace Action.AST
 {
-    public record BlockNode(List<StatementNode> statements) : StatementNode
+    public record BlockNode(IEnumerable<StatementNode> statements) : StatementNode
     {
         public override T Accept<T>(NodeVisitor<T> visitor)
         {

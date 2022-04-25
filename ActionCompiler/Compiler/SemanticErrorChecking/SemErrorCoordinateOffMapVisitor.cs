@@ -7,72 +7,32 @@ using System.Linq;
 
 namespace ActionCompiler.Compiler.SemanticErrorChecking
 {
-    public class SemErrorCoordinateOffMapVisitor : NodeVisitor<IEnumerable<DiagnosticResult>>
+    public class SemErrorCoordinateOffMapVisitor : DiagnosticsVisitor
     {
-        public override IEnumerable<DiagnosticResult> VisitFile(FileNode nodes)
-        {
-            IEnumerable<MapNode> query1 = nodes.nodes.OfType<MapNode>();
-            foreach (var node in query1)
-            {
-                foreach (var symbol in Visit(node))
-                    yield return symbol;
-            }
-        }
-
+        // TODO: This does not take into account sub-sub-sections - it only checks maps
+        //      It needs to be extended to check every sub-section in any section
+        // TODO: This does not take into account the relative coordinates of 
+        // TODO: This does not check reference sections - does this happen after reference sections are resolved?
         public override IEnumerable<DiagnosticResult> VisitMap(MapNode mapNode)
         {
-            (int x, int y) size = GetSize(mapNode);
-            foreach (var sec in mapNode.sections.OfType<SectionNode>())
-            {
-                foreach (var property in sec.properties.Where(p => p.identifier is ShapeKeywordNode))
-                {
-                    ComplexNode val = (ComplexNode)property.value!;
-                    if (val.type is CoordinatesKeywordNode)
-                    {
-                        foreach (var coord in val.values)
-                        {
-                            CoordinateNode coordinate = (CoordinateNode)coord;
-                            if (coordinate.x.integer > size.x || coordinate.x.integer < 0)
-                            {
-                                yield return new DiagnosticResult(Severity.Error, "X coordinate is out of bounds!", Error.CoordinatesOffMap);
-                            }
-                            if (coordinate.y.integer > size.y || coordinate.y.integer < 0)
-                            {
-                                yield return new DiagnosticResult(Severity.Error, "Y coordinate is out of bounds!", Error.CoordinatesOffMap);
-                            }
-                        }
-                    }
-                }
-            }
+            var size = GetSize(mapNode);
+            var result = mapNode.sections
+                .OfType<SectionNode>()
+                .Select(s => s.GetProperty<ShapeKeywordNode, ComplexNode>())
+                .Where(s => s.type is CoordinatesKeywordNode)
+                .SelectMany(s => s.values)
+                .Cast<CoordinateNode>()
+                .Where(c => c.x.integer > size.width || c.y.integer > size.height)
+                .Select(c => new DiagnosticResult(Severity.Error, "The given coordinates are off the map"));
+            return result;
         }
 
-        public (int, int) GetSize(ComplexNode node)
+        public (int width, int height) GetSize(ComplexNode node)
         {
-            (int x, int y) size = (0,0);
-            foreach (var property in node.properties)
-            {
-                if (property.identifier is ShapeKeywordNode)
-                {
-                    ComplexNode val = (ComplexNode)property.value;
-                    if (val.type is BoxKeywordNode)
-                    {
-                        foreach (var prop in val.properties)
-                        {
-                            if (prop.identifier is HeightKeywordNode)
-                            {
-                                IntNode res = (IntNode)prop.value;
-                                size.x = res.integer;
-                            }
-                            if (prop.identifier is WidthKeywordNode)
-                            {
-                                IntNode res = (IntNode)prop.value;
-                                size.y = res.integer;
-                            }
-                        }
-                    }
-                }
-            }
-            return size;
+            ComplexNode shape = node.GetProperty<ShapeKeywordNode, ComplexNode>();
+            int height = shape.GetProperty<HeightKeywordNode, IntNode>().integer;
+            int width = shape.GetProperty<WidthKeywordNode, IntNode>().integer;
+            return (width, height);
         }
 
     }
