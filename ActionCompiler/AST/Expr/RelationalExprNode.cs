@@ -16,7 +16,6 @@ namespace Action.AST
         LESSTHAN,
         GREATERTHAN,
         LESSTHANOREQUAL,
-        GREATERTHANOREQUAL,
-        IS
+        GREATERTHANOREQUAL
     }
 }
