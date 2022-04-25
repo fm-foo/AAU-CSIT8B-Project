@@ -53,30 +53,4 @@ public static class Utilities
             Assert.Equal(result.error, data.Diagnostics.Error);
         }
     }
-
-    //public static void PerformTest(TestData data)
-    //{
-    //    Stream stream = StringToStream(data.file);
-    //    var compiler = new Action.Compiler.ActionCompiler();
-    //    var result = compiler.Compile(stream);
-    //    if (data.diagnostics.Length == 0)
-    //    {
-    //        Assert.Empty(result.Diagnostics);
-    //        Assert.True(result.Success);
-    //    }
-    //    else
-    //    {
-    //        // todo: rewrite this to properly match diagnostics with errors
-    //        // also, todo: rewrite this for line numbers
-    //        Assert.Equal(data.diagnostics.Length, result.Diagnostics.Count());
-    //        foreach (var diagnostic in data.diagnostics)
-    //        {
-    //            var resultdiag = result.Diagnostics.FirstOrDefault(r =>
-    //                r.severity == diagnostic.severity
-    //                && r.error == diagnostic.error
-    //            );
-    //            Assert.NotNull(resultdiag);
-    //        }
-    //    }
-    //}
 }

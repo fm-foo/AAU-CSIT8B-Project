@@ -36,7 +36,7 @@ namespace ActionCompiler.Compiler.SemanticErrorChecking
             {
                 if (property.identifier is ShapeKeywordNode)
                 {
-                    ComplexNode val = (ComplexNode)property.value;
+                    ComplexNode val = (ComplexNode)property.value!;
                     if (val.type is BoxKeywordNode)
                     {
                         if (!(val.properties.Count() == 2) && !(val.properties.OfType<WidthKeywordNode>().Count() == 1 && val.properties.OfType<HeightKeywordNode>().Count() == 1))
