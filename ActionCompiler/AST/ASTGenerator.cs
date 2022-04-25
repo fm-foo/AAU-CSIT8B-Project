@@ -601,9 +601,7 @@ namespace Action.AST
         }
 
         #endregion
-        #region primary_expr   
-
-        // TODO: missing member_access, typeof_expr, new_object
+        #region primary_expr
 
         public override object VisitLit([NotNull] ActionParser.LitContext context)
         {
@@ -676,12 +674,11 @@ namespace Action.AST
             IdentifierNode identifier = (IdentifierNode)this.Visit(context.IDENTIFIER());
 
             List<ExprNode> exprArgs = new();
-
             if (context.func_args() is not null) {
                 exprArgs = (List<ExprNode>)this.Visit(context.func_args());
             }
 
-            return new NewObjectExprNode(identifier, exprArgs);
+            return new NewObjectNode(identifier, exprArgs);
         }
 
         public override object VisitFunc_args([NotNull] ActionParser.Func_argsContext context) {
@@ -692,6 +689,14 @@ namespace Action.AST
             return exprArgs;
         }
 
+        public override object VisitMember_access([NotNull] ActionParser.Member_accessContext context) {
+            ExprNode expr = (ExprNode)this.Visit(context.primary_expr());
+
+            IdentifierNode identifier = (IdentifierNode)this.Visit(context.IDENTIFIER());
+
+            return new MemberAccessNode(expr, identifier);
+        }
+
         private void GetFunctionArgsList(List<ExprNode> exprArgs, ActionParser.Func_argsContext context) {
             exprArgs.Add((ExprNode)this.Visit(context.expr()));
             if (context.func_args() is not null) {
@@ -699,9 +704,7 @@ namespace Action.AST
             }
         }
 
-        
 
-        
 
 
         #endregion
