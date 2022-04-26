@@ -41,6 +41,21 @@ namespace Action.AST
             }
             return value;
         }
+
+        public override T VisitMemberAccess(MemberAccessNode memberAccessNode)
+        {
+            T value = MergeValues(Visit(memberAccessNode.expr), Visit(memberAccessNode.Identifier));
+            return value;
+        }
+
+        public override T VisitNewObject(NewObjectNode newObjectExprNode)
+        {
+            T value = Visit(newObjectExprNode.identifier);
+            foreach (var node in newObjectExprNode.funcArgs)
+                value = MergeValues(value, Visit(node));
+            return value;
+        }
+
         public override T VisitFunctionCallExpr(FunctionCallExprNode funcCallExprNode)
         {
             T value = Visit(funcCallExprNode.expr);
@@ -318,5 +333,6 @@ namespace Action.AST
         public override T VisitFunctionArgument(FunctionArgumentNode functionArgumentNode) => MergeValues(Visit(functionArgumentNode.identifier), Visit(functionArgumentNode.typeNode));
         public override T VisitIs(IsNode isexpr) => MergeValues(Visit(isexpr.expr), Visit(isexpr.type));
         public abstract T MergeValues(T oldValue, T newValue);
+
     }
 }

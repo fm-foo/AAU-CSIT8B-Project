@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ActionCompiler": {
+      "commandName": "Project",
+      "commandLineArgs": "ActionCompiler.exe \".\\ExamplePrograms\\map examples.txt\""
+    }
+  }
+}

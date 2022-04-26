@@ -9,6 +9,9 @@ namespace Action.AST
         public virtual T Default => throw new NotImplementedException();
         public T Visit(SymbolNode node) => node.Accept(this);
         public virtual T VisitFile(FileNode file) => Default;
+
+        public virtual T VisitMemberAccess(MemberAccessNode memberAccessNode) => Default;
+        public virtual T VisitNewObject(NewObjectNode newObjectExprNode) => Default;
         public virtual T VisitFunctionCallExpr(FunctionCallExprNode funcCallExprNode) => Default;
         public virtual T VistPostFixExpr(PostFixExprNode postFixExprNode) => Default;
         public virtual T VisitAdditiveExpr(AdditiveExprNode additiveExprNode) => Default;
