@@ -67,12 +67,11 @@ namespace ActionCompiler.Compiler.SemanticErrorChecking
             {
                 if (statementNode is ExpressionStatementNode expressionStatement)
                 {
-
-                    // TODO: new object expression
                     switch(expressionStatement.expr)
                     {
                         case PostFixExprNode _:
                         case FunctionCallExprNode _:
+                        case NewObjectNode _:
                             break;
                         default:
                             yield return new DiagnosticResult(Severity.Error, "Only function calls, postfix expressions and new object expressions are allowed as lone statements!", Error.InvalidLoneStatement);

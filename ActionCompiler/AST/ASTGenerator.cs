@@ -601,9 +601,7 @@ namespace Action.AST
         }
 
         #endregion
-        #region primary_expr   
-
-        // TODO: missing member_access, typeof_expr, new_object
+        #region primary_expr
 
         public override object VisitLit([NotNull] ActionParser.LitContext context)
         {
@@ -663,21 +661,47 @@ namespace Action.AST
 
         public override object VisitFunc_call([NotNull] ActionParser.Func_callContext context) {
             ExprNode expr = (ExprNode)this.Visit(context.primary_expr());
-            List<ExprNode> exprArgs = new();
-
-            if (context.func_args() is not null) {
-                exprArgs = (List<ExprNode>) this.Visit(context.func_args());
-            }
+            List<ExprNode> exprArgs = GetFuncArgsExprs(context.func_args())
+                .Select(e => Visit(e))
+                .Cast<ExprNode>()
+                .ToList();
 
             return new FunctionCallExprNode(expr, exprArgs);
         }
 
+        public override object VisitNew_object([NotNull] ActionParser.New_objectContext context) {
+            IdentifierNode identifier = (IdentifierNode)this.Visit(context.IDENTIFIER());
+            List<ExprNode> exprArgs = GetFuncArgsExprs(context.func_args())
+                .Select(e => Visit(e))
+                .Cast<ExprNode>()
+                .ToList();
+            return new NewObjectNode(identifier, exprArgs);
+        }
+
         public override object VisitFunc_args([NotNull] ActionParser.Func_argsContext context) {
-            List<ExprNode> exprArgs = new ();
+            // I don't think this method is ever actually called, we handle context.func_args() directly
+            // and never call Visit on it.
+            return GetFuncArgsExprs(context)
+                .Select(e => Visit(e))
+                .Cast<ExprNode>()
+                .ToList();
+        }
 
-            GetFunctionArgsList(exprArgs, context);
+        private static IEnumerable<ActionParser.ExprContext> GetFuncArgsExprs(ActionParser.Func_argsContext? context)
+        {
+            while (context is not null)
+            {
+                yield return context.expr();
+                context = context.func_args();
+            }
+        }
 
-            return exprArgs;
+        public override object VisitMember_access([NotNull] ActionParser.Member_accessContext context) {
+            ExprNode expr = (ExprNode)this.Visit(context.primary_expr());
+
+            IdentifierNode identifier = (IdentifierNode)this.Visit(context.IDENTIFIER());
+
+            return new MemberAccessNode(expr, identifier);
         }
 
         private void GetFunctionArgsList(List<ExprNode> exprArgs, ActionParser.Func_argsContext context) {
@@ -686,6 +710,8 @@ namespace Action.AST
                 GetFunctionArgsList(exprArgs, context.func_args());
             }
         }
+
+
 
 
         #endregion
