@@ -18,7 +18,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             "program": "${workspaceFolder}/ActionCompiler/bin/Debug/net6.0/ActionCompiler.dll",
-            "args": [],
+            "args": ["./ExamplePrograms/SemanticErrors/semanticErrors.txt"],
             "cwd": "${workspaceFolder}/ActionCompiler",
             "console": "internalConsole",
             "stopAtEntry": false
@@ -29,7 +29,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             "program": "${workspaceFolder}/ActionCompiler/bin/Debug/net6.0/ActionCompiler.dll",
-            "args": [],
+            "args": ["./ExamplePrograms/SemanticErrors/semanticErrors.txt"],
             "cwd": "${workspaceFolder}/ActionCompiler",
             "console": "internalConsole",
             "stopAtEntry": false,

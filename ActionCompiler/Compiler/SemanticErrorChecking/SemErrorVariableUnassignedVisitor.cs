@@ -6,18 +6,8 @@ using System.Linq;
 
 namespace ActionCompiler.Compiler.SemanticErrorChecking
 {
-    public class SemErrorVariableUnassignedVisitor : NodeVisitor<IEnumerable<DiagnosticResult>>
+    public class SemErrorVariableUnassignedVisitor : DiagnosticsVisitor
     {
-
-        public override IEnumerable<DiagnosticResult> VisitFile(FileNode file)
-        {
-
-            foreach (var node in file.nodes.OfType<ComplexNode>())
-            {
-                foreach (var diagnostic in Visit(node))
-                    yield return diagnostic;
-            }
-        }
 
         public override IEnumerable<DiagnosticResult> VisitMap(MapNode mapNode)
         {
@@ -117,10 +107,10 @@ namespace ActionCompiler.Compiler.SemanticErrorChecking
         public bool CheckExpr(ExprNode myExpr, Dictionary<IdentifierNode, bool> variables)
         {
             bool res = true;
-            switch (myExpr.GetType().Name)
+            switch (myExpr)
             {
-                case nameof(AdditiveExprNode):
-                    AdditiveExprNode add = (AdditiveExprNode)myExpr;
+                // Do I really need to do that for every kind of expression?
+                case AdditiveExprNode add:
                     if (add.left is IdentifierNode)
                     {
                         IdentifierNode id = (IdentifierNode)add.left;
