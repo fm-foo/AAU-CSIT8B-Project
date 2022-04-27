@@ -30,27 +30,49 @@ namespace Action.Compiler
         // TODO: Some semantics error checks should run before references are resolved,
         //      some should run after.
 
+        // Phase list
+        // - Parse into AST
+        //      - Syntax error checking
+        // - First semantics error check
+        // - Map reference resolving/sugar lowering
+        // - Second semantics error check
+        // - Metadata resolving
+        // - Type checking
+        // - File output
         public CompilationResult Compile(Stream input, ILogger<ActionCompiler>? logger = null)
         {
             logger ??= NullLogger<ActionCompiler>.Instance;
             logger.BeginScope("compilation");
             logger.LogInformation("Beginning compilation");
-            List<DiagnosticResult> diagnostics = new List<DiagnosticResult>();
+            var diagnostics = new List<DiagnosticResult>();
             FileNode? ast = Parse(input, logger, diagnostics);
             if (ast is null)
                 return CompilationResult.Failure(diagnostics);
 
-            bool valid = SemanticsErrorCheck(ast, logger, diagnostics);
+            bool valid = SemanticsErrorCheck(ast, logger, diagnostics, SemanticsFirstPass);
             if (!valid)
                 return CompilationResult.Failure(diagnostics);
 
-            ast = ResolveReferences(ast, logger, diagnostics);
+            ast = LowerAST(ast, logger, diagnostics);
             if (ast is null)
                 return CompilationResult.Failure(diagnostics);
 
-            ast = TrimSections(ast, logger);
+            valid = SemanticsErrorCheck(ast, logger, diagnostics, SemanticsSecondPass);
+            if (!valid)
+                return CompilationResult.Failure(diagnostics);
 
-            return CompileToImages(ast, logger, diagnostics);
+            throw new NotImplementedException();
+        }
+
+        public FileNode? LowerAST(FileNode ast, ILogger<ActionCompiler> logger, List<DiagnosticResult> diagnostics)
+        {
+            FileNode? newAst = ResolveReferences(ast, logger, diagnostics);
+            if (newAst is null)
+                return null;
+
+            newAst = TrimSections(newAst, logger);
+
+            return newAst;
         }
 
         // add diagnostics to the list if there's warnings/errors
@@ -71,39 +93,43 @@ namespace Action.Compiler
             var diagnosticVisitor = new NumberDiagnosticVisitor();
             diagnostics.AddRange(diagnosticVisitor.Visit(tree));
             var visitor = new ASTGenerator();
-            if(!diagnostics.Any()){
+            if (!diagnostics.Any())
+            {
                 return visitor.VisitFile(tree);
-            }else{
+            }
+            else
+            {
                 return null;
             }
         }
 
 
-        // put semantics error checking here
-        // recommendation: create a Visitor pattern class
-        // maybe subclass it for different types of errors?
-        private bool SemanticsErrorCheck(FileNode ast, ILogger<ActionCompiler> logger, List<DiagnosticResult> diagnostics)
+        private static readonly IEnumerable<NodeVisitor<IEnumerable<DiagnosticResult>>> SemanticsFirstPass = new NodeVisitor<IEnumerable<DiagnosticResult>>[]
         {
-            var visitors = new NodeVisitor<IEnumerable<DiagnosticResult>>[]
-            {
-                new SemErrorNoIdentifierSectionVisitor(),
-                new SemErrorEmptyBackgroundVisitor(),
-                new SemErrorCoordinateSectionVisitor(),
-                new SemErrorEmptySizeBoxVisitor(),
-                new SemErrorMapWithoutBSVisitor(),
-                new SemErrorSectionOffMapVisitor(),
-                new SemErrorLineOnlyOneCoordinate(),
-                new SemErrorCoordinateOffMapVisitor(),
-                new SemErrorObjectNotNamedTheSame(),
-                new SemErrorOnlyOnePropertyVisitor(),
-                new SemErrorEntitiesFunctionVisitor(),
-                new SemErrorGameFunctionMissingVisitor(),
-                new SemErrorMultipleGameVisitor(),
-                new SemErrorValidAssignment(),
-                new SemErrorLoneExpressions(),
-                new SemErrorVariableDeclarationsAsInternalStatement(),
-                new SemErrorVariableUnassignedVisitor(),
-            };
+            new SemErrorNoIdentifierSectionVisitor(),
+            new SemErrorEmptyBackgroundVisitor(),
+            new SemErrorCoordinateSectionVisitor(),
+            new SemErrorEmptySizeBoxVisitor(),
+            new SemErrorMapWithoutBSVisitor(),
+            new SemErrorSectionOffMapVisitor(),
+            new SemErrorLineOnlyOneCoordinate(),
+            new SemErrorCoordinateOffMapVisitor(),
+            new SemErrorObjectNotNamedTheSame(),
+            new SemErrorOnlyOnePropertyVisitor(),
+            new SemErrorEntitiesFunctionVisitor(),
+            new SemErrorGameFunctionMissingVisitor(),
+            new SemErrorMultipleGameVisitor(),
+            new SemErrorValidAssignment(),
+            new SemErrorLoneExpressions(),
+            new SemErrorVariableDeclarationsAsInternalStatement(),
+            new SemErrorVariableUnassignedVisitor(),
+        };
+
+        private static readonly IEnumerable<NodeVisitor<IEnumerable<DiagnosticResult>>> SemanticsSecondPass = new NodeVisitor<IEnumerable<DiagnosticResult>>[]
+        {
+        };
+        private static bool SemanticsErrorCheck(FileNode ast, ILogger<ActionCompiler> logger, List<DiagnosticResult> diagnostics, IEnumerable<NodeVisitor<IEnumerable<DiagnosticResult>>> visitors)
+        {
             foreach (var visitor in visitors)
             {
                 var result = visitor.Visit(ast);
