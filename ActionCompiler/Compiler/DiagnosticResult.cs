@@ -19,6 +19,7 @@ namespace Action.Compiler
         MissingBackgroundColorValue,
         MissingBackgroundImagePathValue,
         MissingBoxWidthHeight,
-        CoordinatesOffMap
+        CoordinatesOffMap,
+        NotDefinitelyAssigned
     }
 }
