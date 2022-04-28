@@ -236,7 +236,8 @@ namespace Action.Compiler
             Stream stream = new MemoryStream();
             image.SaveAsPng(stream);
             stream.Seek(0, SeekOrigin.Begin);
-            return new ImageFile(map.identifier.identifier + ".png", stream);
+            throw new NotImplementedException();
+            //return new ImageFile(map.identifier.identifier + ".png", stream);
         }
 
         private const int TileSize = 50;

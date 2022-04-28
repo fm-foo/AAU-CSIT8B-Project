@@ -21,6 +21,8 @@ namespace Action.AST
         public virtual T VisitColour(ColourNode colourNode) => Default;
         public virtual T VisitCoordinate(CoordinateNode coordinateNode) => Default;
         public virtual T VisitIdentifier(IdentifierNode identifierNode) => Default;
+        public virtual T VisitBoundIdentifier(BoundIdentifierNode identifierNode) => Default;
+        public virtual T VisitKeyword(KeywordNode keywordNode) => Default;
         public virtual T VisitInt(IntNode intNode) => Default;
         public virtual T VisitFloat(FloatNode floatNode) => Default;
         public virtual T VisitNatNum(NatNumNode natNumNode) => Default;

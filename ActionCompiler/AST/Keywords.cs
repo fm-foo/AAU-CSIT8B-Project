@@ -1,6 +1,12 @@
 namespace Action.AST
 {
-    public record KeywordNode(string keyword) : IdentifierNode(keyword);
+    public record KeywordNode(string keyword) : IdentifierNode(keyword)
+    {
+        public override T Accept<T>(NodeVisitor<T> visitor)
+        {
+            return visitor.VisitKeyword(this);
+        }
+    }
     public record MapKeywordNode() : KeywordNode("map");
     public record SectionKeywordNode() : KeywordNode("section");
     public record ReferenceKeywordNode() : KeywordNode("reference");

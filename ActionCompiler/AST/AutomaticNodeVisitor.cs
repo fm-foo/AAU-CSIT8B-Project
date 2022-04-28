@@ -22,7 +22,7 @@ namespace Action.AST
         }
 #endif
 
-        public override T Default => default;
+        public override T Default => default!;
         public override T VisitFile(FileNode file)
         {
             bool valueSet = false;
@@ -133,6 +133,8 @@ namespace Action.AST
         public override T VisitColour(ColourNode colourNode) => Default;
         public override T VisitCoordinate(CoordinateNode coordinateNode) => MergeValues(Visit(coordinateNode.x), Visit(coordinateNode.y));
         public override T VisitIdentifier(IdentifierNode identifierNode) => Default;
+        public override T VisitBoundIdentifier(BoundIdentifierNode boundNode) => Default;
+        public override T VisitKeyword(KeywordNode keywordNode) => Default;
         public override T VisitInt(IntNode intNode) => Default;
         public override T VisitFloat(FloatNode floatNode) => Default;
         public override T VisitNatNum(NatNumNode natNumNode) => Default;
