@@ -1,149 +1,135 @@
 using Action.AST;
 using Action.Compiler;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
 namespace ActionCompiler.Compiler.SemanticErrorChecking
 {
-    public class SemErrorVariableUnassignedVisitor : NodeVisitor<IEnumerable<DiagnosticResult>>
+    public class SemErrorVariableUnassignedVisitor : DiagnosticsVisitor
     {
-
-        public override IEnumerable<DiagnosticResult> VisitFile(FileNode file)
+        public override IEnumerable<DiagnosticResult> VisitFunction(FunctionNode functionNode)
         {
+            var visitor = new VariableAssignmentLevelVisitor();
+            return visitor.Visit(functionNode.block);
+        }
 
-            foreach (var node in file.nodes.OfType<ComplexNode>())
+        private class VariableAssignmentLevelVisitor : DiagnosticsVisitor
+        {
+            // todo: this may need to be updated if we get any new kinds of statements
+
+            public VariableAssignmentLevelVisitor()
             {
-                foreach (var diagnostic in Visit(node))
-                    yield return diagnostic;
+                AssignedIdentifiers = new Dictionary<IdentifierNode, bool>();
             }
-        }
 
-        public override IEnumerable<DiagnosticResult> VisitMap(MapNode mapNode)
-        {
-            yield break;
-        }
-
-        public override IEnumerable<DiagnosticResult> VisitSection(SectionNode sectionNode)
-        {
-            yield break;
-        }
-
-        public override IEnumerable<DiagnosticResult> VisitEntity(EntityNode entityNode)
-        {
-            return CheckDeclaredVariablesGE(entityNode);
-        }
-        public override IEnumerable<DiagnosticResult> VisitGame(GameNode gameNode)
-        {
-            return CheckDeclaredVariablesGE(gameNode);
-        }
-
-        public IEnumerable<DiagnosticResult> CheckDeclaredVariablesGE(ComplexNode node)
-        {
-            Dictionary<IdentifierNode, bool> variables = new Dictionary<IdentifierNode, bool>();
-
-            foreach (PropertyNode prop in node.properties)
+            public VariableAssignmentLevelVisitor(Dictionary<IdentifierNode, bool> alreadySet)
             {
-                FunctionNode fun = (FunctionNode)prop.value;
-                foreach (StatementNode stat in fun.block.statements)
-                {
-                    if (stat is DeclarationNode)
-                    {
-                        DeclarationNode dec = (DeclarationNode)stat;
-                        if (dec.expr == null)
-                        {
-                            variables.Add(dec.identifier, false);
-                        }
-                        else
-                        {
-                            variables.Add(dec.identifier, true);
-                        }
-                    }
-                    else if (stat is AssignmentNode)
-                    {
-                        AssignmentNode assign = (AssignmentNode)stat;
-                        if (assign.rightSide is ExprNode)
-                        {
-                            if (CheckExpr(assign.rightSide, variables))
-                            {
-                                IdentifierNode nodeL = (IdentifierNode)assign.leftSide;
-                                if (variables.ContainsKey(nodeL))
-                                {
-                                    variables[nodeL] = true;
-                                }
-                                else
-                                {
-                                    yield return new DiagnosticResult(Severity.Error, "variable assigned before having been declared");
-                                }
-                            }
-                            else
-                            {
-                                yield return new DiagnosticResult(Severity.Error, "variable used before having been initialized");
+                AssignedIdentifiers = new Dictionary<IdentifierNode, bool>(alreadySet);
+            }
+            public readonly Dictionary<IdentifierNode, bool> AssignedIdentifiers;
 
-                            }
-                        }
-                    }
-                    else if (stat is ExpressionStatementNode)
-                    {
-                        ExpressionStatementNode expr = (ExpressionStatementNode)stat;
-                        if (expr.expr is FunctionCallExprNode)
-                        {
-                            FunctionCallExprNode func = (FunctionCallExprNode)expr.expr;
-                            if (func.funcArgs.Any())
-                            {
-                                foreach (IdentifierNode id in func.funcArgs)
-                                {
-                                    if (variables.ContainsKey(id))
-                                    {
-                                        if (!variables[id])
-                                        {
-                                            yield return new DiagnosticResult(Severity.Error, "variable used before having been initialized");
-                                        }
-                                    }
-                                    else
-                                    {
-                                        yield return new DiagnosticResult(Severity.Error, "variable used before having been declared");
-                                    }
-                                }
-                            }
-                        }
-                    }
+            public override IEnumerable<DiagnosticResult> VisitDeclaration(DeclarationNode declarationNode)
+            {
+                IEnumerable<DiagnosticResult> result = declarationNode.expr is not null 
+                    ? Visit(declarationNode.expr) 
+                    : Enumerable.Empty<DiagnosticResult>();
+                AssignedIdentifiers[declarationNode.identifier] = declarationNode.expr is not null;
+                return result;
+            }
+
+            public override IEnumerable<DiagnosticResult> VisitIdentifier(IdentifierNode identifierNode)
+            {
+                bool exists = AssignedIdentifiers.TryGetValue(identifierNode, out bool assigned);
+                if (!exists)
+                {
+                    // TODO: log this, it'll be useful for diagnosing bugs
+                    yield break;
+                }
+                if (!assigned)
+                {
+                    yield return new DiagnosticResult(Severity.Error, $"{identifierNode} has not been definitely assigned", Error.NotDefinitelyAssigned);
+                }
+                Debug.Assert(exists && assigned); // just in case we mess with the code later
+                yield break;
+            }
+
+            public override IEnumerable<DiagnosticResult> VisitAssignment(AssignmentNode assignmentNode)
+            {
+                if (assignmentNode.leftSide is IdentifierNode identifier)
+                {
+                    IEnumerable<DiagnosticResult> result = Visit(assignmentNode.rightSide);
+                    AssignedIdentifiers[identifier] = true;
+                    return result;
+                }
+                else
+                {
+                    return base.VisitAssignment(assignmentNode);
                 }
             }
 
-            yield break;
-        }
-
-        public bool CheckExpr(ExprNode myExpr, Dictionary<IdentifierNode, bool> variables)
-        {
-            bool res = true;
-            switch (myExpr.GetType().Name)
+            public override IEnumerable<DiagnosticResult> VisitBlock(BlockNode blockNode)
             {
-                case nameof(AdditiveExprNode):
-                    AdditiveExprNode add = (AdditiveExprNode)myExpr;
-                    if (add.left is IdentifierNode)
-                    {
-                        IdentifierNode id = (IdentifierNode)add.left;
-                        if (variables.ContainsKey(id))
-                        {
-                            if (!variables[id])
-                            {
-                                res = false;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        res = CheckExpr(add.left, variables);
-                    }
-                    break;
-                default:
-                    break;
+                var nextLevelVisitor = new VariableAssignmentLevelVisitor(this.AssignedIdentifiers);
+                IEnumerable<DiagnosticResult> result = Enumerable.Empty<DiagnosticResult>();
+                foreach (var statement in blockNode.statements)
+                {
+                    result = result.Concat(nextLevelVisitor.Visit(statement));
+                }
+                foreach (var kvp in nextLevelVisitor.AssignedIdentifiers)
+                {
+                    if (AssignedIdentifiers.ContainsKey(kvp.Key) && kvp.Value)
+                        AssignedIdentifiers[kvp.Key] = true;
+                }
+                return result;
             }
-            return res;
-        }
 
-        // TODO: add a method for all the if, while stuff, which take the node and 
-        //the dictionnary as arguments
+            public override IEnumerable<DiagnosticResult> VisitForStatement(ForStatementNode forStatementNode)
+            {
+                var nextLevelVisitor = new VariableAssignmentLevelVisitor(this.AssignedIdentifiers);
+                var result = Enumerable.Empty<DiagnosticResult>();
+                if (forStatementNode.initialization is not null)
+                    result = result.Concat(nextLevelVisitor.Visit(forStatementNode.initialization));
+                if (forStatementNode.condition is not null)
+                    result = result.Concat(nextLevelVisitor.Visit(forStatementNode.condition));
+                if (forStatementNode.control is not null)
+                    result = result.Concat(nextLevelVisitor.Visit(forStatementNode.control));
+                result = result.Concat(nextLevelVisitor.Visit(forStatementNode.statement));
+                return result;
+            }
+
+            public override IEnumerable<DiagnosticResult> VisitForeachStatement(ForeachStatementNode foreachStatementNode)
+            {
+                var nextLevelVisitor = new VariableAssignmentLevelVisitor(this.AssignedIdentifiers);
+                nextLevelVisitor.AssignedIdentifiers[foreachStatementNode.identifier] = true;
+                return base.VisitForeachStatement(foreachStatementNode);
+            }
+
+            public override IEnumerable<DiagnosticResult> VisitIfStatement(IfStatementNode ifStatementNode)
+            {
+                var result = Visit(ifStatementNode.test);
+                if (ifStatementNode.elseStatement is null)
+                {
+                    var nextLevelVisitor = new VariableAssignmentLevelVisitor(this.AssignedIdentifiers);
+                    result = result.Concat(nextLevelVisitor.Visit(ifStatementNode.primaryStatement));
+                }
+                else
+                {
+                    var trueVisitor = new VariableAssignmentLevelVisitor(this.AssignedIdentifiers);
+                    var falseVisitor = new VariableAssignmentLevelVisitor(this.AssignedIdentifiers);
+                    result = result.Concat(trueVisitor.Visit(ifStatementNode.primaryStatement));
+                    result = result.Concat(falseVisitor.Visit(ifStatementNode.elseStatement));
+                    foreach (var kvp in AssignedIdentifiers.Where(a => !a.Value))
+                    {
+                        bool trueHas = trueVisitor.AssignedIdentifiers.TryGetValue(kvp.Key, out bool trueValue);
+                        bool falseHas = falseVisitor.AssignedIdentifiers.TryGetValue(kvp.Key, out bool falseValue);
+                        if (trueHas && trueValue && falseHas && falseValue)
+                            AssignedIdentifiers[kvp.Key] = true;
+                    }
+                }
+                return result;
+            }
+        }
     }
 }
