@@ -1,7 +1,9 @@
 ﻿using Action.AST;
 using Action.Compiler;
 using Action.Parser;
+using ActionCompiler.Compiler;
 using Antlr4.Runtime;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -52,5 +54,23 @@ public static class Utilities
             Assert.Equal(result.severity, data.Diagnostics!.Severity);
             Assert.Equal(result.error, data.Diagnostics.Error);
         }
+    }
+
+    internal static FileNode Convert(FileNode forAst, ForAndForeachNodeConverterVisitor visitor)
+    {
+        List<ComplexNode> newNodes = new List<ComplexNode>();
+        foreach (var node in forAst.nodes)
+        {
+            if (node is not (EntityNode or GameNode))
+            {
+                newNodes.Add(node as ComplexNode);
+            }
+            else
+            {
+                newNodes.Add(visitor.Visit(node) as ComplexNode);
+            }
+        }
+        FileNode fileNode = new FileNode(newNodes);
+        return fileNode;
     }
 }

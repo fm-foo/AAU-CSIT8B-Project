@@ -18,6 +18,7 @@ using SixLabors.ImageSharp.Drawing;
 using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.Formats;
 using ActionCompiler.Compiler.SemanticErrorChecking;
+using ActionCompiler.Compiler;
 
 namespace Action.Compiler
 {
@@ -71,6 +72,8 @@ namespace Action.Compiler
                 return null;
 
             newAst = TrimSections(newAst, logger);
+
+            newAst = ConvertForAndForeach(newAst, logger);
 
             return newAst;
         }
@@ -175,6 +178,29 @@ namespace Action.Compiler
                     newnodes.Add(newnode);
             }
             return new FileNode(newnodes);
+        }
+
+        private FileNode? ConvertForAndForeach(FileNode ast, ILogger<ActionCompiler> logger)
+        {
+            using (var scope = logger.BeginScope("convert_for"))
+            {
+                logger.LogInformation("Begginning conversion of for nodes");
+                ForAndForeachNodeConverterVisitor visitor = new ForAndForeachNodeConverterVisitor();
+                List<ComplexNode> newNodes = new List<ComplexNode>();
+                foreach (var node in ast.nodes)
+                {
+                    if (node is not (EntityNode or GameNode))
+                    {
+                        newNodes.Add(node as ComplexNode);
+                    }
+                    else
+                    {
+                        newNodes.Add(visitor.Visit(node) as ComplexNode);
+                    }
+                }
+                FileNode fileNode = new FileNode(newNodes);
+                return fileNode; 
+            }
         }
 
         private CompilationResult CompileToImages(FileNode ast, ILogger<ActionCompiler> logger, List<DiagnosticResult> diagnostics)

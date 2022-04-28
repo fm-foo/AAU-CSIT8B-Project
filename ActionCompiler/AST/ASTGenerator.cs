@@ -12,7 +12,6 @@ namespace Action.AST
 {
     public class ASTGenerator : ActionBaseVisitor<object>
     {
-
         public override FileNode VisitFile([NotNull] ActionParser.FileContext context)
         {
             return new FileNode(context.map_or_section()
@@ -260,10 +259,10 @@ namespace Action.AST
                 condition = (ExprNode?)this.Visit(context.cond_expr());
             }
 
-            StatementNode? control = null;
+            ExprNode? control = null;
             if (context.control_expr() is not null)
             {
-                control = (StatementNode)this.Visit(context.control_expr());
+                control = (ExprNode)this.Visit(context.control_expr());
             }
 
             StatementNode statement = (StatementNode)this.Visit(context.statement());

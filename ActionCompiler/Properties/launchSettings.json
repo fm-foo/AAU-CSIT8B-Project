@@ -2,7 +2,7 @@
   "profiles": {
     "ActionCompiler": {
       "commandName": "Project",
-      "commandLineArgs": "ActionCompiler.exe \".\\ExamplePrograms\\map examples.txt\""
+      "commandLineArgs": "\".\\ExamplePrograms\\for.txt\""
     }
   }
 }
