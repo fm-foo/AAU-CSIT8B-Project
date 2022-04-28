@@ -14,7 +14,49 @@ namespace ActionCompiler.Tests.Tests
         /// <returns></returns>
         public static IEnumerable<object[]> GetCorrectData()
         {
-            return BaseTestData.CorrectTestData();
+            yield return new object[]
+                       {
+                new TestData
+                (
+                    @"
+                        map TestMap {
+                            background: colour { hex: #222222; };
+                            shape: box {
+                                height: 10; 
+                                width: 10; 
+                            };
+                            section (5, 5) {
+                                background: image { path: ""./stone.png""; };
+                                shape: coordinates {
+                                    (2, 2);
+                                };
+                        };
+                    };
+                    ",
+                    new Diagnostic(Action.Compiler.Severity.Error, Action.Compiler.Error.CoordinatesOffMap)
+                )
+                       };
+            yield return new object[]
+            {
+                new TestData
+                (
+                    @"
+                        map TestMap {
+                            background: colour { hex: #222222; };
+                            shape: box {
+                                height: 10; width: 10; 
+                            };
+                            section (5, 5) {
+                                background: image { path: ""./stone.png""; };
+                                shape: coordinates {
+                                    (5, 5);
+                                };
+                        };
+                    };
+                    ",
+                    new Diagnostic(Action.Compiler.Severity.Error, Action.Compiler.Error.CoordinatesOffMap)
+                )
+            };
         }
 
         /// <summary>
@@ -31,7 +73,8 @@ namespace ActionCompiler.Tests.Tests
                         map TestMap {
                             background: colour { hex: #222222; };
                             shape: box {
-                                height: 10; width: 10; 
+                                height: 10; 
+                                width: 10; 
                             };
                             section (5, 5) {
                                 background: image { path: ""./stone.png""; };

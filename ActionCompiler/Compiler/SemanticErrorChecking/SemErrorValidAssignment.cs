@@ -58,7 +58,7 @@ namespace ActionCompiler.Compiler.SemanticErrorChecking
         {
             // Left side must be variable (identifier) or field
 
-            if (assignmentNode.leftSide is not IdentifierNode) // TODO: member access
+            if (assignmentNode.leftSide is not (IdentifierNode or MemberAccessNode)) 
             {
                 return new DiagnosticResult[] { new DiagnosticResult(Severity.Error, "Left side of an assignment expression must either be a variable or a field!", Error.InvalidAssignment) };
             }

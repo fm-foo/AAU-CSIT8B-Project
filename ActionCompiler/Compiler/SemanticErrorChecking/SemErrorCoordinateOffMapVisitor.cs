@@ -22,8 +22,8 @@ namespace ActionCompiler.Compiler.SemanticErrorChecking
                 .Where(s => s.type is CoordinatesKeywordNode)
                 .SelectMany(s => s.values)
                 .Cast<CoordinateNode>()
-                .Where(c => c.x.integer > size.width || c.y.integer > size.height)
-                .Select(c => new DiagnosticResult(Severity.Error, "The given coordinates are off the map"));
+                .Where(c => (c.x.integer > size.width || c.x.integer < 0) || (c.y.integer > size.height || c.y.integer < 0))
+                .Select(c => new DiagnosticResult(Severity.Error, "The given coordinates are off the map", Error.CoordinatesOffMap));
             return result;
         }
 
