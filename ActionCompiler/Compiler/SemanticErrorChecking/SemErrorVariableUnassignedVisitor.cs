@@ -72,7 +72,11 @@ namespace ActionCompiler.Compiler.SemanticErrorChecking
             public override IEnumerable<DiagnosticResult> VisitBlock(BlockNode blockNode)
             {
                 var nextLevelVisitor = new VariableAssignmentLevelVisitor(this.AssignedIdentifiers);
-                var result = nextLevelVisitor.Visit(blockNode);
+                IEnumerable<DiagnosticResult> result = Enumerable.Empty<DiagnosticResult>();
+                foreach (var statement in blockNode.statements)
+                {
+                    result = result.Concat(nextLevelVisitor.Visit(statement));
+                }
                 foreach (var kvp in nextLevelVisitor.AssignedIdentifiers)
                 {
                     if (AssignedIdentifiers.ContainsKey(kvp.Key) && kvp.Value)
