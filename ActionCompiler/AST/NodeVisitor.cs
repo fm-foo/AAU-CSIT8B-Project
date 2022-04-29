@@ -4,16 +4,15 @@ using System.Threading.Tasks;
 
 namespace Action.AST
 {
-    public class NodeVisitor<T>
+    public abstract class NodeVisitor<T>
     {
         public virtual T Default => throw new NotImplementedException();
         public T Visit(SymbolNode node) => node.Accept(this);
         public virtual T VisitFile(FileNode file) => Default;
-
         public virtual T VisitMemberAccess(MemberAccessNode memberAccessNode) => Default;
         public virtual T VisitNewObject(NewObjectNode newObjectExprNode) => Default;
         public virtual T VisitFunctionCallExpr(FunctionCallExprNode funcCallExprNode) => Default;
-        public virtual T VistPostFixExpr(PostFixExprNode postFixExprNode) => Default;
+        public virtual T VisitPostFixExpr(PostFixExprNode postFixExprNode) => Default;
         public virtual T VisitAdditiveExpr(AdditiveExprNode additiveExprNode) => Default;
         public virtual T VisitComplex(ComplexNode complexNode) => Default;
         public virtual T VisitMap(MapNode mapNode) => Default;

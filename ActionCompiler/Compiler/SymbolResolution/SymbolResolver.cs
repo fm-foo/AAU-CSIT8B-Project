@@ -1,4 +1,0 @@
-namespace Action.Compiler.SymbolResolver
-{
-    
-}

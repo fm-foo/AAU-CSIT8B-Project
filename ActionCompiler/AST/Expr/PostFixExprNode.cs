@@ -17,7 +17,7 @@ namespace Action.AST
 
         public override T Accept<T>(NodeVisitor<T> visitor)
         {
-            return visitor.VistPostFixExpr(this);
+            return visitor.VisitPostFixExpr(this);
         }
     }
 

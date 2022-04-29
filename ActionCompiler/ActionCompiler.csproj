@@ -15,6 +15,7 @@
     <PackageReference Include="SixLabors.ImageSharp" Version="2.0.0" />
     <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta14" />
     <ProjectReference Include="../ActionCompiler.TokenCompiler/ActionCompiler.TokenCompiler.csproj" PrivateAssets="all" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="../ActionCompiler.AstMutatingVisitorGenerator/ActionCompiler.AstMutatingVisitorGenerator.csproj" PrivateAssets="all" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
 
   <ItemGroup>

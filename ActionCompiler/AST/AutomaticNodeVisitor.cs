@@ -63,7 +63,7 @@ namespace Action.AST
                 value = MergeValues(value, Visit(node));
             return value;
         }
-        public override T VistPostFixExpr(PostFixExprNode postFixExprNode) => Visit(postFixExprNode.expr);
+        public override T VisitPostFixExpr(PostFixExprNode postFixExprNode) => Visit(postFixExprNode.expr);
         public override T VisitAdditiveExpr(AdditiveExprNode additiveExprNode) => MergeValues(Visit(additiveExprNode.left), Visit(additiveExprNode.right));
         public override T VisitComplex(ComplexNode complexNode)
         {

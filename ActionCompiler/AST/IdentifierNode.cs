@@ -23,12 +23,4 @@ namespace Action.AST
             return visitor.VisitIdentifier(this);
         }
     }
-
-    public record BoundIdentifierNode(Guid id) : ValueNode
-    {
-        public override T Accept<T>(NodeVisitor<T> visitor)
-        {
-            return visitor.VisitBoundIdentifier(this);
-        }
-    }
 }
