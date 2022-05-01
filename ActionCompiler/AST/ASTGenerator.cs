@@ -834,7 +834,7 @@ namespace Action.AST
         private object VisitFloat(ITerminalNode node)
         {
             Debug.Assert((ActionToken)node.Symbol.Type == ActionToken.FLOAT_LIT);
-            return new FloatNode(float.Parse(node.GetText()));
+            return new FloatNode(double.Parse(node.GetText()));
         }
 
         #endregion

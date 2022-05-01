@@ -2,7 +2,7 @@
 using System.Linq;
 
 namespace Action.AST {
-    public record FunctionCallExprNode(ExprNode expr, List<ExprNode> funcArgs) : ExprNode 
+    public record FunctionCallExprNode(ExprNode expr, IEnumerable<ExprNode> funcArgs) : ExprNode 
     {
 
         public virtual bool Equals(FunctionCallExprNode? other)

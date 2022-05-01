@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Action.AST
 {
-    public record FunctionNode(List<FunctionArgumentNode> args, BlockNode block) : ValueNode
+    public record FunctionNode(IEnumerable<FunctionArgumentNode> args, BlockNode block) : ValueNode
     {
         public virtual bool Equals(FunctionNode? other)
         {

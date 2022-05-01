@@ -44,7 +44,7 @@ namespace Action.AST
 
         public override T VisitMemberAccess(MemberAccessNode memberAccessNode)
         {
-            T value = MergeValues(Visit(memberAccessNode.expr), Visit(memberAccessNode.Identifier));
+            T value = MergeValues(Visit(memberAccessNode.expr), Visit(memberAccessNode.identifier));
             return value;
         }
 
