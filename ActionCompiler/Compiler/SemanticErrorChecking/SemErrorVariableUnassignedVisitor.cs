@@ -50,6 +50,7 @@ namespace ActionCompiler.Compiler.SemanticErrorChecking
                 if (!assigned)
                 {
                     yield return new DiagnosticResult(Severity.Error, $"{identifierNode} has not been definitely assigned", Error.NotDefinitelyAssigned);
+                    yield break;
                 }
                 Debug.Assert(exists && assigned); // just in case we mess with the code later
                 yield break;

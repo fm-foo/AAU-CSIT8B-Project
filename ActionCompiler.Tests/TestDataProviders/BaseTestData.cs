@@ -45,6 +45,35 @@ namespace ActionCompiler.Tests.Tests
                     "
                 )
             };
+            yield return new object[]
+            {
+                new TestData
+                (
+                    @"
+
+                        entity SnakeBody {
+                            create: function(int life) {
+                                int a = 3;
+                                int i = 2;
+                                if(i!=2){
+                                    a = 4;
+                                }else{
+                                    a = 3;
+                                }
+                            }
+
+                            act: function() {
+
+                            }
+
+                            destroy: function() {
+                                
+                            }
+
+                        }
+                    "
+                )
+            };
         }
     }
 }
