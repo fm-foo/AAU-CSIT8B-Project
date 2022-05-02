@@ -12,7 +12,7 @@ namespace ActionCompiler.Compiler
     /// <summary>
     /// Convert <see cref="ForStatementNode"/> and <see cref="ForeachStatementNode"/> nodes to <see cref="WhileStatementNode"/> nodes
     /// </summary>
-    public class ForAndForeachNodeConverterVisitor : AutomaticNodeVisitor<SymbolNode>
+    public class ForAndForeachNodeConverterVisitor : ASTMutatingVisitor
     {
 
         public override SymbolNode VisitEntity(EntityNode entityNode)
@@ -64,45 +64,42 @@ namespace ActionCompiler.Compiler
             ExprNode? condition = forStatement.condition;
             ExprNode? control = forStatement.control;
 
-            //BlockNode statements = forStatement.statement is BlockNode ? (forStatement.statement as BlockNode)! : new BlockNode(new StatementNode[] { forStatement.statement });
+            BlockNode blockNode = GetBlockNode(forStatement.statement, control);
 
             // Initialization, condition and control nodes are all null - it is an infinite loop
             if (initStatement is null && condition is null && control is null)
             {
-                return new StatementNode[] { new WhileStatementNode(new BoolNode(true), forStatement.statement) };
+                return new StatementNode[] { new WhileStatementNode(new BoolNode(true), blockNode) };
             }
             // Initilaization statement is null - assume initialization happened before
             else if (initStatement is null && condition is not null && control is not null)
             {
-                BlockNode statements = GetBlockNode(forStatement.statement, control);
-                return new StatementNode[] { new WhileStatementNode(condition, statements) };
+                return new StatementNode[] { new WhileStatementNode(condition, blockNode) };
             }
             // Condition statement is null - assume infinite loop
             else if (initStatement is not null && condition is null && control is not null)
             {
-                BlockNode statements = GetBlockNode(forStatement.statement, control);
-                return new StatementNode[] {initStatement, new WhileStatementNode(new BoolNode(true), statements) };
+                return new StatementNode[] {initStatement, new WhileStatementNode(new BoolNode(true), blockNode) };
             }
             // Control statement is null - assume it is part of the statement(s)
             else if (initStatement is not null && condition is not null && control is null)
             {
-                return new StatementNode[] { initStatement, new WhileStatementNode(condition, forStatement.statement) };
+                return new StatementNode[] { initStatement, new WhileStatementNode(condition, blockNode) };
             }
             // Initialization and condition statements are null - assume intitialization happened before, and it is an infinite loop
             else if (initStatement is null && condition is null && control is not null)
             {
-                BlockNode statements = GetBlockNode(forStatement.statement, control);
-                return new StatementNode[] { new WhileStatementNode(new BoolNode(true), statements)};
+                return new StatementNode[] { new WhileStatementNode(new BoolNode(true), blockNode) };
             }
             // Initialization and control statements are null - assume initialization happened before and control is part of the statement(s)
             else if (initStatement is null && condition is not null && control is null)
             {
-                return new WhileStatementNode[] {new WhileStatementNode(condition, forStatement.statement) };
+                return new WhileStatementNode[] {new WhileStatementNode(condition, blockNode) };
             }
             // Condition and control are null - assume infinite loop
             else if (initStatement is not null && condition is null && control is null)
             {
-                return new StatementNode[] {initStatement, new WhileStatementNode(new BoolNode(true), forStatement.statement) };
+                return new StatementNode[] {initStatement, new WhileStatementNode(new BoolNode(true), blockNode) };
             }
             // None of the statements/expressions are null
             else
@@ -110,29 +107,27 @@ namespace ActionCompiler.Compiler
                 Debug.Assert(initStatement is not null);
                 Debug.Assert(condition is not null);
                 Debug.Assert(control is not null);
-                BlockNode statements = GetBlockNode(forStatement.statement, control);
-                return new StatementNode[] {initStatement!, new WhileStatementNode(condition, statements)};
+                return new StatementNode[] {initStatement!, new WhileStatementNode(condition, blockNode) };
             }
         }
 
-        private BlockNode GetBlockNode(StatementNode statement, ExprNode control)
+        private BlockNode GetBlockNode(StatementNode statement, ExprNode? control)
         {
             List<StatementNode> statementNodes = new List<StatementNode>() { };
             if (statement is BlockNode block)
             {
-                statementNodes.AddRange(block.statements);
+                statementNodes.AddRange(((BlockNode)Visit(block)).statements);
             }
             else
             {
                 statementNodes.Add(statement);
             }
-            statementNodes.Add(new ExpressionStatementNode(control));
+
+            if (control is not null)
+            {
+                statementNodes.Add(new ExpressionStatementNode(control));
+            }
             return new BlockNode(statementNodes);
         }
-
-        public override SymbolNode MergeValues(SymbolNode oldValue, SymbolNode newValue)
-        {
-            throw new NotImplementedException();
-        }        
     }
 }

@@ -186,19 +186,7 @@ namespace Action.Compiler
             {
                 logger.LogInformation("Begginning conversion of for nodes");
                 ForAndForeachNodeConverterVisitor visitor = new ForAndForeachNodeConverterVisitor();
-                List<ComplexNode> newNodes = new List<ComplexNode>();
-                foreach (var node in ast.nodes)
-                {
-                    if (node is not (EntityNode or GameNode))
-                    {
-                        newNodes.Add(node as ComplexNode);
-                    }
-                    else
-                    {
-                        newNodes.Add(visitor.Visit(node) as ComplexNode);
-                    }
-                }
-                FileNode fileNode = new FileNode(newNodes);
+                FileNode fileNode = (FileNode)visitor.Visit(ast);
                 return fileNode; 
             }
         }

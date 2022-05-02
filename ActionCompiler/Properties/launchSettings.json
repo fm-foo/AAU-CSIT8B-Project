@@ -2,7 +2,7 @@
   "profiles": {
     "ActionCompiler": {
       "commandName": "Project",
-      "commandLineArgs": "\".\\ExamplePrograms\\for.txt\""
+      "commandLineArgs": "\".\\ExamplePrograms\\SemanticErrors\\semanticErrors.txt\""
     }
   }
 }

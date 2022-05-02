@@ -24,9 +24,9 @@ namespace ActionCompiler.Tests.Tests
             FileNode whileAst = Utility.Utilities.Parse(whileNodeInput);
 
             ForAndForeachNodeConverterVisitor visitor = new ForAndForeachNodeConverterVisitor();
-            FileNode convertedAst = Utility.Utilities.Convert(forAst, visitor);
+            FileNode convertedAst = (FileNode)visitor.Visit(forAst);
 
-           Assert.Equal(whileAst, convertedAst);
+            Assert.Equal(whileAst, convertedAst);
         }
     }
 }
