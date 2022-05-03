@@ -2,7 +2,7 @@
 
 namespace ActionCompiler.UnitTests.TestDataProviders.ASTMutationVisitorTestDataProviders
 {
-    internal static class ForAndForeachNodeConverterVisitorTestData
+    internal static class ForAndForeachNodeConverterVisitorTestDataProvider
     {
         public static IEnumerable<object[]> ForTestData()
         {

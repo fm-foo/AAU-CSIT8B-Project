@@ -1,8 +1,8 @@
 map BasicMap {
         background: colour { hex: #123456; };
         shape: line {
-                        (0, 0);
-                        (4, -4);
+            (0, 0);
+            (4, -4);
         };
 };
 

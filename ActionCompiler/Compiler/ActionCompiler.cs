@@ -80,7 +80,7 @@ namespace Action.Compiler
 
         // add diagnostics to the list if there's warnings/errors
         // return null if parsing did not succeed
-        private FileNode? Parse(Stream input, ILogger<ActionCompiler> logger, List<DiagnosticResult> diagnostics)
+        public FileNode? Parse(Stream input, ILogger<ActionCompiler> logger, List<DiagnosticResult> diagnostics)
         {
             using var scope = logger.BeginScope("parsing");
             logger.LogInformation("Beginning parse");

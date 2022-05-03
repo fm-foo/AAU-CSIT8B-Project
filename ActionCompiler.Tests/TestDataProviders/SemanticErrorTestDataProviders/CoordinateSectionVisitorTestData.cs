@@ -17,7 +17,7 @@ namespace ActionCompiler.UnitTests.TestDataProviders.SemanticErrorTestDataProvid
         {
             yield return new object[]
             {
-                new TestData(
+                new SemanticErrorVisitorTestData(
                     @"
                         section TestSection (0, 0) {
                             background: color { hex: #222222; };
@@ -38,7 +38,7 @@ namespace ActionCompiler.UnitTests.TestDataProviders.SemanticErrorTestDataProvid
            };
             yield return new object[]
             {
-                new TestData(
+                new SemanticErrorVisitorTestData(
                     @"
                         section TestSection (-1, -1) {
                             background: color { hex: #222222; };
@@ -59,7 +59,7 @@ namespace ActionCompiler.UnitTests.TestDataProviders.SemanticErrorTestDataProvid
            };
             yield return new object[]
             {
-                new TestData(
+                new SemanticErrorVisitorTestData(
                     @"
                         section TestSection (10, 10) {
                             background: color { hex: #222222; };

@@ -31,14 +31,14 @@ namespace ActionCompiler.UnitTests.Utility
             return visitor.VisitFile(tree);
         }
 
-        public static void PerformCorrectTests(TestData data, NodeVisitor<IEnumerable<DiagnosticResult>> visitor)
+        public static void PerformCorrectTests(SemanticErrorVisitorTestData data, NodeVisitor<IEnumerable<DiagnosticResult>> visitor)
         {
             FileNode ast = Parse(data.File);
 
             Assert.Empty(visitor.Visit(ast));
         }
 
-        public static void PerformIncorrectTests(TestData data, NodeVisitor<IEnumerable<DiagnosticResult>> visitor)
+        public static void PerformIncorrectTests(SemanticErrorVisitorTestData data, NodeVisitor<IEnumerable<DiagnosticResult>> visitor)
         {
             FileNode ast = Parse(data.File);
 

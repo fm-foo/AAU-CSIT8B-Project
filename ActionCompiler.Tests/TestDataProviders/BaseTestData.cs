@@ -11,7 +11,7 @@ namespace ActionCompiler.UnitTests.TestDataProviders
         {
             yield return new object[]
             {
-                new TestData(
+                new SemanticErrorVisitorTestData(
                     @"
                         map TestMap {
                                 background: colour { hex: #123456; };
@@ -26,7 +26,7 @@ namespace ActionCompiler.UnitTests.TestDataProviders
 
             yield return new object[]
             {
-                new TestData
+                new SemanticErrorVisitorTestData
                 (
                     @"
                         section TestSection {

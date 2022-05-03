@@ -18,7 +18,7 @@ namespace ActionCompiler.UnitTests.VisitorUnitTests.SemanticErrorVisitorTests
 
         [Theory]
         [MemberData(nameof(OnlyOnePropertyVisitorTestData.GetCorrectData), MemberType = typeof(OnlyOnePropertyVisitorTestData))]
-        public void CorrectInputNoDiagnosticResults(TestData data)
+        public void CorrectInputNoDiagnosticResults(SemanticErrorVisitorTestData data)
         {
             Utilities.PerformCorrectTests(data, _visitor);
         }
@@ -26,7 +26,7 @@ namespace ActionCompiler.UnitTests.VisitorUnitTests.SemanticErrorVisitorTests
 
         [Theory]
         [MemberData(nameof(OnlyOnePropertyVisitorTestData.GetIncorrectData), MemberType = typeof(OnlyOnePropertyVisitorTestData))]
-        public void IncorrectInputGetDiagnosticResult(TestData data)
+        public void IncorrectInputGetDiagnosticResult(SemanticErrorVisitorTestData data)
         {
             Utilities.PerformIncorrectTests(data, _visitor);
         }

@@ -17,7 +17,7 @@ namespace ActionCompiler.UnitTests.TestDataProviders.SemanticErrorTestDataProvid
         {
             yield return new object[]
             {
-                new TestData(
+                new SemanticErrorVisitorTestData(
                     @"
                         map TestMap {
                             background: colour { };
@@ -33,7 +33,7 @@ namespace ActionCompiler.UnitTests.TestDataProviders.SemanticErrorTestDataProvid
 
             yield return new object[]
             {
-                new TestData
+                new SemanticErrorVisitorTestData
                 (
                     @"
                         section TestSection {

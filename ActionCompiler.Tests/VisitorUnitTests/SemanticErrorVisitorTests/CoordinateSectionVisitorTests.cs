@@ -16,14 +16,14 @@ namespace ActionCompiler.UnitTests.VisitorUnitTests.SemanticErrorVisitorTests
 
         [Theory]
         [MemberData(nameof(CoordinateSectionVisitorTestData.GetCorrectData), MemberType = typeof(CoordinateSectionVisitorTestData))]
-        public void CorrectInputNoDiagnosticResults(TestData data)
+        public void CorrectInputNoDiagnosticResults(SemanticErrorVisitorTestData data)
         {
             Utilities.PerformCorrectTests(data, _visitor);
         }
 
         [Theory]
         [MemberData(nameof(CoordinateSectionVisitorTestData.GetIncorrectData), MemberType = typeof(CoordinateSectionVisitorTestData))]
-        public void IncorrectInputGetDiagnosticResult(TestData data)
+        public void IncorrectInputGetDiagnosticResult(SemanticErrorVisitorTestData data)
         {
             Utilities.PerformIncorrectTests(data, _visitor);
         }
