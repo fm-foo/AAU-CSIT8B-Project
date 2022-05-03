@@ -1,8 +1,7 @@
 ﻿using ActionCompiler.Compiler.SemanticErrorChecking;
-using ActionCompiler.Tests.Tests;
 using System.Collections.Generic;
 
-namespace ActionCompiler.Tests.TestDataProviders
+namespace ActionCompiler.UnitTests.TestDataProviders.SemanticErrorTestDataProviders
 {
     /// <summary>
     /// Provides data for testing the <see cref="SemErrorCoordinateSectionVisitor"/>

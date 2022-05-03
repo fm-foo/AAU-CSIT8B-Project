@@ -1,8 +1,7 @@
 ﻿using ActionCompiler.Compiler.SemanticErrorChecking;
-using ActionCompiler.Tests.Tests;
 using System.Collections.Generic;
 
-namespace ActionCompiler.Tests.TestDataProviders
+namespace ActionCompiler.UnitTests.TestDataProviders.SemanticErrorTestDataProviders
 {
     /// <summary>
     /// Provides test data for testing the <see cref="SemErrorOnlyOnePropertyVisitor"/> visitor.
@@ -24,7 +23,7 @@ namespace ActionCompiler.Tests.TestDataProviders
         /// <returns></returns>
         public static IEnumerable<object[]> GetIncorrectData()
         {
-            yield return new object[] 
+            yield return new object[]
             {
                 new TestData
                 (

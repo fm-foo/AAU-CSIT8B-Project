@@ -7,9 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActionCompiler", "ActionCom
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActionCompiler.TokenCompiler", "ActionCompiler.TokenCompiler\ActionCompiler.TokenCompiler.csproj", "{1E4C33F9-79BD-4EAF-8397-CB446F2A98AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActionCompiler.Tests", "ActionCompiler.Tests\ActionCompiler.Tests.csproj", "{D88E81E0-0731-4984-8B7C-15C7B41C5D8D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActionCompiler.UnitTests", "ActionCompiler.Tests\ActionCompiler.UnitTests.csproj", "{D88E81E0-0731-4984-8B7C-15C7B41C5D8D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActionCompiler.AstMutatingVisitorGenerator", "ActionCompiler.AstMutatingVisitorGenerator\ActionCompiler.AstMutatingVisitorGenerator.csproj", "{6BC6A407-3293-4417-8F07-C96AF4EED758}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActionCompiler.AstMutatingVisitorGenerator", "ActionCompiler.AstMutatingVisitorGenerator\ActionCompiler.AstMutatingVisitorGenerator.csproj", "{6BC6A407-3293-4417-8F07-C96AF4EED758}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

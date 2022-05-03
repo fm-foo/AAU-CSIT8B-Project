@@ -1,12 +1,8 @@
-﻿using Action.AST;
-using Action.Compiler;
-using ActionCompiler.Tests.TestDataProviders;
-using System.Collections.Generic;
-using System.Linq;
-using Xunit;
+﻿using Xunit;
+using ActionCompiler.UnitTests.TestDataProviders.SemanticErrorTestDataProviders;
+using ActionCompiler.UnitTests.Utility;
 
-
-namespace ActionCompiler.Tests.Tests
+namespace ActionCompiler.UnitTests.VisitorUnitTests.SemanticErrorVisitorTests
 {
     /// <summary>
     /// Tests the <see cref="Compiler.SemanticErrorChecking.SemErrorOnlyOnePropertyVisitor"/> visitor
@@ -24,7 +20,7 @@ namespace ActionCompiler.Tests.Tests
         [MemberData(nameof(OnlyOnePropertyVisitorTestData.GetCorrectData), MemberType = typeof(OnlyOnePropertyVisitorTestData))]
         public void CorrectInputNoDiagnosticResults(TestData data)
         {
-            Utility.Utilities.PerformCorrectTests(data, _visitor);
+            Utilities.PerformCorrectTests(data, _visitor);
         }
 
 
@@ -32,7 +28,7 @@ namespace ActionCompiler.Tests.Tests
         [MemberData(nameof(OnlyOnePropertyVisitorTestData.GetIncorrectData), MemberType = typeof(OnlyOnePropertyVisitorTestData))]
         public void IncorrectInputGetDiagnosticResult(TestData data)
         {
-            Utility.Utilities.PerformIncorrectTests(data, _visitor);
+            Utilities.PerformIncorrectTests(data, _visitor);
         }
     }
 }

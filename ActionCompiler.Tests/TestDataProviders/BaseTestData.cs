@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ActionCompiler.Tests.Tests
+namespace ActionCompiler.UnitTests.TestDataProviders
 {
     /// <summary>
     /// Contain some base test data that is always correct

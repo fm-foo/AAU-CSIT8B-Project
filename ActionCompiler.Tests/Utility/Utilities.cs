@@ -1,58 +1,56 @@
 ﻿using Action.AST;
 using Action.Compiler;
 using Action.Parser;
-using ActionCompiler.Compiler;
 using Antlr4.Runtime;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using Xunit;
 
-namespace ActionCompiler.Tests.Utility;
-
-public static class Utilities
+namespace ActionCompiler.UnitTests.Utility
 {
-    internal static Stream StringToStream(string str)
+    public static class Utilities
     {
-        byte[] arr = Encoding.UTF8.GetBytes(str);
-        return new MemoryStream(arr);
-    }
-
-    internal static FileNode Parse(string inputFile)
-    {
-        Stream input = StringToStream(inputFile);
-        ICharStream stream = new AntlrInputStream(input);
-        ITokenSource lexer = new ActionLexer(stream);
-        ITokenStream tokens = new CommonTokenStream(lexer);
-        ActionParser parser = new ActionParser(tokens);
-        parser.BuildParseTree = true;
-        ActionParser.FileContext tree = parser.file();
-        var visitor = new ASTGenerator();
-
-        return visitor.VisitFile(tree);
-    }
-
-    public static void PerformCorrectTests(TestData data, NodeVisitor<IEnumerable<DiagnosticResult>> visitor)
-    {
-        FileNode ast = Parse(data.File);
-
-        Assert.Empty(visitor.Visit(ast));
-    }
-
-    public static void PerformIncorrectTests(TestData data, NodeVisitor<IEnumerable<DiagnosticResult>> visitor)
-    {
-        FileNode ast = Parse(data.File);
-
-        IEnumerable<DiagnosticResult> results = visitor.Visit(ast);
-
-        Assert.NotEmpty(results);
-
-        foreach (DiagnosticResult result in results)
+        internal static Stream StringToStream(string str)
         {
-            Assert.Equal(result.severity, data.Diagnostics!.Severity);
-            Assert.Equal(result.error, data.Diagnostics.Error);
+            byte[] arr = Encoding.UTF8.GetBytes(str);
+            return new MemoryStream(arr);
+        }
+
+        internal static FileNode Parse(string inputFile)
+        {
+            Stream input = StringToStream(inputFile);
+            ICharStream stream = new AntlrInputStream(input);
+            ITokenSource lexer = new ActionLexer(stream);
+            ITokenStream tokens = new CommonTokenStream(lexer);
+            ActionParser parser = new ActionParser(tokens);
+            parser.BuildParseTree = true;
+            ActionParser.FileContext tree = parser.file();
+            var visitor = new ASTGenerator();
+
+            return visitor.VisitFile(tree);
+        }
+
+        public static void PerformCorrectTests(TestData data, NodeVisitor<IEnumerable<DiagnosticResult>> visitor)
+        {
+            FileNode ast = Parse(data.File);
+
+            Assert.Empty(visitor.Visit(ast));
+        }
+
+        public static void PerformIncorrectTests(TestData data, NodeVisitor<IEnumerable<DiagnosticResult>> visitor)
+        {
+            FileNode ast = Parse(data.File);
+
+            IEnumerable<DiagnosticResult> results = visitor.Visit(ast);
+
+            Assert.NotEmpty(results);
+
+            foreach (DiagnosticResult result in results)
+            {
+                Assert.Equal(result.severity, data.Diagnostics!.Severity);
+                Assert.Equal(result.error, data.Diagnostics.Error);
+            }
         }
     }
 }

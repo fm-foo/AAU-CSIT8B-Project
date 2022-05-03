@@ -1,13 +1,9 @@
 ﻿using ActionCompiler.Compiler.SemanticErrorChecking;
-using ActionCompiler.Tests.TestDataProviders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using ActionCompiler.UnitTests.TestDataProviders.SemanticErrorTestDataProviders;
+using ActionCompiler.UnitTests.Utility;
 using Xunit;
 
-namespace ActionCompiler.Tests.Tests
+namespace ActionCompiler.UnitTests.VisitorUnitTests.SemanticErrorVisitorTests
 {
     public class CoordinateSectionVisitorTests
     {
@@ -15,21 +11,21 @@ namespace ActionCompiler.Tests.Tests
 
         public CoordinateSectionVisitorTests()
         {
-            _visitor = new SemErrorCoordinateSectionVisitor();   
+            _visitor = new SemErrorCoordinateSectionVisitor();
         }
 
         [Theory]
         [MemberData(nameof(CoordinateSectionVisitorTestData.GetCorrectData), MemberType = typeof(CoordinateSectionVisitorTestData))]
         public void CorrectInputNoDiagnosticResults(TestData data)
         {
-            Utility.Utilities.PerformCorrectTests(data, _visitor);
+            Utilities.PerformCorrectTests(data, _visitor);
         }
 
         [Theory]
         [MemberData(nameof(CoordinateSectionVisitorTestData.GetIncorrectData), MemberType = typeof(CoordinateSectionVisitorTestData))]
         public void IncorrectInputGetDiagnosticResult(TestData data)
         {
-            Utility.Utilities.PerformIncorrectTests(data, _visitor);
+            Utilities.PerformIncorrectTests(data, _visitor);
         }
     }
 }

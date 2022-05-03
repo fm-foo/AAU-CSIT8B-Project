@@ -1,8 +1,9 @@
 ﻿using ActionCompiler.Compiler.SemanticErrorChecking;
-using ActionCompiler.Tests.TestDataProviders;
+using ActionCompiler.UnitTests.TestDataProviders.SemanticErrorTestDataProviders;
+using ActionCompiler.UnitTests.Utility;
 using Xunit;
 
-namespace ActionCompiler.Tests.Tests
+namespace ActionCompiler.UnitTests.VisitorUnitTests.SemanticErrorVisitorTests
 {
     public class EmptySizeBoxVisitorTests
     {
@@ -17,14 +18,14 @@ namespace ActionCompiler.Tests.Tests
         [MemberData(nameof(EmptySizeBoxVisitorTestData.GetCorrectData), MemberType = typeof(EmptySizeBoxVisitorTestData))]
         public void CorrectInputNoDiagnosticResults(TestData data)
         {
-            Utility.Utilities.PerformCorrectTests(data, _visitor);
+            Utilities.PerformCorrectTests(data, _visitor);
         }
 
         [Theory]
         [MemberData(nameof(EmptySizeBoxVisitorTestData.GetIncorrectData), MemberType = typeof(EmptySizeBoxVisitorTestData))]
         public void IncorrectInputGetDiagnosticResults(TestData data)
         {
-            Utility.Utilities.PerformIncorrectTests(data, _visitor);
+            Utilities.PerformIncorrectTests(data, _visitor);
         }
     }
 }

@@ -1,14 +1,9 @@
-﻿using Action.AST;
-using Action.Compiler;
-using ActionCompiler.Compiler.SemanticErrorChecking;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ActionCompiler.Compiler.SemanticErrorChecking;
 using Xunit;
+using ActionCompiler.UnitTests.TestDataProviders.SemanticErrorTestDataProviders;
+using ActionCompiler.UnitTests.Utility;
 
-namespace ActionCompiler.Tests.Tests
+namespace ActionCompiler.UnitTests.VisitorUnitTests.SemanticErrorVisitorTests
 {
     public class CoordinateOffMapVisitorTests
     {
@@ -23,14 +18,14 @@ namespace ActionCompiler.Tests.Tests
         [MemberData(nameof(CoordinateOffMapVisitorTestData.GetCorrectData), MemberType = typeof(CoordinateOffMapVisitorTestData))]
         public void CorrectInputNoDiagnosticResults(TestData data)
         {
-            Utility.Utilities.PerformCorrectTests(data, _visitor);
+            Utilities.PerformCorrectTests(data, _visitor);
         }
 
         [Theory]
         [MemberData(nameof(CoordinateOffMapVisitorTestData.GetIncorrectData), MemberType = typeof(CoordinateOffMapVisitorTestData))]
         public void IncorrectInputGetDiagnosticResult(TestData data)
         {
-            Utility.Utilities.PerformIncorrectTests(data, _visitor);
+            Utilities.PerformIncorrectTests(data, _visitor);
         }
     }
 }

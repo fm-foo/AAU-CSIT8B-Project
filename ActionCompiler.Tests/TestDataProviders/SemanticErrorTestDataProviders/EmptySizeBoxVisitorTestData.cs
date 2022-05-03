@@ -1,11 +1,6 @@
-﻿using ActionCompiler.Tests.Tests;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
-namespace ActionCompiler.Tests.TestDataProviders
+namespace ActionCompiler.UnitTests.TestDataProviders.SemanticErrorTestDataProviders
 {
     internal class EmptySizeBoxVisitorTestData
     {
@@ -32,7 +27,7 @@ namespace ActionCompiler.Tests.TestDataProviders
                 )
             };
             yield return new object[]
-            {       
+            {
                 new TestData
                 (
                      @"

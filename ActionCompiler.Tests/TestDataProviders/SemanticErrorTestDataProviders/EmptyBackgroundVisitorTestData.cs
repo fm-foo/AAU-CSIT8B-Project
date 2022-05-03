@@ -1,15 +1,14 @@
 ﻿using ActionCompiler.Compiler.SemanticErrorChecking;
-using ActionCompiler.Tests.Tests;
 using System.Collections.Generic;
 
-namespace ActionCompiler.Tests.TestDataProviders
+namespace ActionCompiler.UnitTests.TestDataProviders.SemanticErrorTestDataProviders
 {
     /// <summary>
     /// Provide test data for the <see cref="SemErrorEmptyBackgroundVisitor"/> visitor
     /// </summary>
     internal class EmptyBackgroundVisitorTestData
     {
-        public static IEnumerable<object[]> GetCorrectData() 
+        public static IEnumerable<object[]> GetCorrectData()
         {
             return BaseTestData.CorrectTestData();
         }
