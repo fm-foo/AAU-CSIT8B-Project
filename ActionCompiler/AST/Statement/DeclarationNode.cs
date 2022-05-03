@@ -12,6 +12,11 @@
             return type.Equals(other.type) && identifier.Equals(other.identifier) && (expr is null? other.expr is null : expr.Equals(other.expr));
         }
 
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
         public override T Accept<T>(NodeVisitor<T> visitor)
         {
             return visitor.VisitDeclaration(this);

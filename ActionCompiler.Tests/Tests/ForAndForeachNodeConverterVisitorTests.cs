@@ -28,5 +28,31 @@ namespace ActionCompiler.Tests.Tests
 
             Assert.Equal(whileAst, convertedAst);
         }
+
+        [Theory]
+        [MemberData(nameof(ForAndForeachNodeConverterVisitorTestData.ForEachTestData), MemberType = typeof(ForAndForeachNodeConverterVisitorTestData))]
+        public void TestForEachNodeConversion(string forEachNodeInput, string whileNodeInput)
+        {
+            FileNode foreachAst = Utility.Utilities.Parse(forEachNodeInput);
+            FileNode whileAst = Utility.Utilities.Parse(whileNodeInput);
+
+            ForAndForeachNodeConverterVisitor visitor = new ForAndForeachNodeConverterVisitor();
+            FileNode convertedAst = (FileNode)visitor.Visit(foreachAst);
+
+            Assert.Equal(whileAst, convertedAst);
+        }
+
+        [Theory]
+        [MemberData(nameof(ForAndForeachNodeConverterVisitorTestData.CombinedTestData), MemberType = typeof(ForAndForeachNodeConverterVisitorTestData))]
+        public void TestForAndForeachCombinedConversion(string combinedInput, string whileNodeInput)
+        {
+            FileNode combinedAst = Utility.Utilities.Parse(combinedInput);
+            FileNode whileAst = Utility.Utilities.Parse(whileNodeInput);
+
+            ForAndForeachNodeConverterVisitor visitor = new ForAndForeachNodeConverterVisitor();
+            FileNode combinedConvertedAst = (FileNode)visitor.Visit(combinedAst);
+
+            Assert.Equal(whileAst, combinedConvertedAst);
+        }
     }
 }

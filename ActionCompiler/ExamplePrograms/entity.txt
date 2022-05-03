@@ -1,7 +1,10 @@
 game SnakeGame {
+	int[] intArray = [1, 2, 3];
 	initialize: function() {
-		for (int x = 0; x < 10; x++) {
-			Write("Hello World!");
+		int x = intArray.length();
+		int xx = intArray[0];
+		foreach(int y in intArray) {
+			What(y);
 		}
 	}
 };

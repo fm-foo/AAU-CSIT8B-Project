@@ -20,6 +20,7 @@ namespace Action.Compiler
         MissingBackgroundImagePathValue,
         MissingBoxWidthHeight,
         CoordinatesOffMap,
-        NotDefinitelyAssigned
+        NotDefinitelyAssigned,
+        InputFileEmpty
     }
 }

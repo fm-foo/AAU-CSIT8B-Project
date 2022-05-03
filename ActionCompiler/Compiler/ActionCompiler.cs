@@ -93,6 +93,13 @@ namespace Action.Compiler
             parser.RemoveErrorListeners();
             parser.AddErrorListener(listener);
             ActionParser.FileContext tree = parser.file();
+
+            if (tree is null || tree.ChildCount == 0)
+            {
+                diagnostics.Add(new DiagnosticResult(Severity.Error, "Input file empty!", Error.InputFileEmpty));
+                return null;
+            }
+
             var diagnosticVisitor = new NumberDiagnosticVisitor();
             diagnostics.AddRange(diagnosticVisitor.Visit(tree));
             var visitor = new ASTGenerator();
@@ -184,7 +191,7 @@ namespace Action.Compiler
         {
             using (var scope = logger.BeginScope("convert_for"))
             {
-                logger.LogInformation("Begginning conversion of for nodes");
+                logger.LogInformation("Beginning conversion of for nodes");
                 ForAndForeachNodeConverterVisitor visitor = new ForAndForeachNodeConverterVisitor();
                 FileNode fileNode = (FileNode)visitor.Visit(ast);
                 return fileNode; 

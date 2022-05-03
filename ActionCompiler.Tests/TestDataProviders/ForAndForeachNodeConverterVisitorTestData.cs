@@ -318,5 +318,176 @@ namespace ActionCompiler.Tests.TestDataProviders
                 "
             };
         }
+
+        public static IEnumerable<object[]> ForEachTestData()
+        {
+            yield return new object[]
+           {
+                @"
+                    entity TestEntity {
+                        int[] intArray = [1, 2, 3];
+                        testFunction: function() {
+                            foreach(int x in intArray) {
+                                DoMath(x);
+                            }
+                        }   
+                    };
+                ",
+                @"
+                    entity TestEntity {
+                        int[] intArray = [1, 2, 3];
+                        testFunction: function() {
+                                int index = 0;
+                                int length = intArray.Length();
+                                while(index < length) {
+                                    int x = intArray[index];
+                                    DoMath(x);
+                                    index++;
+                                }
+                            }
+                        }   
+                    };
+                "
+           };
+
+            yield return new object[]
+            {
+                @"
+                    entity TestEntity {
+                        string[] stringArray = [""1"", ""2"", ""3""];
+                        testFunction: function() {
+                            foreach(string x in stringArray) {
+                                Use(x);
+                            }
+                        }   
+                    };
+                ",
+                @"
+                    entity TestEntity {
+                        string[] stringArray = [""1"", ""2"", ""3""];
+                        testFunction: function() {
+                                int index = 0;
+                                int length = stringArray.Length();
+                                while(index < length) {
+                                    string x = stringArray[index];
+                                    Use(x);
+                                    index++;
+                                }
+                            }
+                        }   
+                    };
+                "
+            };
+            yield return new object[]
+            {
+                @"
+                    entity TestEntity {
+                        MyOwnEntity[] entityArray = [new MyOwnEntity(1), new MyOwnEntity(2), new MyOwnEntity(3)];
+                        testFunction: function() {
+                            foreach(MyOwnEntity x in entityArray) {
+                                Use(x);
+                            }
+                        }   
+                    };
+                ",
+                @"
+                    entity TestEntity {
+                        MyOwnEntity[] entityArray = [new MyOwnEntity(1), new MyOwnEntity(2), new MyOwnEntity(3)];
+                        testFunction: function() {
+                                int index = 0;
+                                int length = entityArray.Length();
+                                while(index < length) {
+                                    MyOwnEntity x = entityArray[index];
+                                    Use(x);
+                                    index++;
+                                }
+                            }
+                        }   
+                    };
+                "
+            };
+        }
+
+        public static IEnumerable<object[]> CombinedTestData()
+        {
+            yield return new object[]
+            {
+                @"
+                    entity TestEntity {
+                        int[] intArray = [1, 2, 3];
+                        testFunction: function() {
+                            foreach(int x in intArray) {
+                                for (int i = 0; i < 10; i++) {
+                                    DoStuff(x, i);
+                                }
+                            }
+                        }   
+                    };
+                ",
+                @"
+                    entity TestEntity {
+                        int[] intArray = [1, 2, 3];
+                        testFunction: function() {
+                                int index = 0;
+                                int length = intArray.Length();
+                                while(index < length) {
+                                    int x = intArray[index];
+                                    int i = 0;
+                                    while(i < 10) {
+                                        DoStuff(x, i);
+                                        i++;
+                                    }
+                                    index++;
+                                }
+                            }
+                        }   
+                    };
+                "
+            };
+            yield return new object[]
+            {
+                @"
+                    entity TestEntity {
+                        int[] intArray = [1, 2, 3];
+                        string[] stringArray = [""1"", ""2"", ""3""];
+                        testFunction: function() {
+                            foreach(int x in intArray) {
+                                for (int i = 0; i < 10; i++) {
+                                    foreach(string s in stringArray){
+                                        DoStuff(x, i, s);
+                                    }
+                                }
+                            }
+                        }   
+                    };
+                ",
+                @"
+                    entity TestEntity {
+                        int[] intArray = [1, 2, 3];
+                        string[] stringArray = [""1"", ""2"", ""3""];
+                        testFunction: function() {
+                                int index = 0;
+                                int length = intArray.Length();
+                                while(index < length) {
+                                    int x = intArray[index];
+                                    int i = 0;
+                                    while(i < 10) {
+                                        int index = 0;
+                                        int length = stringArray.Length();
+                                        while(index < length) {
+                                            string s = stringArray[index];
+                                            DoStuff(x, i, s);
+                                            index++;
+                                        }
+                                        i++;
+                                    }
+                                    index++;
+                                }
+                            }
+                        }   
+                    };
+                "
+            };
+        }
     }
 }
