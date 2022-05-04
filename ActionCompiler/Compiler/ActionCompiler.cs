@@ -19,6 +19,7 @@ using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.Formats;
 using ActionCompiler.Compiler.SemanticErrorChecking;
 using ActionCompiler.Compiler;
+using Action.Metadata;
 
 namespace Action.Compiler
 {
@@ -62,7 +63,29 @@ namespace Action.Compiler
             if (!valid)
                 return CompilationResult.Failure(diagnostics);
 
+            ast = BindTypes(ast, logger, diagnostics);
+            if (ast is null)
+                return CompilationResult.Failure(diagnostics);
+
             throw new NotImplementedException();
+        }
+
+        public FileNode? BindTypes(FileNode ast, ILogger<ActionCompiler> logger, List<DiagnosticResult> diagnostics)
+        {
+            var isr = new InternalSymbolResolver();
+            var msr = new MetadataSymbolResolver();
+            ISymbolResolver resolver = isr.Chain(msr);
+            ast = resolver.Bind(ast);
+
+            var errorResolver = new SemErrorFailedBinding();
+            var errors = errorResolver.Visit(ast).ToList();
+            if (errors.Any())
+            {
+                diagnostics.AddRange(errors);
+                return null;
+            }
+
+            return ast;
         }
 
         public FileNode? LowerAST(FileNode ast, ILogger<ActionCompiler> logger, List<DiagnosticResult> diagnostics)

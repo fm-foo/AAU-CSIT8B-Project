@@ -21,6 +21,7 @@ namespace Action.Compiler
         MissingBoxWidthHeight,
         CoordinatesOffMap,
         NotDefinitelyAssigned,
-        InputFileEmpty
+        InputFileEmpty,
+        FailedBinding
     }
 }
