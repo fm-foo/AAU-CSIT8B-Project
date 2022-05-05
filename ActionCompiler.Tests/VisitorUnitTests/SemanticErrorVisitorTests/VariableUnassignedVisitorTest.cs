@@ -22,17 +22,17 @@ namespace ActionCompiler.Tests.Tests
 
         [Theory]
         [MemberData(nameof(VariableUnassignedVisitorTestData.GetCorrectData), MemberType = typeof(VariableUnassignedVisitorTestData))]
-        public void CorrectInputNoDiagnosticResults(TestData data)
+        public void CorrectInputNoDiagnosticResults(SemanticErrorVisitorTestData data)
         {
-            Utility.Utilities.PerformCorrectTests(data, _visitor);
+            UnitTests.Utility.Utilities.PerformCorrectTests(data, _visitor);
         }
 
 
         [Theory]
         [MemberData(nameof(VariableUnassignedVisitorTestData.GetIncorrectData), MemberType = typeof(VariableUnassignedVisitorTestData))]
-        public void IncorrectInputGetDiagnosticResult(TestData data)
+        public void IncorrectInputGetDiagnosticResult(SemanticErrorVisitorTestData data)
         {
-            Utility.Utilities.PerformIncorrectTests(data, _visitor);
+            UnitTests.Utility.Utilities.PerformIncorrectTests(data, _visitor);
         }
     }
 }
