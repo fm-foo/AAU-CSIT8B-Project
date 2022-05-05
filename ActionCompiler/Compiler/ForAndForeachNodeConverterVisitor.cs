@@ -1,4 +1,8 @@
-﻿using Action.AST;
+﻿using ActionCompiler.AST;
+using ActionCompiler.AST.Expr;
+using ActionCompiler.AST.Statement;
+using ActionCompiler.AST.TypeNodes;
+using ActionCompiler.AST.Types;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;

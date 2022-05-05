@@ -21,10 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DataProviders\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\ActionCompiler\ActionCompiler.csproj" />
   </ItemGroup>
 

@@ -2,9 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Action.AST;
+using ActionCompiler.AST;
+using ActionCompiler.AST.Bindings;
+using ActionCompiler.AST.Expr;
+using ActionCompiler.AST.Statement;
 
-namespace Action.Metadata
+namespace ActionCompiler.Metadata
 {
 
     public class InternalSymbolResolver : ISymbolResolver
@@ -51,7 +54,7 @@ namespace Action.Metadata
                 }
             }
         }
-        
+
         private class IdentifierBinder : ASTMutatingVisitor
         {
             private Stack<HashSet<Binding>> bindings = new Stack<HashSet<Binding>>();
@@ -88,7 +91,7 @@ namespace Action.Metadata
                 }
                 return node;
             }
-            
+
             public override MemberAccessNode VisitMemberAccess(MemberAccessNode memberAccessNode)
             {
                 // don't visit the identifier - it can't be bound in this step
@@ -99,8 +102,8 @@ namespace Action.Metadata
             public override ValueNode VisitIdentifier(IdentifierNode node)
             {
                 var binding = AllBindings.SingleOrDefault(b => b.identifier == node);
-                return binding is null 
-                    ? node 
+                return binding is null
+                    ? node
                     : new BoundIdentifierNode(binding.id);
             }
         }
@@ -111,7 +114,7 @@ namespace Action.Metadata
         // todo: this
         public FileNode Bind(FileNode node)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
     }
 

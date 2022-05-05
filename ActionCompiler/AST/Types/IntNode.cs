@@ -1,6 +1,4 @@
-using System.Numerics;
-
-namespace Action.AST
+namespace ActionCompiler.AST.Types
 {
 
     public record IntNode(int integer) : ValueNode

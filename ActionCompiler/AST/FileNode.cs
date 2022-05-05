@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Action.AST
+namespace ActionCompiler.AST
 {
     public record FileNode(IEnumerable<ValueNode> nodes) : SymbolNode
     {

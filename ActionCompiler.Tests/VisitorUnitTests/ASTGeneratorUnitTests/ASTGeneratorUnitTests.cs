@@ -1,4 +1,4 @@
-﻿using Action.AST;
+﻿using ActionCompiler.AST;
 using ActionCompiler.Compiler;
 using ActionCompiler.UnitTests.TestDataProviders.ASTGeneratorTestDataProviders;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -17,8 +17,8 @@ namespace ActionCompiler.UnitTests.VisitorUnitTests.ASTGeneratorUnitTests
         [MemberData(nameof(ASTGeneratorTestDataProvider.GetMapTestData), MemberType = typeof(ASTGeneratorTestDataProvider))]
         public void TestMapASTGeneration(ASTGeneratorTestData SemanticErrorVisitorTestData)
         {
-            Action.Compiler.ActionCompiler compiler = new();
-            FileNode? ast = compiler.Parse(SemanticErrorVisitorTestData.FileAsStream, NullLogger<Action.Compiler.ActionCompiler>.Instance, new List<DiagnosticResult>());
+            Compiler.ActionCompiler compiler = new Compiler.ActionCompiler();
+            FileNode? ast = compiler.Parse(SemanticErrorVisitorTestData.FileAsStream, NullLogger<Compiler.ActionCompiler>.Instance, new List<DiagnosticResult>());
 
             Assert.NotNull(ast);
             Assert.Equal(SemanticErrorVisitorTestData.AST, ast);

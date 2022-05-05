@@ -1,6 +1,6 @@
 using System;
 
-namespace Action.AST
+namespace ActionCompiler.AST
 {
     public record BoundIdentifierNode(Guid id) : ValueNode
     {

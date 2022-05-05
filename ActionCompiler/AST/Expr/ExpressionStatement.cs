@@ -1,4 +1,6 @@
-﻿namespace Action.AST
+﻿using ActionCompiler.AST.Statement;
+
+namespace ActionCompiler.AST.Expr
 {
     public record ExpressionStatementNode(ExprNode expr) : StatementNode
     {

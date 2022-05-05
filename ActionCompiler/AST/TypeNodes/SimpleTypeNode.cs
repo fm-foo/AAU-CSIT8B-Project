@@ -1,11 +1,11 @@
-﻿namespace Action.AST
+﻿namespace ActionCompiler.AST.TypeNodes
 {
     public record SimpleTypeNode(IdentifierNode identifier) : TypeNode
     {
 
         public virtual bool Equals(IdentifierNode? other)
         {
-            if(other is null) 
+            if (other is null)
             {
                 return false;
             }

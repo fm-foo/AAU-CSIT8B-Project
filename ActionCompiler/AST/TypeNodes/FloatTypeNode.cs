@@ -1,6 +1,5 @@
-namespace Action.AST
+namespace ActionCompiler.AST.TypeNodes
 {
-
     public record FloatTypeNode : TypeNode
     {
         public override T Accept<T>(NodeVisitor<T> visitor)

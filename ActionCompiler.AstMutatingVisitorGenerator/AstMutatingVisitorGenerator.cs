@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Text;
-using System.Threading;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -19,9 +16,9 @@ public class AstMutatingVisitorGenerator : ISourceGenerator
 {
     public void Execute(GeneratorExecutionContext context)
     {
-        var basetype = context.Compilation.GetTypeByMetadataName("Action.AST.NodeVisitor`1");
+        var basetype = context.Compilation.GetTypeByMetadataName("ActionCompiler.AST.NodeVisitor`1");
         Debug.Assert(basetype is not null);
-        var symbolnode = context.Compilation.GetTypeByMetadataName("Action.AST.SymbolNode");
+        var symbolnode = context.Compilation.GetTypeByMetadataName("ActionCompiler.AST.SymbolNode");
         Debug.Assert(symbolnode is not null);
         var constructed = basetype.Construct(symbolnode);
         var typesyntax = GenericName(Identifier(basetype.Name))

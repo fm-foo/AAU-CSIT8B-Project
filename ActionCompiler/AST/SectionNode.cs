@@ -1,6 +1,7 @@
+using ActionCompiler.AST.Types;
 using System.Collections.Generic;
 
-namespace Action.AST
+namespace ActionCompiler.AST
 {
     public record SectionNode(
         CoordinateNode? coords,

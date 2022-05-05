@@ -1,8 +1,10 @@
-﻿namespace Action.AST {
-    using System.Collections.Generic;
-    using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 
-    public record NewObjectNode(IdentifierNode identifier, IEnumerable<ExprNode> funcArgs) : ExprNode {
+namespace ActionCompiler.AST.Expr
+{
+    public record NewObjectNode(IdentifierNode identifier, IEnumerable<ExprNode> funcArgs) : ExprNode
+    {
 
         public virtual bool Equals(NewObjectNode? other)
         {
@@ -18,7 +20,8 @@
             return base.GetHashCode();
         }
 
-        public override T Accept<T>(NodeVisitor<T> visitor) {
+        public override T Accept<T>(NodeVisitor<T> visitor)
+        {
             return visitor.VisitNewObject(this);
         }
     }

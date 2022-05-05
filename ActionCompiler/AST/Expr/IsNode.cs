@@ -1,4 +1,6 @@
-namespace Action.AST
+using ActionCompiler.AST.TypeNodes;
+
+namespace ActionCompiler.AST.Expr
 {
     public record IsNode(ExprNode expr, TypeNode type) : ExprNode
     {

@@ -1,4 +1,4 @@
-namespace Action.AST
+namespace ActionCompiler.AST
 {
     public record ColourNode(byte r, byte g, byte b) : ValueNode
     {

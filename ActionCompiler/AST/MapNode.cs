@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Action.AST
+namespace ActionCompiler.AST
 {
     public record MapNode(
         IdentifierNode identifier,
@@ -11,7 +11,7 @@ namespace Action.AST
 
         public virtual bool Equals(MapNode? other)
         {
-            if(other is null)
+            if (other is null)
             {
                 return false;
             }

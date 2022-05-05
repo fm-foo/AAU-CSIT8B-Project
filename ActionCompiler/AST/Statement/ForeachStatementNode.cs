@@ -1,4 +1,7 @@
-﻿namespace Action.AST
+﻿using ActionCompiler.AST.Expr;
+using ActionCompiler.AST.TypeNodes;
+
+namespace ActionCompiler.AST.Statement
 {
     public record ForeachStatementNode(TypeNode type, IdentifierNode identifier, ExprNode iterable, StatementNode statement) : StatementNode
     {

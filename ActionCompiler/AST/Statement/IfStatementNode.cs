@@ -1,4 +1,6 @@
-﻿namespace Action.AST
+﻿using ActionCompiler.AST.Expr;
+
+namespace ActionCompiler.AST.Statement
 {
     public record IfStatementNode(ExprNode test, StatementNode primaryStatement, StatementNode? elseStatement) : StatementNode
     {

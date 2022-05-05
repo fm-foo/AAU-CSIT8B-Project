@@ -1,8 +1,4 @@
-using System;
-using System.Diagnostics;
-using Antlr4.Build.Tasks;
-
-namespace Action.AST
+namespace ActionCompiler.AST
 {
     public abstract record SymbolNode
     {

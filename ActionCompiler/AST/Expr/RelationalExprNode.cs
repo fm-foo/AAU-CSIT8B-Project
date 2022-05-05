@@ -1,13 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-
-namespace Action.AST
+﻿namespace ActionCompiler.AST.Expr
 {
     public record RelationalExprNode(ExprNode left, ExprNode right, RelationalOper oper) : ExprNode
     {
         public virtual bool Equals(RelationalExprNode? other)
         {
-            if(other is null)
+            if (other is null)
             {
                 return false;
             }

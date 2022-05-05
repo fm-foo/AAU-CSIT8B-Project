@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-
-namespace Action.AST
+﻿namespace ActionCompiler.AST.Expr
 {
     public record UnaryExprNode(ExprNode primaryExpr, UnaryOper oper) : ExprNode
     {

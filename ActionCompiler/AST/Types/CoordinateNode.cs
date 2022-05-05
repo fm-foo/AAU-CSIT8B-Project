@@ -1,4 +1,4 @@
-namespace Action.AST
+namespace ActionCompiler.AST.Types
 {
     public record CoordinateNode(IntNode x, IntNode y) : ValueNode
     {

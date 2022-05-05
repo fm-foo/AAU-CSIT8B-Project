@@ -1,5 +1,5 @@
-﻿using Action.AST;
-using Action.Parser;
+﻿using Action.Parser;
+using ActionCompiler.AST;
 using ActionCompiler.Compiler;
 using Antlr4.Runtime;
 using System.Collections.Generic;

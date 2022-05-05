@@ -21,7 +21,7 @@
   <ItemGroup>
     <Antlr4 Include="Action.g4">
       <Generator>MSBuild:Compile</Generator>
-      <Package>Action.Parser</Package>
+      <Package>ActionCompiler.Parser</Package>
       <Visitor>true</Visitor>
       <Listener>false</Listener>
     </Antlr4>

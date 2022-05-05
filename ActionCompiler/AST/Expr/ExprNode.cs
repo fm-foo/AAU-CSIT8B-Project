@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Action.AST
+﻿namespace ActionCompiler.AST.Expr
 {
     public abstract record ExprNode : SymbolNode;
 }

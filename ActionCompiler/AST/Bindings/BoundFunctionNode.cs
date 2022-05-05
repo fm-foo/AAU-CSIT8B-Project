@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Action.AST
+namespace ActionCompiler.AST.Bindings
 {
     public record BoundFunctionNode(FunctionNode node, IEnumerable<Binding> bindings) : FunctionNode(node);
 

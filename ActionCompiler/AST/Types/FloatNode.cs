@@ -1,4 +1,4 @@
-﻿namespace Action.AST
+﻿namespace ActionCompiler.AST.Types
 {
     public record FloatNode(double f) : ValueNode
     {

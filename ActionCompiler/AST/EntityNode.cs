@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Action.AST
+namespace ActionCompiler.AST
 {
     public record EntityNode(
         IdentifierNode identifier,
         IEnumerable<FieldDecNode> fieldDecs,
-        IEnumerable<PropertyNode> funcDecs) 
+        IEnumerable<PropertyNode> funcDecs)
         : ComplexNode(new EntityKeywordNode(), fieldDecs.Concat(funcDecs), Enumerable.Empty<ValueNode>())
     {
         public virtual bool Equals(EntityNode? other)

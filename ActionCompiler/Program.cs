@@ -1,13 +1,10 @@
-﻿using Antlr4.Runtime;
-using Action.Parser;
-using System;
-using Action.AST;
+﻿using System;
 using System.IO;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Linq;
 
-namespace Action
+namespace ActionCompiler
 {
     public class Program
     {
@@ -27,7 +24,7 @@ namespace Action
             using Stream stream = file.OpenRead();
             using var factory = LoggerFactory.Create(builder => builder.AddConsole());
             var compiler = new Compiler.ActionCompiler();
-            var result = compiler.Compile(stream, factory.CreateLogger<ActionCompiler.Compiler.ActionCompiler>());
+            var result = compiler.Compile(stream, factory.CreateLogger<Compiler.ActionCompiler>());
             if (result.Success)
             {
                 Debug.Assert(result.Success);

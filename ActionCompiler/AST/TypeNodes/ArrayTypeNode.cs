@@ -1,4 +1,4 @@
-namespace Action.AST
+namespace ActionCompiler.AST.TypeNodes
 {
     public record ArrayTypeNode(TypeNode type) : TypeNode
     {

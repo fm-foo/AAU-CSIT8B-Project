@@ -1,6 +1,6 @@
 using System;
 
-namespace Action.AST
+namespace ActionCompiler.AST
 {
     public record IdentifierNode(string identifier) : ValueNode
     {
@@ -10,7 +10,7 @@ namespace Action.AST
             {
                 return false;
             }
-            return String.Equals(identifier, other.identifier);
+            return string.Equals(identifier, other.identifier);
         }
 
         public override int GetHashCode()

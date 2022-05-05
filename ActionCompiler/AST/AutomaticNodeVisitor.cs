@@ -1,8 +1,12 @@
+using ActionCompiler.AST.Expr;
+using ActionCompiler.AST.Statement;
+using ActionCompiler.AST.TypeNodes;
+using ActionCompiler.AST.Types;
 using System;
 using System.Diagnostics;
 using System.Linq;
 
-namespace Action.AST
+namespace ActionCompiler.AST
 {
     public abstract class AutomaticNodeVisitor<T> : NodeVisitor<T>
     {

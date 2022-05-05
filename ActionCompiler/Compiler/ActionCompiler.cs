@@ -1,6 +1,5 @@
 using Antlr4.Runtime;
 using Action.Parser;
-using Action.AST;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using System.IO;
@@ -14,7 +13,9 @@ using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp.Drawing;
 using SixLabors.ImageSharp.Drawing.Processing;
 using ActionCompiler.Compiler.SemanticErrorChecking;
-using Action.Metadata;
+using ActionCompiler.AST.Types;
+using ActionCompiler.AST;
+using ActionCompiler.Metadata;
 
 namespace ActionCompiler.Compiler
 {

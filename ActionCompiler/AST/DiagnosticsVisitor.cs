@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ActionCompiler.Compiler;
 
-namespace Action.AST
+namespace ActionCompiler.AST
 {
     public abstract class DiagnosticsVisitor : AutomaticNodeVisitor<IEnumerable<DiagnosticResult>>
     {
@@ -19,7 +19,7 @@ namespace Action.AST
                 // newValue is empty array
                 (_, Array { Length: 0 }) => oldValue,
                 // neither is empty array
-                _ => Enumerable.Concat(oldValue, newValue) 
+                _ => oldValue.Concat(newValue)
             };
         }
     }

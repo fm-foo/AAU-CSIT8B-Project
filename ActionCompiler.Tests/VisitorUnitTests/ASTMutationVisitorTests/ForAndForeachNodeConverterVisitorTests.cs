@@ -1,8 +1,9 @@
-﻿using Action.AST;
-using ActionCompiler.Compiler;
+﻿using ActionCompiler.Compiler;
 using Xunit;
 using ActionCompiler.UnitTests.TestDataProviders.ASTMutationVisitorTestDataProviders;
 using ActionCompiler.UnitTests.Utility;
+using ActionCompiler.AST.Statement;
+using ActionCompiler.AST;
 
 namespace ActionCompiler.UnitTests.VisitorUnitTests.ASTMutationVisitorTests
 {
@@ -15,8 +16,8 @@ namespace ActionCompiler.UnitTests.VisitorUnitTests.ASTMutationVisitorTests
         [MemberData(nameof(ForAndForeachNodeConverterVisitorTestDataProvider.ForTestData), MemberType = typeof(ForAndForeachNodeConverterVisitorTestDataProvider))]
         public void TestForNodeConversion(string forNodeInput, string whileNodeInput)
         {
-            FileNode forAst = Utilities.Parse(forNodeInput);
-            FileNode whileAst = Utilities.Parse(whileNodeInput);
+            FileNode forAst = Utility.Utilities.Parse(forNodeInput);
+            FileNode whileAst = Utility.Utilities.Parse(whileNodeInput);
 
             ForAndForeachNodeConverterVisitor visitor = new ForAndForeachNodeConverterVisitor();
             FileNode convertedAst = (FileNode)visitor.Visit(forAst);
@@ -28,8 +29,8 @@ namespace ActionCompiler.UnitTests.VisitorUnitTests.ASTMutationVisitorTests
         [MemberData(nameof(ForAndForeachNodeConverterVisitorTestDataProvider.ForEachTestData), MemberType = typeof(ForAndForeachNodeConverterVisitorTestDataProvider))]
         public void TestForEachNodeConversion(string forEachNodeInput, string whileNodeInput)
         {
-            FileNode foreachAst = Utilities.Parse(forEachNodeInput);
-            FileNode whileAst = Utilities.Parse(whileNodeInput);
+            FileNode foreachAst = Utility.Utilities.Parse(forEachNodeInput);
+            FileNode whileAst = Utility.Utilities.Parse(whileNodeInput);
 
             ForAndForeachNodeConverterVisitor visitor = new ForAndForeachNodeConverterVisitor();
             FileNode convertedAst = (FileNode)visitor.Visit(foreachAst);
@@ -41,8 +42,8 @@ namespace ActionCompiler.UnitTests.VisitorUnitTests.ASTMutationVisitorTests
         [MemberData(nameof(ForAndForeachNodeConverterVisitorTestDataProvider.CombinedTestData), MemberType = typeof(ForAndForeachNodeConverterVisitorTestDataProvider))]
         public void TestForAndForeachCombinedConversion(string combinedInput, string whileNodeInput)
         {
-            FileNode combinedAst = Utilities.Parse(combinedInput);
-            FileNode whileAst = Utilities.Parse(whileNodeInput);
+            FileNode combinedAst = Utility.Utilities.Parse(combinedInput);
+            FileNode whileAst = Utility.Utilities.Parse(whileNodeInput);
 
             ForAndForeachNodeConverterVisitor visitor = new ForAndForeachNodeConverterVisitor();
             FileNode combinedConvertedAst = (FileNode)visitor.Visit(combinedAst);

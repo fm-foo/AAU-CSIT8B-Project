@@ -1,15 +1,18 @@
-﻿namespace Action.AST
+﻿using ActionCompiler.AST.Expr;
+using ActionCompiler.AST.TypeNodes;
+
+namespace ActionCompiler.AST.Statement
 {
     public record DeclarationNode(TypeNode type, IdentifierNode identifier, ExprNode? expr = null) : StatementNode
     {
         public virtual bool Equals(DeclarationNode? other)
         {
-            if(other is null)
+            if (other is null)
             {
                 return false;
             }
 
-            return type.Equals(other.type) && identifier.Equals(other.identifier) && (expr is null? other.expr is null : expr.Equals(other.expr));
+            return type.Equals(other.type) && identifier.Equals(other.identifier) && (expr is null ? other.expr is null : expr.Equals(other.expr));
         }
 
         public override int GetHashCode()

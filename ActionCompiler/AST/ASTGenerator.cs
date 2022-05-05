@@ -1,21 +1,25 @@
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
-using Action.Parser;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Globalization;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using ActionCompiler.AST.Expr;
+using ActionCompiler.AST.Statement;
+using ActionCompiler.AST.TypeNodes;
+using ActionCompiler.AST.Types;
+using ActionCompiler.Parser;
 
-namespace Action.AST
+namespace ActionCompiler.AST
 {
     public class ASTGenerator : ActionBaseVisitor<object>
     {
         public override FileNode VisitFile([NotNull] ActionParser.FileContext context)
         {
             return new FileNode(context.map_or_section()
-                .Select(this.Visit)
+                .Select(Visit)
                 .Cast<ComplexNode>()
                 .ToList());
         }
@@ -26,13 +30,13 @@ namespace Action.AST
          */
         public override object VisitMap([NotNull] ActionParser.MapContext context)
         {
-            IdentifierNode identifier = (IdentifierNode)this.Visit(context.IDENTIFIER());
+            IdentifierNode identifier = (IdentifierNode)Visit(context.IDENTIFIER());
             List<PropertyNode> properties = context.section_properties()
-                .Select(this.Visit)
+                .Select(Visit)
                 .Cast<PropertyNode>()
                 .ToList();
             List<ValueNode> sections = context.section_statements()
-                .Select(this.Visit)
+                .Select(Visit)
                 .Cast<ValueNode>()
                 .ToList();
             return new MapNode(identifier, properties, sections);
@@ -42,16 +46,16 @@ namespace Action.AST
         {
             CoordinateNode? coords = context.POINT_LIT() is null
                 ? null
-                : (CoordinateNode)this.Visit(context.POINT_LIT());
+                : (CoordinateNode)Visit(context.POINT_LIT());
             IdentifierNode? identifier = context.IDENTIFIER() is null
                 ? null
-                : (IdentifierNode)this.Visit(context.IDENTIFIER());
+                : (IdentifierNode)Visit(context.IDENTIFIER());
             List<PropertyNode> properties = context.section_properties()
-                .Select(this.Visit)
+                .Select(Visit)
                 .Cast<PropertyNode>()
                 .ToList();
             List<ValueNode> sections = context.section_statements()
-                .Select(this.Visit)
+                .Select(Visit)
                 .Cast<ValueNode>()
                 .ToList();
             return new SectionNode(coords, identifier, properties, sections);
@@ -59,21 +63,21 @@ namespace Action.AST
 
         public override object VisitEntity([NotNull] ActionParser.EntityContext context)
         {
-            IdentifierNode identifier = (IdentifierNode)this.Visit(context.IDENTIFIER());
+            IdentifierNode identifier = (IdentifierNode)Visit(context.IDENTIFIER());
 
-            List<FieldDecNode> fieldNodes = context.field_dec().Select(this.Visit).Cast<FieldDecNode>().ToList();
+            List<FieldDecNode> fieldNodes = context.field_dec().Select(Visit).Cast<FieldDecNode>().ToList();
 
-            List<PropertyNode> funcDecs = context.func_def().Select(this.Visit).Cast<PropertyNode>().ToList();
+            List<PropertyNode> funcDecs = context.func_def().Select(Visit).Cast<PropertyNode>().ToList();
             return new EntityNode(identifier, fieldNodes, funcDecs);
         }
 
         public override object VisitGame([NotNull] ActionParser.GameContext context)
         {
-            IdentifierNode identifier = (IdentifierNode)this.Visit(context.IDENTIFIER());
+            IdentifierNode identifier = (IdentifierNode)Visit(context.IDENTIFIER());
 
-            List<FieldDecNode> fieldNodes = context.field_dec().Select(this.Visit).Cast<FieldDecNode>().ToList();
+            List<FieldDecNode> fieldNodes = context.field_dec().Select(Visit).Cast<FieldDecNode>().ToList();
 
-            List<PropertyNode> funcDecs = context.func_def().Select(this.Visit).Cast<PropertyNode>().ToList();
+            List<PropertyNode> funcDecs = context.func_def().Select(Visit).Cast<PropertyNode>().ToList();
             return new GameNode(identifier, fieldNodes, funcDecs);
         }
 
@@ -111,8 +115,8 @@ namespace Action.AST
         {
             return new ReferenceNode(
                 new SectionKeywordNode(),
-                (IdentifierNode)this.Visit(context.IDENTIFIER()),
-                (CoordinateNode)this.Visit(context.POINT_LIT())
+                (IdentifierNode)Visit(context.IDENTIFIER()),
+                (CoordinateNode)Visit(context.POINT_LIT())
             );
         }
 
@@ -124,11 +128,11 @@ namespace Action.AST
             return new ComplexNode(
                 new T(),
                 properties()
-                    .Select(this.Visit)
+                    .Select(Visit)
                     .Cast<PropertyNode>()
                     .ToList(),
                 statements()
-                    .Select(this.Visit)
+                    .Select(Visit)
                     .Cast<ValueNode>()
                     .ToList()
             );
@@ -138,24 +142,24 @@ namespace Action.AST
 
         public override object VisitFunc_def([NotNull] ActionParser.Func_defContext context)
         {
-            IdentifierNode identifier = (IdentifierNode)this.Visit(context.IDENTIFIER());
+            IdentifierNode identifier = (IdentifierNode)Visit(context.IDENTIFIER());
             List<FunctionArgumentNode> args = new List<FunctionArgumentNode>();
 
             if (context.func_def_args() is not null)
             {
-                args = (List<FunctionArgumentNode>)this.Visit(context.func_def_args());
+                args = (List<FunctionArgumentNode>)Visit(context.func_def_args());
             }
 
-            BlockNode block = (BlockNode)this.Visit(context.block());
+            BlockNode block = (BlockNode)Visit(context.block());
 
             FunctionNode function = new(args, block);
-            
+
             return new PropertyNode(identifier, function);
         }
 
         public override object VisitBlock([NotNull] ActionParser.BlockContext context)
         {
-            List<StatementNode> statements = context.statement().Select(this.Visit).Cast<StatementNode>().ToList();
+            List<StatementNode> statements = context.statement().Select(Visit).Cast<StatementNode>().ToList();
 
             return new BlockNode(statements);
         }
@@ -172,7 +176,7 @@ namespace Action.AST
 
         private void GetArgumentList(List<FunctionArgumentNode> args, ActionParser.Func_def_argsContext context)
         {
-            args.Add((FunctionArgumentNode)this.Visit(context.func_def_arg()));
+            args.Add((FunctionArgumentNode)Visit(context.func_def_arg()));
 
             if (context.func_def_args() is not null)
             {
@@ -182,8 +186,8 @@ namespace Action.AST
 
         public override object VisitFunc_def_arg([NotNull] ActionParser.Func_def_argContext context)
         {
-            IdentifierNode identifierNode = (IdentifierNode)this.Visit(context.IDENTIFIER());
-            TypeNode type = (TypeNode)this.Visit(context.type());
+            IdentifierNode identifierNode = (IdentifierNode)Visit(context.IDENTIFIER());
+            TypeNode type = (TypeNode)Visit(context.type());
 
             return new FunctionArgumentNode(identifierNode, type);
         }
@@ -193,27 +197,27 @@ namespace Action.AST
         {
             if (context.block() != null)
             {
-                return (StatementNode)this.Visit(context.block());
+                return (StatementNode)Visit(context.block());
             }
             else if (context.@if() is not null)
             {
-                return (StatementNode)this.Visit(context.@if());
+                return (StatementNode)Visit(context.@if());
             }
             else if (context.@while() is not null)
             {
-                return (StatementNode)this.Visit(context.@while());
+                return (StatementNode)Visit(context.@while());
             }
             else if (context.@for() is not null)
             {
-                return (StatementNode)this.Visit(context.@for());
+                return (StatementNode)Visit(context.@for());
             }
             else if (context.@foreach() is not null)
             {
-                return (StatementNode)this.Visit(context.@foreach());
+                return (StatementNode)Visit(context.@foreach());
             }
             else if (context.semicolon_statement() is not null)
             {
-                return (StatementNode)this.Visit(context.semicolon_statement());
+                return (StatementNode)Visit(context.semicolon_statement());
             }
             else
             {
@@ -223,24 +227,24 @@ namespace Action.AST
 
         public override object VisitIf([NotNull] ActionParser.IfContext context)
         {
-            ExprNode expr = (ExprNode)this.Visit(context.expr());
+            ExprNode expr = (ExprNode)Visit(context.expr());
 
-            StatementNode statement = (StatementNode)this.Visit(context.statement());
+            StatementNode statement = (StatementNode)Visit(context.statement());
 
             if (context.ELSE() != null)
             {
-                StatementNode elseStatement = (StatementNode)this.Visit(context.else_statement());
+                StatementNode elseStatement = (StatementNode)Visit(context.else_statement());
                 return new IfStatementNode(expr, statement, elseStatement);
             }
 
             return new IfStatementNode(expr, statement, null);
-            
+
         }
 
         public override object VisitWhile([NotNull] ActionParser.WhileContext context)
         {
-            ExprNode expr = (ExprNode)this.Visit(context.expr());
-            StatementNode statement = (StatementNode)this.Visit(context.statement());
+            ExprNode expr = (ExprNode)Visit(context.expr());
+            StatementNode statement = (StatementNode)Visit(context.statement());
 
             return new WhileStatementNode(expr, statement);
         }
@@ -250,44 +254,44 @@ namespace Action.AST
             StatementNode? initialization = null;
             if (context.initialization() is not null)
             {
-                initialization = (StatementNode)this.Visit(context.initialization());
+                initialization = (StatementNode)Visit(context.initialization());
             }
 
             ExprNode? condition = null;
             if (context.cond_expr() is not null)
             {
-                condition = (ExprNode?)this.Visit(context.cond_expr());
+                condition = (ExprNode?)Visit(context.cond_expr());
             }
 
             ExprNode? control = null;
             if (context.control_expr() is not null)
             {
-                control = (ExprNode)this.Visit(context.control_expr());
+                control = (ExprNode)Visit(context.control_expr());
             }
 
-            StatementNode statement = (StatementNode)this.Visit(context.statement());
+            StatementNode statement = (StatementNode)Visit(context.statement());
 
-            return new ForStatementNode(initialization, condition, control, statement);    
+            return new ForStatementNode(initialization, condition, control, statement);
         }
 
         public override object VisitForeach([NotNull] ActionParser.ForeachContext context)
         {
-            TypeNode type = (TypeNode)this.Visit(context.type());
-            IdentifierNode identifier = (IdentifierNode)this.Visit(context.IDENTIFIER());
-            ExprNode expr = (ExprNode)this.Visit(context.expr());
-            StatementNode statement = (StatementNode)this.Visit(context.statement());
+            TypeNode type = (TypeNode)Visit(context.type());
+            IdentifierNode identifier = (IdentifierNode)Visit(context.IDENTIFIER());
+            ExprNode expr = (ExprNode)Visit(context.expr());
+            StatementNode statement = (StatementNode)Visit(context.statement());
 
             return new ForeachStatementNode(type, identifier, expr, statement);
         }
 
         public override object VisitDeclaration([NotNull] ActionParser.DeclarationContext context)
         {
-            TypeNode type = (TypeNode)this.Visit(context.type());
-            IdentifierNode identifier = (IdentifierNode)this.Visit(context.IDENTIFIER());
+            TypeNode type = (TypeNode)Visit(context.type());
+            IdentifierNode identifier = (IdentifierNode)Visit(context.IDENTIFIER());
 
             if (context.expr() is not null)
             {
-                ExprNode expr = (ExprNode)this.Visit(context.expr());
+                ExprNode expr = (ExprNode)Visit(context.expr());
                 return new DeclarationNode(type, identifier, expr);
             }
 
@@ -296,9 +300,9 @@ namespace Action.AST
 
         public override object VisitAssignment([NotNull] ActionParser.AssignmentContext context)
         {
-            ExprNode left = (ExprNode)this.Visit(context.left_expr());
-            ExprNode right = (ExprNode)this.Visit(context.right_expr());
-            
+            ExprNode left = (ExprNode)Visit(context.left_expr());
+            ExprNode right = (ExprNode)Visit(context.right_expr());
+
             return new AssignmentNode(left, right);
         }
 
@@ -306,15 +310,15 @@ namespace Action.AST
         {
             if (context.declaration() is not null)
             {
-                return this.Visit(context.declaration());
+                return Visit(context.declaration());
             }
             else if (context.assignment() is not null)
             {
-                return this.Visit(context.assignment());
+                return Visit(context.assignment());
             }
             else if (context.expr() is not null)
             {
-                return new ExpressionStatementNode((ExprNode)this.Visit(context.expr()));
+                return new ExpressionStatementNode((ExprNode)Visit(context.expr()));
             }
             else
             {
@@ -324,17 +328,17 @@ namespace Action.AST
 
         public override object VisitInitialization([NotNull] ActionParser.InitializationContext context)
         {
-            return context.assignment() is not null? this.Visit(context.assignment()) : this.Visit(context.declaration());
+            return context.assignment() is not null ? Visit(context.assignment()) : Visit(context.declaration());
         }
 
         public override object VisitCond_expr([NotNull] ActionParser.Cond_exprContext context)
         {
-            return (ExprNode)this.Visit(context.expr());
+            return (ExprNode)Visit(context.expr());
         }
 
         public override object VisitControl_expr([NotNull] ActionParser.Control_exprContext context)
         {
-            return (ExprNode)this.Visit(context.expr());
+            return (ExprNode)Visit(context.expr());
         }
         #endregion
 
@@ -348,7 +352,7 @@ namespace Action.AST
         {
             return new PropertyNode(
                 new HexKeywordNode(),
-                (ColourNode)this.Visit(context.COLOUR_LIT())
+                (ColourNode)Visit(context.COLOUR_LIT())
             );
         }
 
@@ -356,7 +360,7 @@ namespace Action.AST
         {
             return new PropertyNode(
                 new HeightKeywordNode(),
-                (IntNode)this.Visit(context.INTEGER())
+                (IntNode)Visit(context.INTEGER())
             );
         }
 
@@ -364,7 +368,7 @@ namespace Action.AST
         {
             return new PropertyNode(
                 new WidthKeywordNode(),
-                (IntNode)this.Visit(context.INTEGER())
+                (IntNode)Visit(context.INTEGER())
             );
         }
 
@@ -372,7 +376,7 @@ namespace Action.AST
         {
             return new PropertyNode(
                 new ShapeKeywordNode(),
-                (ValueNode)this.Visit(context.shape_values())
+                (ValueNode)Visit(context.shape_values())
             );
         }
 
@@ -380,7 +384,7 @@ namespace Action.AST
         {
             return new PropertyNode(
                 new BackgroundKeywordNode(),
-                (ValueNode)this.Visit(context.background_values())
+                (ValueNode)Visit(context.background_values())
             );
         }
 
@@ -388,18 +392,18 @@ namespace Action.AST
         {
             return new PropertyNode(
                 new PathKeywordNode(),
-                (ValueNode)this.Visit(context.STRING())
+                (ValueNode)Visit(context.STRING())
             );
         }
 
         public override object VisitField_dec([NotNull] ActionParser.Field_decContext context)
         {
-            IdentifierNode identifierNode = (IdentifierNode)this.Visit(context.IDENTIFIER());
-            TypeNode type = (TypeNode)this.Visit(context.type());
+            IdentifierNode identifierNode = (IdentifierNode)Visit(context.IDENTIFIER());
+            TypeNode type = (TypeNode)Visit(context.type());
 
             if (context.expr() is not null)
             {
-                return new FieldDecNode(identifierNode, type, (ExprNode)this.Visit(context.expr()));
+                return new FieldDecNode(identifierNode, type, (ExprNode)Visit(context.expr()));
             }
             else
             {
@@ -410,27 +414,27 @@ namespace Action.AST
 
         public override object VisitExpr([NotNull] ActionParser.ExprContext context)
         {
-            return this.Visit(context.bool_expr());
+            return Visit(context.bool_expr());
         }
 
         #region bool_expr
         public override object VisitEq_expr([NotNull] ActionParser.Eq_exprContext context)
         {
-            return this.Visit(context.equality_expr());
+            return Visit(context.equality_expr());
         }
 
         public override object VisitAndand_expr([NotNull] ActionParser.Andand_exprContext context)
         {
-            ExprNode left = (ExprNode)this.Visit(context.bool_expr());
-            ExprNode right = (ExprNode)this.Visit(context.equality_expr());
+            ExprNode left = (ExprNode)Visit(context.bool_expr());
+            ExprNode right = (ExprNode)Visit(context.equality_expr());
 
             return new BoolExprNode(left, right, BooleanOperator.AND);
         }
 
         public override object VisitOror_expr([NotNull] ActionParser.Oror_exprContext context)
         {
-            ExprNode left = (ExprNode)this.Visit(context.bool_expr());
-            ExprNode right = (ExprNode)this.Visit(context.equality_expr());
+            ExprNode left = (ExprNode)Visit(context.bool_expr());
+            ExprNode right = (ExprNode)Visit(context.equality_expr());
 
             return new BoolExprNode(left, right, BooleanOperator.OR);
         }
@@ -440,21 +444,21 @@ namespace Action.AST
 
         public override object VisitRel_expr([NotNull] ActionParser.Rel_exprContext context)
         {
-            return this.Visit(context.relational_expr());
+            return Visit(context.relational_expr());
         }
 
         public override object VisitEqualsequals_expr([NotNull] ActionParser.Equalsequals_exprContext context)
         {
-            ExprNode left = (ExprNode)this.Visit(context.equality_expr());
-            ExprNode right = (ExprNode)this.Visit(context.relational_expr());
+            ExprNode left = (ExprNode)Visit(context.equality_expr());
+            ExprNode right = (ExprNode)Visit(context.relational_expr());
 
             return new EqualityExprNode(left, right, EqualityOperator.EQUALS);
         }
 
         public override object VisitNotequals_expr([NotNull] ActionParser.Notequals_exprContext context)
         {
-            ExprNode left = (ExprNode)this.Visit(context.equality_expr());
-            ExprNode right = (ExprNode)this.Visit(context.relational_expr());
+            ExprNode left = (ExprNode)Visit(context.equality_expr());
+            ExprNode right = (ExprNode)Visit(context.relational_expr());
 
             return new EqualityExprNode(left, right, EqualityOperator.NOTEQUALS);
         }
@@ -464,45 +468,45 @@ namespace Action.AST
 
         public override object VisitAdd_expr([NotNull] ActionParser.Add_exprContext context)
         {
-            return this.Visit(context.additive_expr());
+            return Visit(context.additive_expr());
         }
 
         public override object VisitLessthan_expr([NotNull] ActionParser.Lessthan_exprContext context)
         {
-            ExprNode left = (ExprNode)this.Visit(context.relational_expr());
-            ExprNode right = (ExprNode)this.Visit(context.additive_expr());
+            ExprNode left = (ExprNode)Visit(context.relational_expr());
+            ExprNode right = (ExprNode)Visit(context.additive_expr());
 
             return new RelationalExprNode(left, right, RelationalOper.LESSTHAN);
         }
 
         public override object VisitGreaterthan_expr([NotNull] ActionParser.Greaterthan_exprContext context)
         {
-            ExprNode left = (ExprNode)this.Visit(context.relational_expr());
-            ExprNode right = (ExprNode)this.Visit(context.additive_expr());
+            ExprNode left = (ExprNode)Visit(context.relational_expr());
+            ExprNode right = (ExprNode)Visit(context.additive_expr());
 
             return new RelationalExprNode(left, right, RelationalOper.GREATERTHAN);
         }
 
         public override object VisitLessthanequal_expr([NotNull] ActionParser.Lessthanequal_exprContext context)
         {
-            ExprNode left = (ExprNode)this.Visit(context.relational_expr());
-            ExprNode right = (ExprNode)this.Visit(context.additive_expr());
+            ExprNode left = (ExprNode)Visit(context.relational_expr());
+            ExprNode right = (ExprNode)Visit(context.additive_expr());
 
             return new RelationalExprNode(left, right, RelationalOper.LESSTHANOREQUAL);
         }
 
         public override object VisitGreaterthanequal_expr([NotNull] ActionParser.Greaterthanequal_exprContext context)
         {
-            ExprNode left = (ExprNode)this.Visit(context.relational_expr());
-            ExprNode right = (ExprNode)this.Visit(context.additive_expr());
+            ExprNode left = (ExprNode)Visit(context.relational_expr());
+            ExprNode right = (ExprNode)Visit(context.additive_expr());
 
             return new RelationalExprNode(left, right, RelationalOper.GREATERTHANOREQUAL);
         }
 
         public override object VisitIs_expr([NotNull] ActionParser.Is_exprContext context)
         {
-            ExprNode relationalExpr = (ExprNode)this.Visit(context.relational_expr());
-            TypeNode type = (TypeNode)this.Visit(context.type());
+            ExprNode relationalExpr = (ExprNode)Visit(context.relational_expr());
+            TypeNode type = (TypeNode)Visit(context.type());
 
             return new IsNode(relationalExpr, type);
         }
@@ -512,22 +516,22 @@ namespace Action.AST
 
         public override object VisitMult_expr([NotNull] ActionParser.Mult_exprContext context)
         {
-             return this.Visit(context.multiplicative_expr());
+            return Visit(context.multiplicative_expr());
 
         }
 
         public override object VisitPlus_expr([NotNull] ActionParser.Plus_exprContext context)
         {
-            ExprNode left = (ExprNode)this.Visit(context.additive_expr());
-            ExprNode right = (ExprNode)this.Visit(context.multiplicative_expr());
+            ExprNode left = (ExprNode)Visit(context.additive_expr());
+            ExprNode right = (ExprNode)Visit(context.multiplicative_expr());
 
             return new AdditiveExprNode(left, right, AdditiveOper.PLUS);
         }
 
         public override object VisitMinus_expr([NotNull] ActionParser.Minus_exprContext context)
         {
-            ExprNode left = (ExprNode)this.Visit(context.additive_expr());
-            ExprNode right = (ExprNode)this.Visit(context.multiplicative_expr());
+            ExprNode left = (ExprNode)Visit(context.additive_expr());
+            ExprNode right = (ExprNode)Visit(context.multiplicative_expr());
 
             return new AdditiveExprNode(left, right, AdditiveOper.MINUS);
         }
@@ -537,21 +541,21 @@ namespace Action.AST
 
         public override object VisitUn_expr([NotNull] ActionParser.Un_exprContext context)
         {
-            return this.Visit(context.unary_expr());
+            return Visit(context.unary_expr());
         }
 
         public override object VisitTimes_expr([NotNull] ActionParser.Times_exprContext context)
         {
-            ExprNode left = (ExprNode)this.Visit(context.multiplicative_expr());
-            ExprNode right = (ExprNode)this.Visit(context.unary_expr());
+            ExprNode left = (ExprNode)Visit(context.multiplicative_expr());
+            ExprNode right = (ExprNode)Visit(context.unary_expr());
 
             return new MultiplicativeExprNode(left, right, MultOper.TIMES);
         }
 
         public override object VisitDivide_expr([NotNull] ActionParser.Divide_exprContext context)
         {
-            ExprNode left = (ExprNode)this.Visit(context.multiplicative_expr());
-            ExprNode right = (ExprNode)this.Visit(context.unary_expr());
+            ExprNode left = (ExprNode)Visit(context.multiplicative_expr());
+            ExprNode right = (ExprNode)Visit(context.unary_expr());
 
             return new MultiplicativeExprNode(left, right, MultOper.DIV);
         }
@@ -561,42 +565,42 @@ namespace Action.AST
 
         public override object VisitPrim_expr([NotNull] ActionParser.Prim_exprContext context)
         {
-            return this.Visit(context.primary_expr());
+            return Visit(context.primary_expr());
         }
 
         public override object VisitPlus_unary_expr([NotNull] ActionParser.Plus_unary_exprContext context)
         {
-            ExprNode unaryExpr = (ExprNode)this.Visit(context.unary_expr());
+            ExprNode unaryExpr = (ExprNode)Visit(context.unary_expr());
 
             return new UnaryExprNode(unaryExpr, UnaryOper.PLUS);
         }
 
         public override object VisitMinus_unary_expr([NotNull] ActionParser.Minus_unary_exprContext context)
         {
-            ExprNode unaryExpr = (ExprNode)this.Visit(context.unary_expr());
+            ExprNode unaryExpr = (ExprNode)Visit(context.unary_expr());
 
             return new UnaryExprNode(unaryExpr, UnaryOper.MINUS);
         }
 
         public override object VisitPlusplus_expr([NotNull] ActionParser.Plusplus_exprContext context)
         {
-            ExprNode unaryExpr = (ExprNode)this.Visit(context.unary_expr());
+            ExprNode unaryExpr = (ExprNode)Visit(context.unary_expr());
 
             return new UnaryExprNode(unaryExpr, UnaryOper.INCREMENT);
         }
 
         public override object VisitMinusminus_expr([NotNull] ActionParser.Minusminus_exprContext context)
         {
-            ExprNode unaryExpr = (ExprNode)this.Visit(context.unary_expr());
+            ExprNode unaryExpr = (ExprNode)Visit(context.unary_expr());
 
             return new UnaryExprNode(unaryExpr, UnaryOper.DECREMENT);
         }
 
         public override object VisitBang_expr([NotNull] ActionParser.Bang_exprContext context)
         {
-            ExprNode unaryExpr = (ExprNode)this.Visit(context.unary_expr());
+            ExprNode unaryExpr = (ExprNode)Visit(context.unary_expr());
 
-            return new UnaryExprNode(unaryExpr, UnaryOper.NEGATE); 
+            return new UnaryExprNode(unaryExpr, UnaryOper.NEGATE);
         }
 
         #endregion
@@ -605,31 +609,31 @@ namespace Action.AST
         public override object VisitLit([NotNull] ActionParser.LitContext context)
         {
             //return this.Visit(context.literal());
-            return (ValueNode)this.Visit(context.literal());
+            return (ValueNode)Visit(context.literal());
         }
 
         public override object VisitIdentifier([NotNull] ActionParser.IdentifierContext context)
         {
             // return this.Visit(context.IDENTIFIER());
-            return (ValueNode)this.Visit(context.IDENTIFIER());
+            return (ValueNode)Visit(context.IDENTIFIER());
         }
 
         public override object VisitParens_expr([NotNull] ActionParser.Parens_exprContext context)
         {
-            return this.Visit(context.expr());
+            return Visit(context.expr());
         }
 
         public override object VisitArray_access([NotNull] ActionParser.Array_accessContext context)
         {
-            ExprNode arrayExpr = (ExprNode)this.Visit(context.primary_expr());
-            ExprNode expr = (ExprNode)this.Visit(context.expr());
+            ExprNode arrayExpr = (ExprNode)Visit(context.primary_expr());
+            ExprNode expr = (ExprNode)Visit(context.expr());
 
             return new ArrayAccessNode(arrayExpr, expr);
         }
 
         public override object VisitArray_creation([NotNull] ActionParser.Array_creationContext context)
         {
-            ExprNode[] arrayValues = ((List<ExprNode>)this.Visit(context.array_values())).ToArray();
+            ExprNode[] arrayValues = ((List<ExprNode>)Visit(context.array_values())).ToArray();
             return new ArrayNode(arrayValues);
         }
 
@@ -638,28 +642,31 @@ namespace Action.AST
         {
             if (context.array_values() is not null)
             {
-                List<ExprNode> exprNodes = (List<ExprNode>)this.Visit(context.array_values());
-                ExprNode expr = (ExprNode)this.Visit(context.expr());
+                List<ExprNode> exprNodes = (List<ExprNode>)Visit(context.array_values());
+                ExprNode expr = (ExprNode)Visit(context.expr());
                 exprNodes.Insert(0, expr);
 
                 return exprNodes;
             }
 
-            return new List<ExprNode>() {(ExprNode)this.Visit(context.expr())};
+            return new List<ExprNode>() { (ExprNode)Visit(context.expr()) };
         }
 
-        public override object VisitPostfix_increment([NotNull] ActionParser.Postfix_incrementContext context) {
-            ExprNode expr = (ExprNode) this.Visit(context.primary_expr());
+        public override object VisitPostfix_increment([NotNull] ActionParser.Postfix_incrementContext context)
+        {
+            ExprNode expr = (ExprNode)Visit(context.primary_expr());
             return new PostFixExprNode(expr, PostFixOperator.PLUSPLUS);
         }
 
-        public override object VisitPostfix_decrement([NotNull] ActionParser.Postfix_decrementContext context) {
-            ExprNode expr = (ExprNode)this.Visit(context.primary_expr());
+        public override object VisitPostfix_decrement([NotNull] ActionParser.Postfix_decrementContext context)
+        {
+            ExprNode expr = (ExprNode)Visit(context.primary_expr());
             return new PostFixExprNode(expr, PostFixOperator.MINUSMINUS);
         }
 
-        public override object VisitFunc_call([NotNull] ActionParser.Func_callContext context) {
-            ExprNode expr = (ExprNode)this.Visit(context.primary_expr());
+        public override object VisitFunc_call([NotNull] ActionParser.Func_callContext context)
+        {
+            ExprNode expr = (ExprNode)Visit(context.primary_expr());
             List<ExprNode> exprArgs = GetFuncArgsExprs(context.func_args())
                 .Select(e => Visit(e))
                 .Cast<ExprNode>()
@@ -668,8 +675,9 @@ namespace Action.AST
             return new FunctionCallExprNode(expr, exprArgs);
         }
 
-        public override object VisitNew_object([NotNull] ActionParser.New_objectContext context) {
-            IdentifierNode identifier = (IdentifierNode)this.Visit(context.IDENTIFIER());
+        public override object VisitNew_object([NotNull] ActionParser.New_objectContext context)
+        {
+            IdentifierNode identifier = (IdentifierNode)Visit(context.IDENTIFIER());
             List<ExprNode> exprArgs = GetFuncArgsExprs(context.func_args())
                 .Select(e => Visit(e))
                 .Cast<ExprNode>()
@@ -677,7 +685,8 @@ namespace Action.AST
             return new NewObjectNode(identifier, exprArgs);
         }
 
-        public override object VisitFunc_args([NotNull] ActionParser.Func_argsContext context) {
+        public override object VisitFunc_args([NotNull] ActionParser.Func_argsContext context)
+        {
             // I don't think this method is ever actually called, we handle context.func_args() directly
             // and never call Visit on it.
             return GetFuncArgsExprs(context)
@@ -695,17 +704,20 @@ namespace Action.AST
             }
         }
 
-        public override object VisitMember_access([NotNull] ActionParser.Member_accessContext context) {
-            ExprNode expr = (ExprNode)this.Visit(context.primary_expr());
+        public override object VisitMember_access([NotNull] ActionParser.Member_accessContext context)
+        {
+            ExprNode expr = (ExprNode)Visit(context.primary_expr());
 
-            IdentifierNode identifier = (IdentifierNode)this.Visit(context.IDENTIFIER());
+            IdentifierNode identifier = (IdentifierNode)Visit(context.IDENTIFIER());
 
             return new MemberAccessNode(expr, identifier);
         }
 
-        private void GetFunctionArgsList(List<ExprNode> exprArgs, ActionParser.Func_argsContext context) {
-            exprArgs.Add((ExprNode)this.Visit(context.expr()));
-            if (context.func_args() is not null) {
+        private void GetFunctionArgsList(List<ExprNode> exprArgs, ActionParser.Func_argsContext context)
+        {
+            exprArgs.Add((ExprNode)Visit(context.expr()));
+            if (context.func_args() is not null)
+            {
                 GetFunctionArgsList(exprArgs, context.func_args());
             }
         }
@@ -743,12 +755,12 @@ namespace Action.AST
 
         public override object VisitSimple_type([NotNull] ActionParser.Simple_typeContext context)
         {
-            return new SimpleTypeNode((IdentifierNode)this.Visit(context.IDENTIFIER()));
+            return new SimpleTypeNode((IdentifierNode)Visit(context.IDENTIFIER()));
         }
 
         public override object VisitArray_type([NotNull] ActionParser.Array_typeContext context)
         {
-            return new ArrayTypeNode((TypeNode)this.Visit(context.type()));
+            return new ArrayTypeNode((TypeNode)Visit(context.type()));
         }
 
         #endregion
@@ -816,7 +828,7 @@ namespace Action.AST
         private static IntNode VisitInteger(ITerminalNode node)
         {
             Debug.Assert((ActionToken)node.Symbol.Type == ActionToken.INTEGER);
-            return new IntNode(int.Parse(node.GetText())); 
+            return new IntNode(int.Parse(node.GetText()));
         }
 
         private static IdentifierNode VisitIdentifier(ITerminalNode node)

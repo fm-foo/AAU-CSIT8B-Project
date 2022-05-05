@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using ActionCompiler.AST.Expr;
+using ActionCompiler.AST.TypeNodes;
+using System.Collections.Generic;
 using System.Linq;
 
-namespace Action.AST
+namespace ActionCompiler.AST
 {
     public record FieldDecNode(IdentifierNode identifier, TypeNode type, ExprNode? expr) : PropertyNode(identifier, expr)
     {
@@ -12,7 +14,7 @@ namespace Action.AST
             {
                 return false;
             }
-            return identifier.Equals(other.identifier) && type.Equals(other.type) && expr is null? other.expr is null : expr!.Equals(other.expr);
+            return identifier.Equals(other.identifier) && type.Equals(other.type) && expr is null ? other.expr is null : expr!.Equals(other.expr);
         }
 
         public override int GetHashCode()

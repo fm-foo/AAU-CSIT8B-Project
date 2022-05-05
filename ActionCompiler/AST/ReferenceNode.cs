@@ -1,4 +1,6 @@
-namespace Action.AST
+using ActionCompiler.AST.Types;
+
+namespace ActionCompiler.AST
 {
     public record ReferenceNode(IdentifierNode referenceType, IdentifierNode reference, CoordinateNode coords) : ValueNode
     {

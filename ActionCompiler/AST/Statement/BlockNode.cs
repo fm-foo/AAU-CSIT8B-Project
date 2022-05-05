@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Action.AST
+namespace ActionCompiler.AST.Statement
 {
     public record BlockNode(IEnumerable<StatementNode> statements) : StatementNode
     {
         public virtual bool Equals(BlockNode? other)
         {
-            if(other is null)
+            if (other is null)
             {
                 return false;
             }

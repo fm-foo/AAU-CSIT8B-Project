@@ -1,8 +1,9 @@
-﻿using System;
+﻿using ActionCompiler.AST.Statement;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Action.AST
+namespace ActionCompiler.AST
 {
     public record FunctionNode(IEnumerable<FunctionArgumentNode> args, BlockNode block) : ValueNode
     {
@@ -12,7 +13,7 @@ namespace Action.AST
             {
                 return false;
             }
-            return this.args.SequenceEqual(other.args) && this.block.Equals(other.block);
+            return args.SequenceEqual(other.args) && block.Equals(other.block);
         }
 
         public override int GetHashCode()

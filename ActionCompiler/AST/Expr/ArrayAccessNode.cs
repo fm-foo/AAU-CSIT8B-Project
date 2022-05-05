@@ -1,4 +1,4 @@
-﻿namespace Action.AST
+﻿namespace ActionCompiler.AST.Expr
 {
     public record ArrayAccessNode(ExprNode arrayExpr, ExprNode expr) : ExprNode
     {

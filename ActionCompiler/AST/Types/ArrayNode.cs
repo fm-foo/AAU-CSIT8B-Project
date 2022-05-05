@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using ActionCompiler.AST.Expr;
+using System.Collections.Generic;
 using System.Linq;
 
-namespace Action.AST
+namespace ActionCompiler.AST.Types
 {
     public record ArrayNode(IEnumerable<ExprNode> values) : ValueNode
     {
@@ -12,7 +13,7 @@ namespace Action.AST
             {
                 return false;
             }
-            return  values.SequenceEqual(other.values);
+            return values.SequenceEqual(other.values);
         }
 
         public override int GetHashCode()

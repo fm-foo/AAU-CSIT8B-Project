@@ -1,4 +1,6 @@
-﻿namespace Action.AST
+﻿using ActionCompiler.AST.TypeNodes;
+
+namespace ActionCompiler.AST
 {
     public record FunctionArgumentNode(IdentifierNode identifier, TypeNode typeNode) : ValueNode
     {
@@ -8,7 +10,7 @@
             {
                 return false;
             }
-            return this.identifier.Equals(other.identifier) && this.typeNode.Equals(other.typeNode);
+            return identifier.Equals(other.identifier) && typeNode.Equals(other.typeNode);
         }
 
         public override int GetHashCode()

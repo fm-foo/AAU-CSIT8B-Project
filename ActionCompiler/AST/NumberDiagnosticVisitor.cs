@@ -6,7 +6,7 @@ using System.Linq;
 using System.Numerics;
 using ActionCompiler.Compiler;
 
-namespace Action.AST
+namespace ActionCompiler.AST
 {
     public class NumberDiagnosticVisitor : ActionBaseVisitor<IEnumerable<DiagnosticResult>>
     {

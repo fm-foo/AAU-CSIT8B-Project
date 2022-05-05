@@ -1,4 +1,4 @@
-namespace Action.AST
+namespace ActionCompiler.AST
 {
     public record NatNumNode(uint i) : ValueNode
     {
