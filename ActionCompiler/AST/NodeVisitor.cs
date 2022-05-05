@@ -6,7 +6,7 @@ using System;
 
 namespace ActionCompiler.AST
 {
-    public abstract class NodeVisitor<T>
+    public abstract class NodeVisitor<T> 
     {
         public virtual T Default => throw new NotImplementedException();
         public T Visit(SymbolNode node) => node.Accept(this);

@@ -76,8 +76,10 @@ public class AstMutatingVisitorGenerator : ISourceGenerator
         {
             var paramid = Identifier(param.Name);
             StatementSyntax statement;
+            StatementSyntax? deferredStatement = null;
             TypeSyntax paramtype;
             ExpressionSyntax expr;
+            var member = MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, IdentifierName(identifier), IdentifierName(paramid));
             // four possibilities:
             // node type
             if (IsSymbolNode(param.Type))
@@ -85,10 +87,10 @@ public class AstMutatingVisitorGenerator : ISourceGenerator
                 paramtype = ParseTypeName(param.Type.Name);
                 // Type name = (Type)Visit(main.name);
                 expr = CastExpression(paramtype, InvocationExpression(IdentifierName("Visit"))
-                    .AddArgumentListArguments(Argument(MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, IdentifierName(identifier), IdentifierName(paramid)))));
+                    .AddArgumentListArguments(Argument(member)));
 
                 // name.Parent = objectReturnIdentifier;
-                var deferredExpr = ExpressionStatement(
+                deferredStatement = ExpressionStatement(
                                         AssignmentExpression(
                                             SyntaxKind.SimpleAssignmentExpression,
                                             MemberAccessExpression(
@@ -96,7 +98,6 @@ public class AstMutatingVisitorGenerator : ISourceGenerator
                                                 IdentifierName(paramid),
                                                 IdentifierName("Parent")),
                                             IdentifierName(objectReturnIdentifier)));
-                deferred.Add(deferredExpr);
             }
             // Ienumerable node type
             else if (param.Type is INamedTypeSymbol { Name: "IEnumerable", Arity: 1 } nt && IsSymbolNode(nt.TypeArguments[0]))
@@ -106,7 +107,7 @@ public class AstMutatingVisitorGenerator : ISourceGenerator
                 paramtype = GenericName("IEnumerable")
                     .AddTypeArgumentListArguments(internaltype);
                 // main.name
-                expr = MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, IdentifierName(identifier), IdentifierName(paramid));
+                expr = member;
                 // main.name.Select
                 expr = MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, expr, IdentifierName("Select"));
                 // main.name.Select(Visit)
@@ -120,6 +121,19 @@ public class AstMutatingVisitorGenerator : ISourceGenerator
                 expr = MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, expr, IdentifierName("ToList"));
                 // main.Name.Select(Visit).Cast<Type>().ToList()
                 expr = InvocationExpression(expr);
+
+                deferredStatement = ForEachStatement(
+                                    internaltype,
+                                    Identifier("node"),
+                                    IdentifierName(paramid),
+                                    ExpressionStatement(
+                                        AssignmentExpression(
+                                            SyntaxKind.SimpleAssignmentExpression,
+                                            MemberAccessExpression(
+                                                SyntaxKind.SimpleMemberAccessExpression,
+                                                IdentifierName("node"),
+                                                IdentifierName("Parent")),
+                                            IdentifierName(objectReturnIdentifier))));
             } 
             // integral type (int/string/etc)
             else if (IsIntegralType(param.Type))
@@ -135,10 +149,27 @@ public class AstMutatingVisitorGenerator : ISourceGenerator
                 // todo: diagnostic
                 throw new InvalidOperationException();
             }
+            if (!param.Type.IsValueType)
+            {
+                expr = ConditionalExpression(
+                    IsPatternExpression(member, ConstantPattern(LiteralExpression(SyntaxKind.NullLiteralExpression))),
+                    LiteralExpression(SyntaxKind.NullLiteralExpression),
+                    expr
+                );
+            }
             statement = LocalDeclarationStatement(VariableDeclaration(paramtype)
                 .AddVariables(VariableDeclarator(paramid)
                     .WithInitializer(EqualsValueClause(expr))));
+            
             statements.Add(statement);
+            if (deferredStatement is not null)
+            {
+                deferredStatement = IfStatement(
+                    IsPatternExpression(IdentifierName(paramid), UnaryPattern(ConstantPattern(LiteralExpression(SyntaxKind.NullLiteralExpression)))),
+                    deferredStatement
+                );
+                deferred.Add(deferredStatement);
+            }
 
         }
         var identifiers = constructor.Parameters

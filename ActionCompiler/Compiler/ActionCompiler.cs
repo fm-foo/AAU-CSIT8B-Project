@@ -43,9 +43,12 @@ namespace ActionCompiler.Compiler
             logger.BeginScope("compilation");
             logger.LogInformation("Beginning compilation");
             var diagnostics = new List<DiagnosticResult>();
+            ParentResolverVisitor parent = new ParentResolverVisitor();
             FileNode? ast = Parse(input, logger, diagnostics);
             if (ast is null)
                 return CompilationResult.Failure(diagnostics);
+
+            ast = (FileNode)parent.Visit(ast);
 
             bool valid = SemanticsErrorCheck(ast, logger, diagnostics, SemanticsFirstPass);
             if (!valid)
