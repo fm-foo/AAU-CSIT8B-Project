@@ -1,6 +1,7 @@
 using ActionCompiler.Compiler;
 using ActionCompiler.Compiler.SemanticErrorChecking;
 using ActionCompiler.Tests.Tests;
+using ActionCompiler.UnitTests.TestDataProviders;
 using System.Collections.Generic;
 
 namespace ActionCompiler.Tests.TestDataProviders
@@ -19,7 +20,7 @@ namespace ActionCompiler.Tests.TestDataProviders
         {
             yield return new object[]
             {
-                new TestData(
+                new SemanticErrorVisitorTestData(
                     @"
 
                         entity SnakeBody {
@@ -44,7 +45,7 @@ namespace ActionCompiler.Tests.TestDataProviders
            };
             yield return new object[]
             {
-                new TestData(
+                new SemanticErrorVisitorTestData(
                     @"
 
                         entity SnakeBody {

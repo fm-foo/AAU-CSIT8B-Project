@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActionCompiler.AstMutatingV
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActionCompiler.IntegrationTests", "ActionCompiler.IntegrationTests\ActionCompiler.IntegrationTests.csproj", "{ECBE47A5-33C0-4701-A55D-5F92483B7E79}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActionCompiler.ParentVisitor", "ActionCompiler.ParentVisitor\ActionCompiler.ParentVisitor.csproj", "{9B56E1B4-3DB7-41EF-96DA-063A35597884}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,18 @@ Global
 		{ECBE47A5-33C0-4701-A55D-5F92483B7E79}.Release|x64.Build.0 = Release|Any CPU
 		{ECBE47A5-33C0-4701-A55D-5F92483B7E79}.Release|x86.ActiveCfg = Release|Any CPU
 		{ECBE47A5-33C0-4701-A55D-5F92483B7E79}.Release|x86.Build.0 = Release|Any CPU
+		{9B56E1B4-3DB7-41EF-96DA-063A35597884}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B56E1B4-3DB7-41EF-96DA-063A35597884}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B56E1B4-3DB7-41EF-96DA-063A35597884}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{9B56E1B4-3DB7-41EF-96DA-063A35597884}.Debug|x64.Build.0 = Debug|Any CPU
+		{9B56E1B4-3DB7-41EF-96DA-063A35597884}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9B56E1B4-3DB7-41EF-96DA-063A35597884}.Debug|x86.Build.0 = Debug|Any CPU
+		{9B56E1B4-3DB7-41EF-96DA-063A35597884}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B56E1B4-3DB7-41EF-96DA-063A35597884}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B56E1B4-3DB7-41EF-96DA-063A35597884}.Release|x64.ActiveCfg = Release|Any CPU
+		{9B56E1B4-3DB7-41EF-96DA-063A35597884}.Release|x64.Build.0 = Release|Any CPU
+		{9B56E1B4-3DB7-41EF-96DA-063A35597884}.Release|x86.ActiveCfg = Release|Any CPU
+		{9B56E1B4-3DB7-41EF-96DA-063A35597884}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

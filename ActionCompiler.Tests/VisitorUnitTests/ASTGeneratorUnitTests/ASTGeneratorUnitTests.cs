@@ -15,13 +15,13 @@ namespace ActionCompiler.UnitTests.VisitorUnitTests.ASTGeneratorUnitTests
 
         [Theory]
         [MemberData(nameof(ASTGeneratorTestDataProvider.GetMapTestData), MemberType = typeof(ASTGeneratorTestDataProvider))]
-        public void TestMapASTGeneration(ASTGeneratorTestData testData)
+        public void TestMapASTGeneration(ASTGeneratorTestData SemanticErrorVisitorTestData)
         {
-            Compiler.ActionCompiler compiler = new();
-            FileNode? ast = compiler.Parse(testData.FileAsStream, NullLogger<Compiler.ActionCompiler>.Instance, new List<DiagnosticResult>());
+            Action.Compiler.ActionCompiler compiler = new();
+            FileNode? ast = compiler.Parse(SemanticErrorVisitorTestData.FileAsStream, NullLogger<Action.Compiler.ActionCompiler>.Instance, new List<DiagnosticResult>());
 
             Assert.NotNull(ast);
-            Assert.Equal(testData.AST, ast);
+            Assert.Equal(SemanticErrorVisitorTestData.AST, ast);
         }
 
     }

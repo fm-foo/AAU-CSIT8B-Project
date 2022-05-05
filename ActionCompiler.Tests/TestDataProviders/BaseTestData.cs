@@ -47,7 +47,7 @@ namespace ActionCompiler.UnitTests.TestDataProviders
             };
             yield return new object[]
             {
-                new TestData
+                new SemanticErrorVisitorTestData
                 (
                     @"
 
