@@ -53,7 +53,7 @@ public class TokenEnumGenerator : ISourceGenerator
 
         var unit = CompilationUnit()
             .AddMembers(
-                NamespaceDeclaration(IdentifierName("Action.Parser")).AddMembers(enumdecl)
+                NamespaceDeclaration(IdentifierName("ActionCompiler.Parser")).AddMembers(enumdecl)
             );
 
         SourceText text = SourceText.From(unit.NormalizeWhitespace().ToFullString(), Encoding.UTF8);

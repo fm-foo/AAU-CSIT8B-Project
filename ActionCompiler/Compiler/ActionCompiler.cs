@@ -1,5 +1,4 @@
 using Antlr4.Runtime;
-using Action.Parser;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using System.IO;
@@ -16,6 +15,7 @@ using ActionCompiler.Compiler.SemanticErrorChecking;
 using ActionCompiler.AST.Types;
 using ActionCompiler.AST;
 using ActionCompiler.Metadata;
+using ActionCompiler.Parser;
 
 namespace ActionCompiler.Compiler
 {
