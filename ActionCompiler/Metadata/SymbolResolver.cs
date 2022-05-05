@@ -11,7 +11,11 @@ namespace Action.Metadata
     {
         public FileNode Bind(FileNode node)
         {
-            throw new System.NotImplementedException();
+            FunctionBinder binder = new FunctionBinder();
+            node = (FileNode)binder.Visit(node);
+            IdentifierBinder id = new IdentifierBinder();
+            node = (FileNode)id.Visit(node);
+            return node;
         }
 
         private class FunctionBinder : ASTMutatingVisitor
@@ -19,26 +23,27 @@ namespace Action.Metadata
             public override EntityNode VisitEntity(EntityNode entity)
             {
                 var bindings = GetBindings(entity.fieldDecs).ToList();
-                var functions = BindFunctions(entity.funcDecs, bindings);
+                var functions = BindFunctions(entity.funcDecs, bindings).ToList();
                 return entity with { funcDecs = functions };
             }
 
             public override GameNode VisitGame(GameNode game)
             {
-                var bindings = GetBindings(game.fieldDecs);
-                var functions = BindFunctions(game.funcDecs, bindings);
+                var bindings = GetBindings(game.fieldDecs).ToList();
+                var functions = BindFunctions(game.funcDecs, bindings).ToList();
                 return game with { funcDecs = functions };
             }
 
             private static IEnumerable<Binding> GetBindings(IEnumerable<FieldDecNode> fields)
             {
-                throw new NotImplementedException();
+                return fields.Select(f => new Binding(f.identifier));
             }
 
             private static IEnumerable<PropertyNode> BindFunctions(IEnumerable<PropertyNode> nodes, IEnumerable<Binding> bindings)
             {
                 foreach (var node in nodes)
                 {
+                    Console.WriteLine(node);
                     Debug.Assert(node.value is not null);
                     Debug.Assert(node.value.GetType() == typeof(FunctionNode));
                     var func = (FunctionNode)node.value;
@@ -76,7 +81,19 @@ namespace Action.Metadata
                 var binding = new Binding(node.identifier);
                 var set = bindings.Peek();
                 set.Add(binding);
-                return (DeclarationNode)base.VisitDeclaration(node);
+                if (node.expr is not null)
+                {
+                    var expr = (ExprNode)base.Visit(node.expr);
+                    return node with { expr = expr };
+                }
+                return node;
+            }
+            
+            public override MemberAccessNode VisitMemberAccess(MemberAccessNode memberAccessNode)
+            {
+                // don't visit the identifier - it can't be bound in this step
+                ExprNode expr = (ExprNode)Visit(memberAccessNode.expr);
+                return memberAccessNode with { expr = expr };
             }
 
             public override ValueNode VisitIdentifier(IdentifierNode node)

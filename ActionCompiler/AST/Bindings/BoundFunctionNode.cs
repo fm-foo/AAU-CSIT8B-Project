@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Action.AST
 {
-    public record BoundFunctionNode(FunctionNode node, IEnumerable<Binding> bindings) : FunctionNode(node.args, node.block);
+    public record BoundFunctionNode(FunctionNode node, IEnumerable<Binding> bindings) : FunctionNode(node);
 
     public record Binding(IdentifierNode identifier, Guid id)
     {

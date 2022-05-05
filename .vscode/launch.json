@@ -18,7 +18,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             "program": "${workspaceFolder}/ActionCompiler/bin/Debug/net6.0/ActionCompiler.dll",
-            "args": ["./ExamplePrograms/SemanticErrors/semanticErrors.txt"],
+            "args": ["./ExamplePrograms/game.txt"],
             "cwd": "${workspaceFolder}/ActionCompiler",
             "console": "internalConsole",
             "stopAtEntry": false
