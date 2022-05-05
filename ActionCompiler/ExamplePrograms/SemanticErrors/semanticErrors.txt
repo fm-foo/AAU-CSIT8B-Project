@@ -1,52 +1,21 @@
-entity Snake {
-    initialize: function(){
-        int b = 12;
+entity SnakeBody {
+    create: function(int life) {
         int a;
-        a = b + (3*4);
-        test(b);
+        int i = 2;
+        if(i!=2){
+            a = 4;
+        }else{
 
-    }
-};
-
-/*game TheOtherSnake {
-    test: function(){
-
-    }
-};
-// more than one game element
-
-game Snake {
-    test: function(){
-
-    }
-};
-// game without initialize function
-
-entity Apple {
-
-    create: function() {
-        // do nothing
-    }
-};
-// entity with missing functions
-
-entity MyEntity {
-    
-    int x = 2656468434165464563546;
-    int xx = -2147483649;
-
-    act: function(int a, float b, bool c, coord d, string e) {
-        a = -2147483649;
-    }
-
-    delete: function(float[] values) {
-    }
-    
-};*/
-
-test(a);
-        int a;
-        a = 12;
-        if(true){
-            int b;
         }
+        i = a;
+    }
+
+    act: function() {
+
+    }
+
+    destroy: function() {
+        
+    }
+
+};
