@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace Action.Compiler
+namespace ActionCompiler.Compiler
 {
     public class SectionSymbolTableGenerator : NodeVisitor<IEnumerable<SectionSymbolEntry>>
     {
         // Section symbol entries should only be generated when we see a SectionNode or MapNode (?) 
         public override IEnumerable<SectionSymbolEntry> VisitFile(FileNode nodes)
         {
-            var combinedNodes = nodes.nodes.Where(n => n is MapNode || n is SectionNode); 
+            var combinedNodes = nodes.nodes.Where(n => n is MapNode || n is SectionNode);
 
             foreach (var node in combinedNodes)
             {

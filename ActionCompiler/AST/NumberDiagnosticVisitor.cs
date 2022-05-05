@@ -3,8 +3,8 @@ using Action.Parser;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Linq;
-using Action.Compiler;
 using System.Numerics;
+using ActionCompiler.Compiler;
 
 namespace Action.AST
 {

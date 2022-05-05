@@ -1,6 +1,6 @@
 using Action.AST;
 
-namespace Action.Compiler
+namespace ActionCompiler.Compiler
 {
     public record SectionSymbolEntry(SectionNode section, ComplexNode? scope);
 }

@@ -1,5 +1,5 @@
 ﻿using Action.AST;
-using Action.Compiler;
+using ActionCompiler.Compiler;
 using ActionCompiler.UnitTests.TestDataProviders.ASTGeneratorTestDataProviders;
 using Microsoft.Extensions.Logging.Abstractions;
 using System.Collections.Generic;
@@ -17,8 +17,8 @@ namespace ActionCompiler.UnitTests.VisitorUnitTests.ASTGeneratorUnitTests
         [MemberData(nameof(ASTGeneratorTestDataProvider.GetMapTestData), MemberType = typeof(ASTGeneratorTestDataProvider))]
         public void TestMapASTGeneration(ASTGeneratorTestData testData)
         {
-            Action.Compiler.ActionCompiler compiler = new();
-            FileNode? ast = compiler.Parse(testData.FileAsStream, NullLogger<Action.Compiler.ActionCompiler>.Instance, new List<DiagnosticResult>());
+            Compiler.ActionCompiler compiler = new();
+            FileNode? ast = compiler.Parse(testData.FileAsStream, NullLogger<Compiler.ActionCompiler>.Instance, new List<DiagnosticResult>());
 
             Assert.NotNull(ast);
             Assert.Equal(testData.AST, ast);

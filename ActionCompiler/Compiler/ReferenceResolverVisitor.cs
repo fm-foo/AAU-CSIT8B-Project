@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
 
-namespace Action.Compiler
+namespace ActionCompiler.Compiler
 {
     public class ReferenceResolverVisitor : NodeVisitor<ComplexNode?>
     {

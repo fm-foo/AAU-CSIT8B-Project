@@ -5,15 +5,16 @@ using System.Linq;
 using Action.Parser;
 using System;
 
-namespace Action.Compiler
+namespace ActionCompiler.Compiler
 {
     public class TestErrorListener : BaseErrorListener
     {
         private readonly List<DiagnosticResult> diagnostics;
-        public TestErrorListener(List<DiagnosticResult> diags){
-            this.diagnostics = diags;
+        public TestErrorListener(List<DiagnosticResult> diags)
+        {
+            diagnostics = diags;
         }
-        public override void SyntaxError(TextWriter output, IRecognizer recognizer, IToken offendingSymbol, 
+        public override void SyntaxError(TextWriter output, IRecognizer recognizer, IToken offendingSymbol,
             int line, int charPositionInLine, string msg, RecognitionException e)
         {
             string error = e switch

@@ -1,4 +1,4 @@
-namespace Action.Compiler
+namespace ActionCompiler.Compiler
 {
     public enum Severity
     {

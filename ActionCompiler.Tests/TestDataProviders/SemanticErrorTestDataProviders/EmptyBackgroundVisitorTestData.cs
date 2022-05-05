@@ -1,4 +1,5 @@
-﻿using ActionCompiler.Compiler.SemanticErrorChecking;
+﻿using ActionCompiler.Compiler;
+using ActionCompiler.Compiler.SemanticErrorChecking;
 using System.Collections.Generic;
 
 namespace ActionCompiler.UnitTests.TestDataProviders.SemanticErrorTestDataProviders
@@ -27,7 +28,7 @@ namespace ActionCompiler.UnitTests.TestDataProviders.SemanticErrorTestDataProvid
                         };
                     };
                     ",
-                    new Diagnostic(Action.Compiler.Severity.Error, Action.Compiler.Error.MissingBackgroundColorValue)
+                    new Diagnostic(Severity.Error, Error.MissingBackgroundColorValue)
                 )
             };
 
@@ -44,7 +45,7 @@ namespace ActionCompiler.UnitTests.TestDataProviders.SemanticErrorTestDataProvid
                         };
                     };
                     ",
-                    new Diagnostic(Action.Compiler.Severity.Error, Action.Compiler.Error.MissingBackgroundImagePathValue)
+                    new Diagnostic(Severity.Error, Error.MissingBackgroundImagePathValue)
                 )
             };
         }

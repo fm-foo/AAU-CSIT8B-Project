@@ -1,3 +1,4 @@
+using ActionCompiler.Compiler;
 using ActionCompiler.Compiler.SemanticErrorChecking;
 using ActionCompiler.Tests.Tests;
 using System.Collections.Generic;
@@ -38,7 +39,7 @@ namespace ActionCompiler.Tests.TestDataProviders
 
                         };
                     ",
-                    new Diagnostic(Action.Compiler.Severity.Error, Action.Compiler.Error.NotDefinitelyAssigned)
+                    new Diagnostic(Severity.Error, Error.NotDefinitelyAssigned)
                 )
            };
             yield return new object[]
@@ -68,7 +69,7 @@ namespace ActionCompiler.Tests.TestDataProviders
 
                         };
                     ",
-                    new Diagnostic(Action.Compiler.Severity.Error, Action.Compiler.Error.NotDefinitelyAssigned)
+                    new Diagnostic(Severity.Error, Error.NotDefinitelyAssigned)
                 )
            };
         }

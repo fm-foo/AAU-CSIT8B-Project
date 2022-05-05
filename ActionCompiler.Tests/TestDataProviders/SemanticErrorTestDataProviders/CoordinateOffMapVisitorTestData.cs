@@ -1,4 +1,5 @@
-﻿using ActionCompiler.Compiler.SemanticErrorChecking;
+﻿using ActionCompiler.Compiler;
+using ActionCompiler.Compiler.SemanticErrorChecking;
 using System.Collections.Generic;
 
 namespace ActionCompiler.UnitTests.TestDataProviders.SemanticErrorTestDataProviders
@@ -33,7 +34,7 @@ namespace ActionCompiler.UnitTests.TestDataProviders.SemanticErrorTestDataProvid
                         };
                     };
                     ",
-                    new Diagnostic(Action.Compiler.Severity.Error, Action.Compiler.Error.CoordinatesOffMap)
+                    new Diagnostic(Severity.Error, Error.CoordinatesOffMap)
                 )
                        };
             yield return new object[]
@@ -54,7 +55,7 @@ namespace ActionCompiler.UnitTests.TestDataProviders.SemanticErrorTestDataProvid
                         };
                     };
                     ",
-                    new Diagnostic(Action.Compiler.Severity.Error, Action.Compiler.Error.CoordinatesOffMap)
+                    new Diagnostic(Severity.Error, Error.CoordinatesOffMap)
                 )
             };
         }
@@ -84,7 +85,7 @@ namespace ActionCompiler.UnitTests.TestDataProviders.SemanticErrorTestDataProvid
                         };
                     };
                     ",
-                    new Diagnostic(Action.Compiler.Severity.Error, Action.Compiler.Error.CoordinatesOffMap)
+                    new Diagnostic(Severity.Error, Error.CoordinatesOffMap)
                 )
             };
             yield return new object[]
@@ -105,7 +106,7 @@ namespace ActionCompiler.UnitTests.TestDataProviders.SemanticErrorTestDataProvid
                         };
                     };
                     ",
-                    new Diagnostic(Action.Compiler.Severity.Error, Action.Compiler.Error.CoordinatesOffMap)
+                    new Diagnostic(Severity.Error, Error.CoordinatesOffMap)
                 )
             };
             yield return new object[]
@@ -126,7 +127,7 @@ namespace ActionCompiler.UnitTests.TestDataProviders.SemanticErrorTestDataProvid
                         };
                     };
                     ",
-                    new Diagnostic(Action.Compiler.Severity.Error, Action.Compiler.Error.CoordinatesOffMap)
+                    new Diagnostic(Severity.Error, Error.CoordinatesOffMap)
                 )
             };
         }

@@ -1,4 +1,4 @@
-namespace Action.Compiler
+namespace ActionCompiler.Compiler
 {
     public record DiagnosticResult(Severity severity, string message, Error error = Error.Unspecified);
 

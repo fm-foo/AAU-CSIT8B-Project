@@ -1,9 +1,7 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using Action.AST;
 
-namespace Action.Compiler
+namespace ActionCompiler.Compiler
 {
     public static class Utilities
     {
@@ -17,5 +15,5 @@ namespace Action.Compiler
                 .Cast<U>()
                 .Single();
         }
-    } 
+    }
 }

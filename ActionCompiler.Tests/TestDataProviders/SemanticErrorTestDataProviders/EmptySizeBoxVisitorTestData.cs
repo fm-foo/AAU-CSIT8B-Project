@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using ActionCompiler.Compiler;
+using System.Collections.Generic;
 
 namespace ActionCompiler.UnitTests.TestDataProviders.SemanticErrorTestDataProviders
 {
@@ -23,7 +24,7 @@ namespace ActionCompiler.UnitTests.TestDataProviders.SemanticErrorTestDataProvid
                                 };
                         };
                     ",
-                     new Diagnostic(Action.Compiler.Severity.Error, Action.Compiler.Error.MissingBoxWidthHeight)
+                     new Diagnostic(Severity.Error, Error.MissingBoxWidthHeight)
                 )
             };
             yield return new object[]
@@ -36,7 +37,7 @@ namespace ActionCompiler.UnitTests.TestDataProviders.SemanticErrorTestDataProvid
                                 shape: box {height: 10; };
                         };
                     ",
-                     new Diagnostic(Action.Compiler.Severity.Error, Action.Compiler.Error.MissingBoxWidthHeight)
+                     new Diagnostic(Severity.Error, Error.MissingBoxWidthHeight)
                 )
             };
             yield return new object[]
@@ -49,7 +50,7 @@ namespace ActionCompiler.UnitTests.TestDataProviders.SemanticErrorTestDataProvid
                                 shape: box {width: 10; };
                         };
                     ",
-                     new Diagnostic(Action.Compiler.Severity.Error, Action.Compiler.Error.MissingBoxWidthHeight)
+                     new Diagnostic(Severity.Error, Error.MissingBoxWidthHeight)
                 )
             };
         }

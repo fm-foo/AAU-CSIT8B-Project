@@ -8,20 +8,15 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 using System.Diagnostics;
-using Antlr4.Runtime.Dfa;
-using Antlr4.Runtime.Sharpen;
-using Antlr4.Runtime.Atn;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp.Drawing;
 using SixLabors.ImageSharp.Drawing.Processing;
-using SixLabors.ImageSharp.Formats;
 using ActionCompiler.Compiler.SemanticErrorChecking;
-using ActionCompiler.Compiler;
 using Action.Metadata;
 
-namespace Action.Compiler
+namespace ActionCompiler.Compiler
 {
     public class ActionCompiler
     {
@@ -181,7 +176,7 @@ namespace Action.Compiler
             List<ComplexNode> newnodes = new List<ComplexNode>();
             bool valid = true;
             foreach (ComplexNode node in ast.nodes)
-            {   
+            {
                 // the stack scope stuff should balance itself
                 // but we create a new one each time just to make sure
                 // TODO: can we check if it's balanced using a disposable/finalizer check at the end? 
@@ -217,7 +212,7 @@ namespace Action.Compiler
                 logger.LogInformation("Beginning conversion of for nodes");
                 ForAndForeachNodeConverterVisitor visitor = new ForAndForeachNodeConverterVisitor();
                 FileNode fileNode = (FileNode)visitor.Visit(ast);
-                return fileNode; 
+                return fileNode;
             }
         }
 
@@ -241,8 +236,8 @@ namespace Action.Compiler
                 return CompilationResult.Failure(diagnostics);
         }
 
-        private ImageFile? CompileMap(MapNode map, 
-            ILogger<ActionCompiler> logger, 
+        private ImageFile? CompileMap(MapNode map,
+            ILogger<ActionCompiler> logger,
             List<DiagnosticResult> diagnostics)
         {
             using var scope = logger.BeginScope("mapping");
@@ -272,10 +267,11 @@ namespace Action.Compiler
                 if (tile is EmptyTile)
                 {
                     // do nothing
-                } else if (tile is ColourTile c)
+                }
+                else if (tile is ColourTile c)
                 {
                     IPath path = new RectangularPolygon(
-                        x*TileSize, y*TileSize, TileSize, TileSize
+                        x * TileSize, y * TileSize, TileSize, TileSize
                     );
                     Color color = new Color(new Rgb24(c.r, c.g, c.b));
                     image.Mutate(i => i.Fill(color, path));
@@ -296,7 +292,7 @@ namespace Action.Compiler
                             inputImage.Mutate(i => i.Resize(new Size(TileSize, TileSize)));
                         }
 
-                        Point location = new Point(x * TileSize, y * TileSize);   
+                        Point location = new Point(x * TileSize, y * TileSize);
 
                         image.Mutate(i =>
                             i.DrawImage(inputImage, location, 1f)
@@ -360,7 +356,7 @@ namespace Action.Compiler
             {
                 map.Fill(tile);
             }
-            else if (shape is ComplexNode { type: CoordinatesKeywordNode, values: var coords})
+            else if (shape is ComplexNode { type: CoordinatesKeywordNode, values: var coords })
             {
                 map.Fill(new EmptyTile());
                 foreach (CoordinateNode point in coords.Cast<CoordinateNode>())
@@ -368,7 +364,7 @@ namespace Action.Compiler
                     map[point.x.integer, point.y.integer] = tile;
                 }
             }
-            else if (shape is ComplexNode { type: LineKeywordNode, values: var linecoords})
+            else if (shape is ComplexNode { type: LineKeywordNode, values: var linecoords })
             {
                 Debug.Assert(linecoords.All(c => c is CoordinateNode));
 
@@ -376,8 +372,8 @@ namespace Action.Compiler
                 List<(CoordinateNode, CoordinateNode)> coordinates = linecoords
                     .Cast<CoordinateNode>()
                     .Zip(linecoords.Cast<CoordinateNode>().Skip(1), (a, b) => (a, b))
-                    .ToList(); 
-                    // Get a list of coordinate pairs: (a, b, c) -> ((a, b), (b, c))
+                    .ToList();
+                // Get a list of coordinate pairs: (a, b, c) -> ((a, b), (b, c))
 
                 foreach ((CoordinateNode p1, CoordinateNode p2) in coordinates)
                 {
@@ -388,7 +384,7 @@ namespace Action.Compiler
                     }
                 }
 
-               // throw new NotImplementedException();
+                // throw new NotImplementedException();
             }
             else
             {
@@ -420,7 +416,7 @@ namespace Action.Compiler
             {
                 if (nx == ny)
                 {
-                    p = new CoordinateNode(new IntNode((p.x.integer + sign_x)), new IntNode((p.y.integer + sign_y)));
+                    p = new CoordinateNode(new IntNode(p.x.integer + sign_x), new IntNode(p.y.integer + sign_y));
                     ix++;
                     iy++;
                 }
@@ -543,7 +539,7 @@ namespace Action.Compiler
                     int dest_x = source_x + x + WidthMin;
                     int dest_y = source_y + y + HeightMin;
                     if (dest_x >= 0
-                        && dest_y >= 0 
+                        && dest_y >= 0
                         && dest_x < dest.Width
                         && dest_y < dest.Height)
                     {
@@ -552,9 +548,9 @@ namespace Action.Compiler
                         if (srctile is not EmptyTile
                             && desttile is not EmptyTile)
                         {
-                            dest[dest_x, dest_y] = srctile; 
+                            dest[dest_x, dest_y] = srctile;
                         }
-                        
+
                     }
                 }
             }

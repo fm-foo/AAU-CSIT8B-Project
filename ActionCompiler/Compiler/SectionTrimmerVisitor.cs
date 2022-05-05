@@ -2,7 +2,7 @@ using Action.AST;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Action.Compiler
+namespace ActionCompiler.Compiler
 {
     public class SectionTrimmerVisitor : NodeVisitor<ComplexNode?>
     {
