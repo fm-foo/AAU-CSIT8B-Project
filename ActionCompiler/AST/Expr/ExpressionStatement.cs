@@ -1,4 +1,5 @@
-﻿using ActionCompiler.AST.Statement;
+﻿using System;
+using ActionCompiler.AST.Statement;
 
 namespace ActionCompiler.AST.Expr
 {
@@ -12,9 +13,10 @@ namespace ActionCompiler.AST.Expr
             }
             return expr.Equals(other.expr);
         }
+        
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            return HashCode.Combine(expr);
         }
 
         public override T Accept<T>(NodeVisitor<T> visitor)

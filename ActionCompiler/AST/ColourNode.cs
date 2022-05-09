@@ -1,3 +1,5 @@
+using System;
+
 namespace ActionCompiler.AST
 {
     public record ColourNode(byte r, byte g, byte b) : ValueNode
@@ -13,7 +15,7 @@ namespace ActionCompiler.AST
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            return HashCode.Combine(r, g, b);
         }
 
         public override T Accept<T>(NodeVisitor<T> visitor)

@@ -8,5 +8,16 @@ namespace ActionCompiler.AST
         {
             return visitor.VisitBoundIdentifier(this);
         }
+
+        public virtual bool Equals(BoundIdentifierNode? other)
+        {
+            return other is not null
+                && id == other.id;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(id);
+        }
     }
 }

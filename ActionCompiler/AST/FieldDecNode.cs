@@ -1,5 +1,6 @@
 ﻿using ActionCompiler.AST.Expr;
 using ActionCompiler.AST.TypeNodes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -14,12 +15,14 @@ namespace ActionCompiler.AST
             {
                 return false;
             }
-            return identifier.Equals(other.identifier) && type.Equals(other.type) && expr is null ? other.expr is null : expr!.Equals(other.expr);
+            return identifier.Equals(other.identifier) 
+                && type.Equals(other.type) 
+                && expr is null ? other.expr is null : expr!.Equals(other.expr);
         }
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            return HashCode.Combine(identifier, type, expr);
         }
 
         public override T Accept<T>(NodeVisitor<T> visitor)

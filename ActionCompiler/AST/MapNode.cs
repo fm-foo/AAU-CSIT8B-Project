@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -20,7 +21,13 @@ namespace ActionCompiler.AST
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            var hc = new HashCode();
+            hc.Add(identifier);
+            foreach (var property in properties)
+                hc.Add(property);
+            foreach (var section in sections)
+                hc.Add(section);
+            return hc.ToHashCode();
         }
 
         public override T Accept<T>(NodeVisitor<T> visitor)

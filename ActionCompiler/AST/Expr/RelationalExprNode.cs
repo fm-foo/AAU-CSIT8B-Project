@@ -1,4 +1,6 @@
-﻿namespace ActionCompiler.AST.Expr
+﻿using System;
+
+namespace ActionCompiler.AST.Expr
 {
     public record RelationalExprNode(ExprNode left, ExprNode right, RelationalOper oper) : ExprNode
     {
@@ -13,7 +15,7 @@
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            return HashCode.Combine(left, right, oper);
         }
 
         public override T Accept<T>(NodeVisitor<T> visitor)

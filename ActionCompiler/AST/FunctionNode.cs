@@ -18,7 +18,11 @@ namespace ActionCompiler.AST
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            var hc = new HashCode();
+            foreach (var arg in args)
+                hc.Add(arg);
+            hc.Add(block);
+            return hc.ToHashCode();
         }
 
         public override T Accept<T>(NodeVisitor<T> visitor)

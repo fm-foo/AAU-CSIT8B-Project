@@ -1,4 +1,6 @@
-﻿namespace ActionCompiler.AST.Expr
+﻿using System;
+
+namespace ActionCompiler.AST.Expr
 {
     public record PostFixExprNode(ExprNode expr, PostFixOperator oper) : ExprNode
     {
@@ -14,7 +16,7 @@
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            return HashCode.Combine(expr, oper);
         }
 
         public override T Accept<T>(NodeVisitor<T> visitor)

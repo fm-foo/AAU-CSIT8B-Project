@@ -1,3 +1,5 @@
+using System;
+
 namespace ActionCompiler.AST
 {
     public record KeywordNode(string keyword) : IdentifierNode(keyword)
@@ -5,6 +7,17 @@ namespace ActionCompiler.AST
         public override T Accept<T>(NodeVisitor<T> visitor)
         {
             return visitor.VisitKeyword(this);
+        }
+
+        public virtual bool Equals(KeywordNode? other)
+        {
+            return other is not null
+                && keyword == other.keyword;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(keyword);
         }
     }
     public record MapKeywordNode() : KeywordNode("map");

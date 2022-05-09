@@ -1,3 +1,4 @@
+using System;
 using ActionCompiler.AST.Expr;
 
 namespace ActionCompiler.AST
@@ -15,7 +16,7 @@ namespace ActionCompiler.AST
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            return HashCode.Combine(identifier, value);
         }
 
         public override T Accept<T>(NodeVisitor<T> visitor)
