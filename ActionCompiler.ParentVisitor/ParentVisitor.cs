@@ -13,16 +13,16 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-namespace Action.TokenCompiler;
+namespace ActionCompiler.TokenCompiler;
 
 [Generator]
 public class AstMutatingVisitorGenerator : ISourceGenerator
 {
     public void Execute(GeneratorExecutionContext context)
     {
-        var basetype = context.Compilation.GetTypeByMetadataName("Action.AST.NodeVisitor`1");
+        var basetype = context.Compilation.GetTypeByMetadataName("ActionCompiler.AST.NodeVisitor`1");
         Debug.Assert(basetype is not null);
-        var symbolnode = context.Compilation.GetTypeByMetadataName("Action.AST.SymbolNode");
+        var symbolnode = context.Compilation.GetTypeByMetadataName("ActionCompiler.AST.SymbolNode");
         Debug.Assert(symbolnode is not null);
         var constructed = basetype.Construct(symbolnode);
         var typesyntax = GenericName(Identifier(basetype.Name))
@@ -40,7 +40,7 @@ public class AstMutatingVisitorGenerator : ISourceGenerator
             .AddUsings(UsingDirective(IdentifierName("System.Linq")),
                 UsingDirective(IdentifierName("System")),
                 UsingDirective(IdentifierName("System.Collections.Generic")))
-            .AddMembers(NamespaceDeclaration(IdentifierName("Action.AST"))
+            .AddMembers(NamespaceDeclaration(IdentifierName("ActionCompiler.AST"))
                 .AddMembers(klass));
         var st = SourceText.From(comp.NormalizeWhitespace().ToFullString(), Encoding.UTF8);
         context.AddSource("ParentVisitor.cs", st);
@@ -53,7 +53,7 @@ public class AstMutatingVisitorGenerator : ISourceGenerator
         var paramType = ParseTypeName(param.Type.Name);
         var paramIdentifier = Identifier(param.Name);
         var identifier = Identifier(m.Name);
-        var symbolnode = ctx.Compilation.GetTypeByMetadataName("Action.AST.SymbolNode");
+        var symbolnode = ctx.Compilation.GetTypeByMetadataName("ActionCompiler.AST.SymbolNode");
         BlockSyntax block = GenerateMethodBody(ctx, Identifier(param.Name), param.Type);
         return MethodDeclaration(ParseTypeName(symbolnode.Name), identifier)
             .AddModifiers(Token(SyntaxKind.PublicKeyword), Token(SyntaxKind.OverrideKeyword))

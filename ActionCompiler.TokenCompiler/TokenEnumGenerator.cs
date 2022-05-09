@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Text;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-namespace Action.TokenCompiler;
+namespace ActionCompiler.TokenCompiler;
 
 [Generator]
 public class TokenEnumGenerator : ISourceGenerator
