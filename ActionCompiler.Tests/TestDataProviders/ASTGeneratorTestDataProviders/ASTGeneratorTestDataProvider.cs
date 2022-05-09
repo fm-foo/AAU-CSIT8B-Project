@@ -1,5 +1,5 @@
 ﻿using ActionCompiler.AST;
-using ActionCompiler.AST;
+using ActionCompiler.AST.Types;
 using System.Collections.Generic;
 using System.Linq;
 

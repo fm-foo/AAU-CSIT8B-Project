@@ -22,6 +22,9 @@ namespace ActionCompiler.Compiler
         CoordinatesOffMap,
         NotDefinitelyAssigned,
         InputFileEmpty,
-        FailedBinding
+        FailedBinding,
+        EntityMissingActFunction,
+        EntityMissingCreateFunction,
+        EntityMissingDestroyFunction
     }
 }

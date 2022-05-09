@@ -29,15 +29,15 @@ namespace ActionCompiler.Compiler.SemanticErrorChecking
             }
             if (!func.Contains("act"))
             {
-                yield return new DiagnosticResult(Severity.Error, "The act function is missing");
+                yield return new DiagnosticResult(Severity.Error, "The 'act' function is missing", Error.EntityMissingActFunction);
             }
             if (!func.Contains("create"))
             {
-                yield return new DiagnosticResult(Severity.Error, "The create function is missing");
+                yield return new DiagnosticResult(Severity.Error, "The 'create' function is missing", Error.EntityMissingCreateFunction);
             }
             if (!func.Contains("destroy"))
             {
-                yield return new DiagnosticResult(Severity.Error, "The destroy function is missing");
+                yield return new DiagnosticResult(Severity.Error, "The 'destroy' function is missing", Error.EntityMissingDestroyFunction);
             }
         }
     }
