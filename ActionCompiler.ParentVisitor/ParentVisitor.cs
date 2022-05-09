@@ -38,8 +38,15 @@ public class AstMutatingVisitorGenerator : ISourceGenerator
         klass = klass.AddMembers(members.ToArray());
         CompilationUnitSyntax comp = CompilationUnit()
             .AddUsings(UsingDirective(IdentifierName("System.Linq")),
-                UsingDirective(IdentifierName("System")),
-                UsingDirective(IdentifierName("System.Collections.Generic")))
+                    UsingDirective(IdentifierName("System")),
+                    UsingDirective(IdentifierName("System.Collections.Generic")),
+                    UsingDirective(IdentifierName("ActionCompiler.AST")),
+                    UsingDirective(IdentifierName("ActionCompiler.AST.Expr")),
+                    UsingDirective(IdentifierName("ActionCompiler.AST.Statement")),
+                    UsingDirective(IdentifierName("ActionCompiler.AST.TypeNodes")),
+                    UsingDirective(IdentifierName("ActionCompiler.AST.Types")),
+                    UsingDirective(IdentifierName("ActionCompiler.AST.Bindings")),
+                    UsingDirective(IdentifierName("ActionCompiler.Parser")))
             .AddMembers(NamespaceDeclaration(IdentifierName("ActionCompiler.AST"))
                 .AddMembers(klass));
         var st = SourceText.From(comp.NormalizeWhitespace().ToFullString(), Encoding.UTF8);

@@ -79,6 +79,7 @@ namespace ActionCompiler.AstMutatingVisitorGenerator
                 StatementSyntax statement;
                 TypeSyntax paramtype;
                 ExpressionSyntax expr;
+                var member = MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, IdentifierName(identifier), IdentifierName(paramid));
                 // four possibilities:
                 // node type
                 if (IsSymbolNode(param.Type))
@@ -86,7 +87,7 @@ namespace ActionCompiler.AstMutatingVisitorGenerator
                     paramtype = ParseTypeName(param.Type.Name);
                     // Type name = (Type)Visit(main.name);
                     expr = CastExpression(paramtype, InvocationExpression(IdentifierName("Visit"))
-                        .AddArgumentListArguments(Argument(MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, IdentifierName(identifier), IdentifierName(paramid)))));
+                        .AddArgumentListArguments(Argument(member)));
                 }
                 // Ienumerable node type
                 else if (param.Type is INamedTypeSymbol { Name: "IEnumerable", Arity: 1 } nt && IsSymbolNode(nt.TypeArguments[0]))
@@ -96,7 +97,7 @@ namespace ActionCompiler.AstMutatingVisitorGenerator
                     paramtype = GenericName("IEnumerable")
                         .AddTypeArgumentListArguments(internaltype);
                     // main.name
-                    expr = MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, IdentifierName(identifier), IdentifierName(paramid));
+                    expr = member;
                     // main.name.Select
                     expr = MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, expr, IdentifierName("Select"));
                     // main.name.Select(Visit)
@@ -126,6 +127,15 @@ namespace ActionCompiler.AstMutatingVisitorGenerator
                     // todo: diagnostic
                     throw new InvalidOperationException();
                 }
+                if (!param.Type.IsValueType)
+                {
+                    expr = ConditionalExpression(
+                        IsPatternExpression(member, ConstantPattern(LiteralExpression(SyntaxKind.NullLiteralExpression))),
+                        LiteralExpression(SyntaxKind.NullLiteralExpression),
+                        expr
+                    );
+                }
+
                 statement = LocalDeclarationStatement(VariableDeclaration(paramtype)
                     .AddVariables(VariableDeclarator(paramid)
                         .WithInitializer(EqualsValueClause(expr))));
