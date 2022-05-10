@@ -68,10 +68,23 @@ public class AstMutatingVisitorGenerator : ISourceGenerator
             .WithBody(block);
     }
 
+    private static BlockSyntax GenerateKeywordBody(GeneratorExecutionContext ctx, SyntaxToken identifier, ITypeSymbol type)
+    {
+        return Block(
+            new[] {
+                ReturnStatement(IdentifierName(identifier))
+            }
+        );
+    }
+
     private static BlockSyntax GenerateMethodBody(GeneratorExecutionContext ctx, SyntaxToken identifier, ITypeSymbol type)
     {
-        List<StatementSyntax> statements = new List<StatementSyntax>();
         Debug.Assert(type.IsRecord);
+        if (type.IsAbstract)
+        {
+            return GenerateKeywordBody(ctx, identifier, type);
+        }
+        List<StatementSyntax> statements = new List<StatementSyntax>();
         var constructor = type.GetMembers()
             .OfType<IMethodSymbol>()
             .Where(m => m.Name is ".ctor")

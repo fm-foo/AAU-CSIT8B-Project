@@ -2,7 +2,7 @@ using System;
 
 namespace ActionCompiler.AST
 {
-    public record KeywordNode(string keyword) : IdentifierNode(keyword)
+    public abstract record KeywordNode(string keyword) : IdentifierNode(keyword)
     {
         public override T Accept<T>(NodeVisitor<T> visitor)
         {
