@@ -27,14 +27,16 @@ namespace ActionCompiler.Metadata
             {
                 var bindings = GetBindings(entity.fieldDecs).ToList();
                 var functions = BindFunctions(entity.funcDecs, bindings).ToList();
-                return entity with { funcDecs = functions };
+                var fields = BindFields(entity.fieldDecs, bindings);
+                var entity with { funcDecs = functions, fieldDecs = fields };
             }
 
             public override GameNode VisitGame(GameNode game)
             {
                 var bindings = GetBindings(game.fieldDecs).ToList();
                 var functions = BindFunctions(game.funcDecs, bindings).ToList();
-                return game with { funcDecs = functions };
+                var fields = BindFields(entity.fieldDecs, bindings);
+                return game with { funcDecs = functions, fieldDecs = fields };
             }
 
             private static IEnumerable<Binding> GetBindings(IEnumerable<FieldDecNode> fields)
@@ -46,12 +48,16 @@ namespace ActionCompiler.Metadata
             {
                 foreach (var node in nodes)
                 {
-                    Console.WriteLine(node);
                     Debug.Assert(node.value is not null);
                     Debug.Assert(node.value.GetType() == typeof(FunctionNode));
                     var func = (FunctionNode)node.value;
                     yield return node with { value = new BoundFunctionNode(func, bindings) };
                 }
+            }
+
+            private static IEnumerable<FieldDecNode> BindFields(IEnumerable<FieldDecNode> nodes, IEnumerable<Binding> bindings)
+            {
+                
             }
         }
 
@@ -87,9 +93,9 @@ namespace ActionCompiler.Metadata
                 if (node.expr is not null)
                 {
                     var expr = (ExprNode)base.Visit(node.expr);
-                    return node with { expr = expr };
+                    node = node with { expr = expr };
                 }
-                return node;
+                return new BoundDeclarationNode(node, binding.id);
             }
 
             public override MemberAccessNode VisitMemberAccess(MemberAccessNode memberAccessNode)
@@ -101,6 +107,10 @@ namespace ActionCompiler.Metadata
 
             public override ValueNode VisitIdentifier(IdentifierNode node)
             {
+                if (node.Parent is not ExprNode)
+                {
+                    return node;
+                }
                 var binding = AllBindings.SingleOrDefault(b => b.identifier == node);
                 return binding is null
                     ? node
@@ -114,7 +124,7 @@ namespace ActionCompiler.Metadata
         // todo: this
         public FileNode Bind(FileNode node)
         {
-            throw new NotImplementedException();
+            return node;
         }
     }
 

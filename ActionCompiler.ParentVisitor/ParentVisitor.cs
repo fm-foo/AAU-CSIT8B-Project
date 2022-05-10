@@ -18,13 +18,21 @@ namespace ActionCompiler.TokenCompiler;
 [Generator]
 public class AstMutatingVisitorGenerator : ISourceGenerator
 {
+    private static readonly DiagnosticDescriptor FailedForSomeReason = new DiagnosticDescriptor(id: "ACTION0001",
+                                                                                            title: "Failed to generate",
+                                                                                            messageFormat: "Failed to generate",
+                                                                                            category: "Action",
+                                                                                            DiagnosticSeverity.Warning,
+                                                                                            isEnabledByDefault: true);
+
+
     public void Execute(GeneratorExecutionContext context)
     {
-        var basetype = context.Compilation.GetTypeByMetadataName("ActionCompiler.AST.NodeVisitor`1");
+        var basetype = context.Compilation.GetTypeByMetadataName("ActionCompiler.AST.NodeVisitor`1")!;
         Debug.Assert(basetype is not null);
-        var symbolnode = context.Compilation.GetTypeByMetadataName("ActionCompiler.AST.SymbolNode");
+        var symbolnode = context.Compilation.GetTypeByMetadataName("ActionCompiler.AST.SymbolNode")!;
         Debug.Assert(symbolnode is not null);
-        var constructed = basetype.Construct(symbolnode);
+        var constructed = basetype!.Construct(symbolnode);
         var typesyntax = GenericName(Identifier(basetype.Name))
             .AddTypeArgumentListArguments(ParseTypeName(symbolnode.Name));
         var klass = ClassDeclaration("ParentResolverVisitor")
@@ -34,7 +42,8 @@ public class AstMutatingVisitorGenerator : ISourceGenerator
             .OfType<IMethodSymbol>()
             .Where(m => m.IsVirtual)
             .Where(m => m.Name is not ("Default" or "get_Default"))
-            .Select(m => CreateMethod(context, m));
+            .Select(m => CreateMethod(context, m))
+            .Where(m => m is not null);
         klass = klass.AddMembers(members.ToArray());
         CompilationUnitSyntax comp = CompilationUnit()
             .AddUsings(UsingDirective(IdentifierName("System.Linq")),
@@ -53,7 +62,7 @@ public class AstMutatingVisitorGenerator : ISourceGenerator
         context.AddSource("ParentVisitor.cs", st);
     }
 
-    private static MethodDeclarationSyntax CreateMethod(GeneratorExecutionContext ctx, IMethodSymbol m)
+    private static MethodDeclarationSyntax? CreateMethod(GeneratorExecutionContext ctx, IMethodSymbol m)
     {
         Debug.Assert(m.Parameters.Count() == 1);
         var param = m.Parameters.Single();
@@ -62,6 +71,13 @@ public class AstMutatingVisitorGenerator : ISourceGenerator
         var identifier = Identifier(m.Name);
         var symbolnode = ctx.Compilation.GetTypeByMetadataName("ActionCompiler.AST.SymbolNode");
         BlockSyntax block = GenerateMethodBody(ctx, Identifier(param.Name), param.Type);
+        if (block is null)
+        {
+            ctx.ReportDiagnostic(Diagnostic.Create(
+                FailedForSomeReason, Location.None
+            ));
+            return null;
+        }
         return MethodDeclaration(ParseTypeName(symbolnode.Name), identifier)
             .AddModifiers(Token(SyntaxKind.PublicKeyword), Token(SyntaxKind.OverrideKeyword))
             .AddParameterListParameters(Parameter(paramIdentifier).WithType(paramType))
@@ -77,8 +93,10 @@ public class AstMutatingVisitorGenerator : ISourceGenerator
         );
     }
 
-    private static BlockSyntax GenerateMethodBody(GeneratorExecutionContext ctx, SyntaxToken identifier, ITypeSymbol type)
+    private static BlockSyntax? GenerateMethodBody(GeneratorExecutionContext ctx, SyntaxToken identifier, ITypeSymbol type)
     {
+        if (type is IErrorTypeSymbol)
+            return null;
         Debug.Assert(type.IsRecord);
         if (type.IsAbstract)
         {
@@ -173,7 +191,7 @@ public class AstMutatingVisitorGenerator : ISourceGenerator
             {
                 expr = ConditionalExpression(
                     IsPatternExpression(member, ConstantPattern(LiteralExpression(SyntaxKind.NullLiteralExpression))),
-                    LiteralExpression(SyntaxKind.NullLiteralExpression),
+                    PostfixUnaryExpression(SyntaxKind.SuppressNullableWarningExpression, LiteralExpression(SyntaxKind.NullLiteralExpression)),
                     expr
                 );
             }

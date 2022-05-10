@@ -5,6 +5,7 @@ using ActionCompiler.AST.Types;
 using System;
 using System.Diagnostics;
 using System.Linq;
+using ActionCompiler.AST.Bindings;
 
 namespace ActionCompiler.AST
 {

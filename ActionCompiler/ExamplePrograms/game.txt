@@ -1,3 +1,12 @@
+game Test {
+    int k = 12;
+
+    initialize: function() {
+        int i = 0;
+        int j = i + k;
+    }
+};
+
 /*map BasicMap {
         background: color { hex: #222222; };
         shape: box {
@@ -18,7 +27,7 @@ entity Apple {
     destroy: function() {
         // create new apple?
     }
-};*/
+};
 
 entity Player {
     create: function() {
@@ -100,4 +109,4 @@ game Snake {
         Apple apple = new Apple();
         Map.place(apple, (3, 3));
     }
-};
+};*/
