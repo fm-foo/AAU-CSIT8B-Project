@@ -18,5 +18,10 @@ namespace ActionCompiler.AST.Bindings
         {
             return HashCode.Combine(dec, binding);
         }
+
+        public override T Accept<T>(NodeVisitor<T> visitor)
+        {
+            return visitor.VisitBoundDeclaration(this);
+        }
     }
 }

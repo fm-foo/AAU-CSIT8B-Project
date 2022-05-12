@@ -138,7 +138,7 @@ namespace ActionCompiler.AST
         public override T VisitColour(ColourNode colourNode) => Default;
         public override T VisitCoordinate(CoordinateNode coordinateNode) => MergeValues(Visit(coordinateNode.x), Visit(coordinateNode.y));
         public override T VisitIdentifier(IdentifierNode identifierNode) => Default;
-        public override T VisitBoundIdentifier(BoundIdentifierNode boundNode) => Default;
+        public override T VisitBoundIdentifier(BoundIdentifierNode boundNode) => Visit(boundNode.binding);
         public override T VisitKeyword(KeywordNode keywordNode) => Default;
         public override T VisitInt(IntNode intNode) => Default;
         public override T VisitFloat(FloatNode floatNode) => Default;
@@ -339,6 +339,19 @@ namespace ActionCompiler.AST
         public override T VisitAssignment(AssignmentNode assignmentNode) => MergeValues(Visit(assignmentNode.leftSide), Visit(assignmentNode.rightSide));
         public override T VisitFunctionArgument(FunctionArgumentNode functionArgumentNode) => MergeValues(Visit(functionArgumentNode.identifier), Visit(functionArgumentNode.typeNode));
         public override T VisitIs(IsNode isexpr) => MergeValues(Visit(isexpr.expr), Visit(isexpr.type));
+        public override T VisitBoundFunction(BoundFunctionNode func)
+        {
+            T value = Visit(func.node);
+            foreach (var binding in func.bindings)
+            {
+                value = MergeValues(value, Visit(binding));
+            }
+            return value;
+        }
+       
+       
+       
+       
         public abstract T MergeValues(T oldValue, T newValue);
 
     }

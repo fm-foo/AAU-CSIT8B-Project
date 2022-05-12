@@ -25,6 +25,8 @@ namespace ActionCompiler.Compiler
         FailedBinding,
         EntityMissingActFunction,
         EntityMissingCreateFunction,
-        EntityMissingDestroyFunction
+        EntityMissingDestroyFunction,
+        MismatchedTypes,
+        InvalidType
     }
 }

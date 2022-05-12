@@ -60,5 +60,7 @@ namespace ActionCompiler.AST
         public virtual T VisitAssignment(AssignmentNode assignmentNode) => Default;
         public virtual T VisitFunctionArgument(FunctionArgumentNode functionArgumentNode) => Default;
         public virtual T VisitIs(IsNode isexpr) => Default;
+        public virtual T VisitBoundFunction(BoundFunctionNode func) => Default;
+        public virtual T VisitBoundDeclaration(BoundDeclarationNode dec) => Default;
     }
 }

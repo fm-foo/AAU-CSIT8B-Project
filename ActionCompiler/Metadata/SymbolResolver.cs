@@ -8,6 +8,7 @@ using ActionCompiler.AST.Expr;
 using ActionCompiler.AST.Statement;
 using ActionCompiler.AST.TypeNodes;
 using ActionCompiler.AST.Types;
+using ActionCompiler.Compiler;
 
 namespace ActionCompiler.Metadata
 {
@@ -169,7 +170,7 @@ namespace ActionCompiler.Metadata
                 return cmbl.Add(right);
             }
             if (right is CombinedMetadataResolver cmbr)
-            {
+            { 
                 return cmbr.Add(left);
             }
             return new CombinedMetadataResolver(left, right);
@@ -181,138 +182,213 @@ namespace ActionCompiler.Metadata
         FileNode Bind(FileNode node);
     }
 
-    public class TypeBinder : AutomaticNodeVisitor<SymbolNode>
+    public class TypeBinder : DiagnosticsVisitor
     {
-        public override SymbolNode VisitAdditiveExpr(AdditiveExprNode additiveExprNode)
+        public override IEnumerable<DiagnosticResult> VisitAdditiveExpr(AdditiveExprNode additiveExprNode)
         {
-            //TODO: 
-            return base.VisitAdditiveExpr(additiveExprNode);
+            //TODO: wrong type errors
+            base.VisitAdditiveExpr(additiveExprNode);
+            var type = (additiveExprNode.left.Type, additiveExprNode.right.Type) switch
+            {
+                (IntTypeNode, IntTypeNode) => new IntTypeNode(),
+                (IntTypeNode, FloatTypeNode) => new FloatTypeNode(),
+                (FloatTypeNode, IntTypeNode) => new FloatTypeNode(),
+                (FloatTypeNode, FloatTypeNode) => new FloatTypeNode(),
+                (_, _) => null
+            };
+            if (type is not null)
+            {
+                additiveExprNode.Type = type;
+            }
+            else
+            {
+                if (additiveExprNode.left.Type == additiveExprNode.right.Type)
+                {
+                    yield return new DiagnosticResult(Severity.Error,
+                        $"Type {additiveExprNode.left.Type} is invalid for operation {additiveExprNode.oper}",
+                        Error.InvalidType);
+                }
+                else
+                {
+                    yield return new DiagnosticResult(Severity.Error, 
+                        $"Cannot operate on types {additiveExprNode.left.Type} and {additiveExprNode.right.Type} with operation {additiveExprNode.oper}", 
+                        Error.MismatchedTypes);
+                }
+            }
         }
 
-        public override SymbolNode VisitArray(ArrayNode arrayNode)
+        public override IEnumerable<DiagnosticResult> VisitArray(ArrayNode arrayNode)
         {
             // TODO: ensure all elements are the same type
             base.VisitArray(arrayNode);
-
-            
+            TypeNode type;
+            if (arrayNode.Count() == 0)
+            {
+                // special-case - we need to target-type it, that is pull the type from what we expect
+                type = GetTargetType(arrayNode);
+            }
+            else
+            {
+                var types = arrayNode.values.Select(v => v.Type).Where(t => t is not null).Distinct();
+                if (types.Count() == 1)
+                {
+                    type = types.Single()!;
+                }
+                else
+                {
+                    yield return new DiagnosticResult(Severity.Error, 
+                        $"Array has mismatched types", 
+                        Error.MismatchedTypes);
+                    yield break;
+                }
+            }
+            arrayNode.Type = type;
         }
 
-        public override SymbolNode VisitArrayAccess(ArrayAccessNode arrayAccessNode)
+        private static TypeNode GetTargetType(SymbolNode node)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override IEnumerable<DiagnosticResult> VisitArrayAccess(ArrayAccessNode arrayAccessNode)
         {
             // TODO: ensure array type
             base.VisitArrayAccess(arrayAccessNode);
-            var arrayType = arrayAccessNode.arrayExpr.Type as ArrayTypeNode;
-            Debug.Assert(arrayType is not null);
+            if (arrayAccessNode.arrayExpr.Type is not ArrayTypeNode arrayType)
+            {
+                yield return new DiagnosticResult(Severity.Error,
+                    $"Not an array type",
+                    Error.InvalidType);
+                yield break;
+            }
             arrayAccessNode.Type = arrayType.type;
-            return arrayAccessNode;
         }
 
-        public override SymbolNode VisitAssignment(AssignmentNode assignmentNode)
+        public override IEnumerable<DiagnosticResult> VisitAssignment(AssignmentNode assignmentNode)
         {
             // TODO: ensure correct types both sides
-            return base.VisitAssignment(assignmentNode);
+            base.VisitAssignment(assignmentNode);
+            if (assignmentNode.leftSide.Type != assignmentNode.rightSide.Type)
+            {
+                yield return new DiagnosticResult(Severity.Error,
+                    $"Assigned type is not equal to assigning type",
+                    Error.MismatchedTypes);
+                yield break;
+            }
         }
 
-        public override SymbolNode VisitBool(BoolNode boolNode)
+        public override IEnumerable<DiagnosticResult> VisitBool(BoolNode boolNode)
         {
             boolNode.Type = new BoolTypeNode();
-            return base.VisitBool(boolNode);
+            yield break;
         }
 
-        public override SymbolNode VisitBooleanExpr(BoolExprNode boolExprNode)
+        public override IEnumerable<DiagnosticResult> VisitBooleanExpr(BoolExprNode boolExprNode)
         {
             // TODO: wrong type
+            base.VisitBooleanExpr(boolExprNode);
+            if (boolExprNode.left.Type is not BoolTypeNode || boolExprNode.right.Type is not BoolTypeNode)
+            {
+                yield return new DiagnosticResult(Severity.Error,
+                    $"Cannot operate on types {boolExprNode.left.Type} and {boolExprNode.right.Type} with operation {boolExprNode.oper}", 
+                    Error.InvalidType);
+                yield break;
+            }
             boolExprNode.Type = new BoolTypeNode();
-            return base.VisitBooleanExpr(boolExprNode);
         }
 
-        public override SymbolNode VisitBoundIdentifier(BoundIdentifierNode identifierNode)
+        public override IEnumerable<DiagnosticResult> VisitBoundIdentifier(BoundIdentifierNode identifierNode)
         {
             identifierNode.Type = identifierNode.binding.type;
-            return base.VisitBoundIdentifier(identifierNode);
+            yield break;
         }
 
-        public override SymbolNode VisitColour(ColourNode colourNode)
+        public override IEnumerable<DiagnosticResult> VisitColour(ColourNode colourNode)
         {
             //TODO: should we make colours a valid type/literal? maybe
-            return base.VisitColour(colourNode);
+            yield break;
         }
 
-        public override SymbolNode VisitCoordinate(CoordinateNode coordinateNode)
+        public override IEnumerable<DiagnosticResult> VisitCoordinate(CoordinateNode coordinateNode)
         {
             coordinateNode.Type = new CoordTypeNode();
-            return base.VisitCoordinate(coordinateNode);
+            yield break;
         }
 
-        public override SymbolNode VisitDeclaration(DeclarationNode declarationNode)
+        public override IEnumerable<DiagnosticResult> VisitDeclaration(DeclarationNode declarationNode)
         {
             // TODO: ensure correct types both sides
-            return base.VisitDeclaration(declarationNode);
+            base.VisitDeclaration(declarationNode);
+            if (declarationNode.expr is not null)
+            {
+                if (declarationNode)
+            }
+            yield break;
         }
 
-        public override SymbolNode VisitEqualityExpr(EqualityExprNode equalityExprNode)
+        public override IEnumerable<DiagnosticResult> VisitEqualityExpr(EqualityExprNode equalityExprNode)
         {
             // TODO: wrong types
             equalityExprNode.Type = new BoolTypeNode();
             return base.VisitEqualityExpr(equalityExprNode);
         }
 
-        public override SymbolNode VisitFloat(FloatNode floatNode)
+        public override IEnumerable<DiagnosticResult> VisitFloat(FloatNode floatNode)
         {
             floatNode.Type = new FloatTypeNode();
             return base.VisitFloat(floatNode);
         }
 
-        public override SymbolNode VisitForeachStatement(ForeachStatementNode foreachStatementNode)
+        public override IEnumerable<DiagnosticResult> VisitForeachStatement(ForeachStatementNode foreachStatementNode)
         {
             // TODO: check type if it's an iterable
             return base.VisitForeachStatement(foreachStatementNode);
         }
 
-        public override SymbolNode VisitFunctionArgument(FunctionArgumentNode functionArgumentNode)
+        public override IEnumerable<DiagnosticResult> VisitFunctionArgument(FunctionArgumentNode functionArgumentNode)
         {
             // TODO: need to bind function args - probably not here, though
             return base.VisitFunctionArgument(functionArgumentNode);
         }
 
-        public override SymbolNode VisitFunctionCallExpr(FunctionCallExprNode funcCallExprNode)
+        public override IEnumerable<DiagnosticResult> VisitFunctionCallExpr(FunctionCallExprNode funcCallExprNode)
         {
             // TODO: expr type resolves to the return type of the function
             // need to figure out how THAT works out
             return base.VisitFunctionCallExpr(funcCallExprNode);
         }
 
-        public override SymbolNode VisitIdentifier(IdentifierNode identifierNode)
+        public override IEnumerable<DiagnosticResult> VisitIdentifier(IdentifierNode identifierNode)
         {
             // TODO: failed binding
             return base.VisitIdentifier(identifierNode);
         }
 
-        public override SymbolNode VisitIfStatement(IfStatementNode ifStatementNode)
+        public override IEnumerable<DiagnosticResult> VisitIfStatement(IfStatementNode ifStatementNode)
         {
             // TODO: check if statement type?
             return base.VisitIfStatement(ifStatementNode);
         }
 
-        public override SymbolNode VisitInt(IntNode intNode)
+        public override IEnumerable<DiagnosticResult> VisitInt(IntNode intNode)
         {
             intNode.Type = new IntTypeNode();
             return base.VisitInt(intNode);
         }
 
-        public override SymbolNode VisitIs(IsNode isexpr)
+        public override IEnumerable<DiagnosticResult> VisitIs(IsNode isexpr)
         {
             isexpr.Type = new BoolTypeNode();
             return base.VisitIs(isexpr);
         }
 
-        public override SymbolNode VisitMemberAccess(MemberAccessNode memberAccessNode)
+        public override IEnumerable<DiagnosticResult> VisitMemberAccess(MemberAccessNode memberAccessNode)
         {
             // TODO: needs to be bound first
             return base.VisitMemberAccess(memberAccessNode);
         }
 
-        public override SymbolNode VisitMultiplicativeExprNode(MultiplicativeExprNode multiplicativeExprNode)
+        public override IEnumerable<DiagnosticResult> VisitMultiplicativeExprNode(MultiplicativeExprNode multiplicativeExprNode)
         {
             //TODO: wrong type errors
             base.VisitMultiplicativeExprNode(multiplicativeExprNode);
@@ -327,20 +403,20 @@ namespace ActionCompiler.Metadata
             return multiplicativeExprNode;
         }
 
-        public override SymbolNode VisitNatNum(NatNumNode natNumNode)
+        public override IEnumerable<DiagnosticResult> VisitNatNum(NatNumNode natNumNode)
         {
             //TODO: is this ever hit? we don't have a NatNum type
             Debug.Assert(false);
             return base.VisitNatNum(natNumNode);
         }
 
-        public override SymbolNode VisitNewObject(NewObjectNode newObjectExprNode)
+        public override IEnumerable<DiagnosticResult> VisitNewObject(NewObjectNode newObjectExprNode)
         {
             //TODO: failed to bind new obj. error
             return base.VisitNewObject(newObjectExprNode);
         }
 
-        public override SymbolNode VisitPostFixExpr(PostFixExprNode postFixExprNode)
+        public override IEnumerable<DiagnosticResult> VisitPostFixExpr(PostFixExprNode postFixExprNode)
         {
             //TODO: wrong type errors
             base.VisitPostFixExpr(postFixExprNode);
@@ -348,20 +424,20 @@ namespace ActionCompiler.Metadata
             return postFixExprNode;
         }
 
-        public override SymbolNode VisitRelationalExpr(RelationalExprNode relationalExprNode)
+        public override IEnumerable<DiagnosticResult> VisitRelationalExpr(RelationalExprNode relationalExprNode)
         {
             //TODO: wrong type errors
             relationalExprNode.Type = new BoolTypeNode();
             return base.VisitRelationalExpr(relationalExprNode);
         }
 
-        public override SymbolNode VisitString(StringNode stringNode)
+        public override IEnumerable<DiagnosticResult> VisitString(StringNode stringNode)
         {
             stringNode.Type = new StringTypeNode();
             return base.VisitString(stringNode);
         }
 
-        public override SymbolNode VisitUnaryExpr(UnaryExprNode unaryExprNode)
+        public override IEnumerable<DiagnosticResult> VisitUnaryExpr(UnaryExprNode unaryExprNode)
         {
             //TODO: wrong type errors
             base.VisitUnaryExpr(unaryExprNode);

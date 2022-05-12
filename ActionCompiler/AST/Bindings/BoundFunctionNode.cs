@@ -22,11 +22,21 @@ namespace ActionCompiler.AST.Bindings
                 hc.Add(binding);
             return hc.ToHashCode();
         }
+
+        public override T Accept<T>(NodeVisitor<T> visitor)
+        {
+            return visitor.VisitBoundFunction(this);
+        }
     }
 
-    public record Binding(IdentifierNode identifier, TypeNode type, Guid id)
+    public record Binding(IdentifierNode identifier, TypeNode type, Guid id) : SymbolNode
     {
         public Binding(IdentifierNode identifier, TypeNode type) : this(identifier, type, Guid.NewGuid())
         { }
+
+        public override T Accept<T>(NodeVisitor<T> visitor)
+        {
+            return visitor.VisitBinding(this);
+        }
     }
 }
