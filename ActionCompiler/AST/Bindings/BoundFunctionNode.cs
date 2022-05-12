@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ActionCompiler.AST.TypeNodes;
 
 namespace ActionCompiler.AST.Bindings
 {
@@ -23,9 +24,9 @@ namespace ActionCompiler.AST.Bindings
         }
     }
 
-    public record Binding(IdentifierNode identifier, Guid id)
+    public record Binding(IdentifierNode identifier, TypeNode type, Guid id)
     {
-        public Binding(IdentifierNode identifier) : this(identifier, Guid.NewGuid())
+        public Binding(IdentifierNode identifier, TypeNode type) : this(identifier, type, Guid.NewGuid())
         { }
     }
 }

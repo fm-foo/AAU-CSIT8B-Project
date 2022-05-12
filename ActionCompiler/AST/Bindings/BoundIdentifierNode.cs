@@ -2,7 +2,7 @@ using System;
 
 namespace ActionCompiler.AST.Bindings
 {
-    public record BoundIdentifierNode(Guid id) : ValueNode
+    public record BoundIdentifierNode(Binding binding) : ValueNode
     {
         public override T Accept<T>(NodeVisitor<T> visitor)
         {
@@ -12,27 +12,27 @@ namespace ActionCompiler.AST.Bindings
         public virtual bool Equals(BoundIdentifierNode? other)
         {
             return other is not null
-                && id == other.id;
+                && binding == other.binding;
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(id);
+            return HashCode.Combine(binding);
         }
     }
 
-    public record BoundFieldDecNode(FieldDecNode field, Guid id) : FieldDecNode(field.identifier, field.type, field.expr)
+    public record BoundFieldDecNode(FieldDecNode field, Binding binding) : FieldDecNode(field.identifier, field.type, field.expr)
     {
         public virtual bool Equals(BoundFieldDecNode? other)
         {
             return other is not null
                 && field == other.field
-                && id == other.id;
+                && binding == other.binding;
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(id);
+            return HashCode.Combine(field, binding);
         }
     }
 }

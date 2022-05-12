@@ -174,7 +174,7 @@ public class AstMutatingVisitorGenerator : ISourceGenerator
                                             IdentifierName(objectReturnIdentifier))));
             } 
             // integral type (int/string/etc)
-            else if (IsIntegralType(param.Type))
+            else if (IsRecognizedType(param.Type))
             {
                 //Type name = main.name
                 paramtype = GetIntegralTypeName(param.Type.Name);
@@ -234,7 +234,7 @@ public class AstMutatingVisitorGenerator : ISourceGenerator
         return IsSymbolNode(type.BaseType);
     }
 
-    private static bool IsIntegralType(ITypeSymbol type)
+    private static bool IsRecognizedType(ITypeSymbol type)
     {
         return type.Name switch
         {
@@ -245,6 +245,7 @@ public class AstMutatingVisitorGenerator : ISourceGenerator
             "Byte" => true,
             "Guid" => true,
             "Boolean" => true,
+            "Binding" => true,
             _ => IsEnumType(type)
         };
     }
@@ -269,6 +270,7 @@ public class AstMutatingVisitorGenerator : ISourceGenerator
             "Byte" => PredefinedType(Token(SyntaxKind.ByteKeyword)),
             "Guid" => IdentifierName("Guid"),
             "Boolean" => PredefinedType(Token(SyntaxKind.BoolKeyword)),
+            "Binding" => IdentifierName("Binding"),
             _ => IdentifierName(name)
         };
     }

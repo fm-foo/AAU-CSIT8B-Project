@@ -143,7 +143,7 @@ namespace ActionCompiler.AstMutatingVisitorGenerator
                     expr = InvocationExpression(expr);
                 }
                 // integral type (int/string/etc)
-                else if (IsIntegralType(param.Type))
+                else if (IsRecognizedType(param.Type))
                 {
                     //Type name = main.name
                     paramtype = GetIntegralTypeName(param.Type.Name);
@@ -191,7 +191,7 @@ namespace ActionCompiler.AstMutatingVisitorGenerator
             return IsSymbolNode(type.BaseType);
         }
 
-        private static bool IsIntegralType(ITypeSymbol type)
+        private static bool IsRecognizedType(ITypeSymbol type)
         {
             return type.Name switch
             {
@@ -202,6 +202,7 @@ namespace ActionCompiler.AstMutatingVisitorGenerator
                 "Byte" => true,
                 "Guid" => true,
                 "Boolean" => true,
+                "Binding" => true,
                 _ => IsEnumType(type)
             };
         }
@@ -226,13 +227,14 @@ namespace ActionCompiler.AstMutatingVisitorGenerator
                 "Byte" => PredefinedType(Token(SyntaxKind.ByteKeyword)),
                 "Guid" => IdentifierName("Guid"),
                 "Boolean" => PredefinedType(Token(SyntaxKind.BoolKeyword)),
+                "Binding" => IdentifierName("Binding"),
                 _ => IdentifierName(name)
             };
         }
 
         public void Initialize(GeneratorInitializationContext context)
         {
-            System.Threading.Thread.Sleep(10000);
+            //System.Threading.Thread.Sleep(10000);
         }
     }
 }
