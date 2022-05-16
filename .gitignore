@@ -13,3 +13,5 @@
 *.manifest
 *.testlog
 .vs/Action/v17/HierarchyCache.v1.txt
+.vs/Action/FileContentIndex/
+.vs/ProjectEvaluation/
