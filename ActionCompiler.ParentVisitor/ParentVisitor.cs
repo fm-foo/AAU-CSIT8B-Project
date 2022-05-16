@@ -18,13 +18,21 @@ namespace ActionCompiler.TokenCompiler;
 [Generator]
 public class AstMutatingVisitorGenerator : ISourceGenerator
 {
+    private static readonly DiagnosticDescriptor FailedForSomeReason = new DiagnosticDescriptor(id: "ACTION0001",
+                                                                                            title: "Failed to generate",
+                                                                                            messageFormat: "Failed to generate",
+                                                                                            category: "Action",
+                                                                                            DiagnosticSeverity.Warning,
+                                                                                            isEnabledByDefault: true);
+
+
     public void Execute(GeneratorExecutionContext context)
     {
-        var basetype = context.Compilation.GetTypeByMetadataName("ActionCompiler.AST.NodeVisitor`1");
+        var basetype = context.Compilation.GetTypeByMetadataName("ActionCompiler.AST.NodeVisitor`1")!;
         Debug.Assert(basetype is not null);
-        var symbolnode = context.Compilation.GetTypeByMetadataName("ActionCompiler.AST.SymbolNode");
+        var symbolnode = context.Compilation.GetTypeByMetadataName("ActionCompiler.AST.SymbolNode")!;
         Debug.Assert(symbolnode is not null);
-        var constructed = basetype.Construct(symbolnode);
+        var constructed = basetype!.Construct(symbolnode);
         var typesyntax = GenericName(Identifier(basetype.Name))
             .AddTypeArgumentListArguments(ParseTypeName(symbolnode.Name));
         var klass = ClassDeclaration("ParentResolverVisitor")
@@ -34,7 +42,8 @@ public class AstMutatingVisitorGenerator : ISourceGenerator
             .OfType<IMethodSymbol>()
             .Where(m => m.IsVirtual)
             .Where(m => m.Name is not ("Default" or "get_Default"))
-            .Select(m => CreateMethod(context, m));
+            .Select(m => CreateMethod(context, m))
+            .Where(m => m is not null);
         klass = klass.AddMembers(members.ToArray());
         CompilationUnitSyntax comp = CompilationUnit()
             .AddUsings(UsingDirective(IdentifierName("System.Linq")),
@@ -53,7 +62,7 @@ public class AstMutatingVisitorGenerator : ISourceGenerator
         context.AddSource("ParentVisitor.cs", st);
     }
 
-    private static MethodDeclarationSyntax CreateMethod(GeneratorExecutionContext ctx, IMethodSymbol m)
+    private static MethodDeclarationSyntax? CreateMethod(GeneratorExecutionContext ctx, IMethodSymbol m)
     {
         Debug.Assert(m.Parameters.Count() == 1);
         var param = m.Parameters.Single();
@@ -62,16 +71,38 @@ public class AstMutatingVisitorGenerator : ISourceGenerator
         var identifier = Identifier(m.Name);
         var symbolnode = ctx.Compilation.GetTypeByMetadataName("ActionCompiler.AST.SymbolNode");
         BlockSyntax block = GenerateMethodBody(ctx, Identifier(param.Name), param.Type);
+        if (block is null)
+        {
+            ctx.ReportDiagnostic(Diagnostic.Create(
+                FailedForSomeReason, Location.None
+            ));
+            return null;
+        }
         return MethodDeclaration(ParseTypeName(symbolnode.Name), identifier)
             .AddModifiers(Token(SyntaxKind.PublicKeyword), Token(SyntaxKind.OverrideKeyword))
             .AddParameterListParameters(Parameter(paramIdentifier).WithType(paramType))
             .WithBody(block);
     }
 
-    private static BlockSyntax GenerateMethodBody(GeneratorExecutionContext ctx, SyntaxToken identifier, ITypeSymbol type)
+    private static BlockSyntax GenerateKeywordBody(GeneratorExecutionContext ctx, SyntaxToken identifier, ITypeSymbol type)
     {
-        List<StatementSyntax> statements = new List<StatementSyntax>();
+        return Block(
+            new[] {
+                ReturnStatement(IdentifierName(identifier))
+            }
+        );
+    }
+
+    private static BlockSyntax? GenerateMethodBody(GeneratorExecutionContext ctx, SyntaxToken identifier, ITypeSymbol type)
+    {
+        if (type is IErrorTypeSymbol)
+            return null;
         Debug.Assert(type.IsRecord);
+        if (type.IsAbstract)
+        {
+            return GenerateKeywordBody(ctx, identifier, type);
+        }
+        List<StatementSyntax> statements = new List<StatementSyntax>();
         var constructor = type.GetMembers()
             .OfType<IMethodSymbol>()
             .Where(m => m.Name is ".ctor")
@@ -143,7 +174,7 @@ public class AstMutatingVisitorGenerator : ISourceGenerator
                                             IdentifierName(objectReturnIdentifier))));
             } 
             // integral type (int/string/etc)
-            else if (IsIntegralType(param.Type))
+            else if (IsRecognizedType(param.Type))
             {
                 //Type name = main.name
                 paramtype = GetIntegralTypeName(param.Type.Name);
@@ -160,7 +191,7 @@ public class AstMutatingVisitorGenerator : ISourceGenerator
             {
                 expr = ConditionalExpression(
                     IsPatternExpression(member, ConstantPattern(LiteralExpression(SyntaxKind.NullLiteralExpression))),
-                    LiteralExpression(SyntaxKind.NullLiteralExpression),
+                    PostfixUnaryExpression(SyntaxKind.SuppressNullableWarningExpression, LiteralExpression(SyntaxKind.NullLiteralExpression)),
                     expr
                 );
             }
@@ -203,7 +234,7 @@ public class AstMutatingVisitorGenerator : ISourceGenerator
         return IsSymbolNode(type.BaseType);
     }
 
-    private static bool IsIntegralType(ITypeSymbol type)
+    private static bool IsRecognizedType(ITypeSymbol type)
     {
         return type.Name switch
         {
@@ -214,6 +245,7 @@ public class AstMutatingVisitorGenerator : ISourceGenerator
             "Byte" => true,
             "Guid" => true,
             "Boolean" => true,
+            "Binding" => true,
             _ => IsEnumType(type)
         };
     }
@@ -238,6 +270,7 @@ public class AstMutatingVisitorGenerator : ISourceGenerator
             "Byte" => PredefinedType(Token(SyntaxKind.ByteKeyword)),
             "Guid" => IdentifierName("Guid"),
             "Boolean" => PredefinedType(Token(SyntaxKind.BoolKeyword)),
+            "Binding" => IdentifierName("Binding"),
             _ => IdentifierName(name)
         };
     }

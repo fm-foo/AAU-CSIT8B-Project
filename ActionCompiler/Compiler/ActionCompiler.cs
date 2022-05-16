@@ -16,6 +16,11 @@ using ActionCompiler.AST.Types;
 using ActionCompiler.AST;
 using ActionCompiler.Metadata;
 using ActionCompiler.Parser;
+using ActionCompiler.CodeGeneration.HighLevel;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Text;
+using Microsoft.CodeAnalysis;
+using System.Text;
 
 namespace ActionCompiler.Compiler
 {
@@ -66,7 +71,24 @@ namespace ActionCompiler.Compiler
             if (ast is null)
                 return CompilationResult.Failure(diagnostics);
 
+            EmmitCode(ast);
+
             throw new NotImplementedException();
+        }
+
+        private void EmmitCode(FileNode ast)
+        {
+            HighLevelCodeEmmiterVisitor visitor = new HighLevelCodeEmmiterVisitor();
+
+            foreach ((string name, CompilationUnitSyntax classDec) dec in (IEnumerable<(string name, CompilationUnitSyntax classDec)>)visitor.Visit(ast))
+            {
+                SourceText st = SourceText.From(dec.classDec.NormalizeWhitespace().ToFullString(), Encoding.UTF8);
+                // File.WriteAllLines("HighLevelTest/" + dec.name + ".cs", st.w);
+                using (TextWriter tw = new StreamWriter("output/" + dec.name + "cs"))
+                {
+                    st.Write(tw);
+                }
+            }
         }
 
         public FileNode? BindTypes(FileNode ast, ILogger<ActionCompiler> logger, List<DiagnosticResult> diagnostics)

@@ -4,25 +4,23 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace ActionCompiler.CodeGeneration.HighLevel
 {
-    internal class HighLevelCodeEmmiterVisitor : AutomaticNodeVisitor<object>
+    public class HighLevelCodeEmmiterVisitor : AutomaticNodeVisitor<object>
     {
 
         public override object VisitFile(FileNode file)
         {
-            List<ClassDeclarationSyntax> declarations = new();
+            List<(string name, CompilationUnitSyntax)> declarations = new();
 
             foreach (var node in file.nodes)
             {
-                foreach (var item in (IEnumerable<ClassDeclarationSyntax>)Visit(node))
+                foreach (var item in (IEnumerable<(string name, ClassDeclarationSyntax declarationSyntax)>)Visit(node))
                 {
-                    declarations.Add(item);
+                    CompilationUnitSyntax syntax = CompilationUnit().AddMembers(item.declarationSyntax);
+                    declarations.Add((item.name,syntax));
                 }
             }
 
@@ -37,7 +35,7 @@ namespace ActionCompiler.CodeGeneration.HighLevel
 
             List<MemberDeclarationSyntax> memberDeclarations = GetMemberDeclarations(mapNode.properties);
             classDeclaration.AddMembers(memberDeclarations.ToArray());
-            return classDeclaration;
+            return (mapNode.identifier.identifier, classDeclaration);
         }
 
         private List<MemberDeclarationSyntax> GetMemberDeclarations(IEnumerable<PropertyNode> properties)
