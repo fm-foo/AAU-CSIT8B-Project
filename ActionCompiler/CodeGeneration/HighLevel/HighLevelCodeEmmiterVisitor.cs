@@ -1,4 +1,5 @@
 ﻿using ActionCompiler.AST;
+using ActionCompiler.AST.Types;
 using ActionCompiler.Compiler;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -17,11 +18,10 @@ namespace ActionCompiler.CodeGeneration.HighLevel
 
             foreach (var node in file.nodes)
             {
-                foreach (var item in (IEnumerable<(string name, ClassDeclarationSyntax declarationSyntax)>)Visit(node))
-                {
-                    CompilationUnitSyntax syntax = CompilationUnit().AddMembers(item.declarationSyntax);
-                    declarations.Add((item.name,syntax));
-                }
+                (string name, ClassDeclarationSyntax declarationSyntax) item = ((string name, ClassDeclarationSyntax declarationSyntax))Visit(node);
+
+                CompilationUnitSyntax syntax = CompilationUnit().AddMembers(item.declarationSyntax);
+                declarations.Add((item.name,syntax));
             }
 
             return declarations;
@@ -34,7 +34,7 @@ namespace ActionCompiler.CodeGeneration.HighLevel
                                                         .AddBaseListTypes(SimpleBaseType(ParseTypeName("BaseMap")));
 
             List<MemberDeclarationSyntax> memberDeclarations = GetMemberDeclarations(mapNode.properties);
-            classDeclaration.AddMembers(memberDeclarations.ToArray());
+            classDeclaration = classDeclaration.AddMembers(memberDeclarations.ToArray());
             return (mapNode.identifier.identifier, classDeclaration);
         }
 
@@ -50,6 +50,9 @@ namespace ActionCompiler.CodeGeneration.HighLevel
                     case BackgroundKeywordNode:
                         memberDeclarations.Add(GetBackgroundDeclaration(node));
                         break;
+                    case ShapeKeywordNode:
+                        memberDeclarations.Add(GetShapeDeclaration(node));
+                        break;
                     default:
                         break;
                         // throw new NotImplementedException();
@@ -59,13 +62,47 @@ namespace ActionCompiler.CodeGeneration.HighLevel
             return memberDeclarations;
         }
 
+        private MemberDeclarationSyntax GetShapeDeclaration(PropertyNode node)
+        {
+            ComplexNode complex = (ComplexNode)node.value!;
+            IdentifierNode shapeType = complex.type;
+
+            switch (shapeType)
+            {
+                case BoxKeywordNode:
+                    return BoxShapeDeclaration(complex);
+                default:
+                    break;
+            }
+
+
+            return null;
+        }
+
+        private MemberDeclarationSyntax BoxShapeDeclaration(ComplexNode complex)
+        {
+            int height = complex.GetProperty<HeightKeywordNode, IntNode>().integer;
+            int width = complex.GetProperty<WidthKeywordNode, IntNode>().integer;
+
+            VariableDeclarationSyntax variableDeclaration = VariableDeclaration(ParseTypeName("IShape")).AddVariables(VariableDeclarator("_shape").WithInitializer(EqualsValueClause(ObjectCreationExpression(ParseTypeName("BoxShape")).AddArgumentListArguments(Argument(IdentifierName(height.ToString())), Argument(IdentifierName(width.ToString()))))));
+            FieldDeclarationSyntax fieldDeclaration = FieldDeclaration(variableDeclaration).AddModifiers(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.ReadOnlyKeyword));
+
+            return fieldDeclaration;
+        }
+
         private MemberDeclarationSyntax GetBackgroundDeclaration(PropertyNode node)
         {
             ComplexNode complex = (ComplexNode)node.value!;
             ColourNode colour = complex.GetProperty<HexKeywordNode, ColourNode>();
 
+            List<ArgumentSyntax> args = new();
+            args.Add(Argument(IdentifierName(colour.r.ToString())));
+            args.Add(Argument(IdentifierName(colour.g.ToString())));
+            args.Add(Argument(IdentifierName(colour.b.ToString())));
+
             // private readonly IBackground = new Background(r, g, b);
-            VariableDeclarationSyntax variableDeclaration = VariableDeclaration(ParseTypeName("IBackground")).AddVariables(VariableDeclarator("_background").WithInitializer(EqualsValueClause(ObjectCreationExpression(ParseTypeName("Background")))));
+            VariableDeclarationSyntax variableDeclaration = VariableDeclaration(ParseTypeName("IBackground")).AddVariables(VariableDeclarator("_background").WithInitializer(EqualsValueClause(ObjectCreationExpression(ParseTypeName("Background")).AddArgumentListArguments(args.ToArray()))));
+           // VariableDeclarationSyntax variableDeclaration = VariableDeclaration(ParseTypeName("IBackground")).AddVariables(VariableDeclarator("_background"));
             FieldDeclarationSyntax fieldDeclaration = FieldDeclaration(variableDeclaration).AddModifiers(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.ReadOnlyKeyword));
 
             return fieldDeclaration;

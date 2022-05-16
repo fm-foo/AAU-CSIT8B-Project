@@ -14,7 +14,21 @@ namespace ActionCompiler.Compiler
     /// </summary>
     public class ForAndForeachNodeConverterVisitor : ASTMutatingVisitor
     {
+        public override SymbolNode VisitFile(FileNode file)
+        {
+            IEnumerable<ValueNode> nodes = file.nodes.Where(n => n is (EntityNode or GameNode));
 
+            List<ValueNode> newNodes = new();
+            newNodes.AddRange(file.nodes.Where(n => !nodes.Contains(n)));
+
+            foreach (ValueNode node in nodes)
+            {
+                ValueNode newNode = (ValueNode)Visit(node);
+                newNodes.Add(newNode);
+            }
+
+            return new FileNode(newNodes);
+        }
         public override SymbolNode VisitEntity(EntityNode entityNode)
         {
             List<PropertyNode> updatedDeclarations = entityNode.funcDecs.Select(f => this.Visit(f)).Cast<PropertyNode>().ToList();

@@ -53,7 +53,7 @@ namespace ActionCompiler.Compiler
             if (ast is null)
                 return CompilationResult.Failure(diagnostics);
 
-            ast = (FileNode)parent.Visit(ast);
+            //ast = (FileNode)parent.Visit(ast);
 
             bool valid = SemanticsErrorCheck(ast, logger, diagnostics, SemanticsFirstPass);
             if (!valid)
@@ -67,7 +67,7 @@ namespace ActionCompiler.Compiler
             if (!valid)
                 return CompilationResult.Failure(diagnostics);
 
-            ast = BindTypes(ast, logger, diagnostics);
+           //ast = BindTypes(ast, logger, diagnostics);
             if (ast is null)
                 return CompilationResult.Failure(diagnostics);
 
@@ -83,11 +83,21 @@ namespace ActionCompiler.Compiler
             foreach ((string name, CompilationUnitSyntax classDec) dec in (IEnumerable<(string name, CompilationUnitSyntax classDec)>)visitor.Visit(ast))
             {
                 SourceText st = SourceText.From(dec.classDec.NormalizeWhitespace().ToFullString(), Encoding.UTF8);
-                // File.WriteAllLines("HighLevelTest/" + dec.name + ".cs", st.w);
-                using (TextWriter tw = new StreamWriter("output/" + dec.name + "cs"))
+
+                string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+                string outputFolder = System.IO.Path.Combine(desktopPath, "output");
+                string filePath = System.IO.Path.Combine(outputFolder, dec.name + ".cs");
+
+                Directory.CreateDirectory(outputFolder);
+
+                using (FileStream fs = new(filePath, FileMode.Create))
                 {
-                    st.Write(tw);
+                    using (TextWriter tw = new StreamWriter(fs))
+                    {
+                        st.Write(tw);
+                    }
                 }
+                
             }
         }
 
