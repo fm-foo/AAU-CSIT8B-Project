@@ -111,7 +111,25 @@ namespace Action.Compiler
                 else
                     newnodes.Add(newnode);
             }
-            return valid ? new FileNode(newnodes) : null;
+            if (!valid)
+            {
+                return null;
+            }
+            HasReferenceSectionVisitor visit = new HasReferenceSectionVisitor();
+            var fn = new FileNode(newnodes);
+            if (visit.Visit(fn))
+                return ResolveReferences(ast, logger, diagnostics);
+            else
+                return fn;
+        }
+
+        private class HasReferenceSectionVisitor : NodeVisitor<bool>
+        {
+            public override bool Default => false;
+            public override bool VisitFile(FileNode file) => file.nodes.Select(Visit).Aggregate((b, c) => b || c);
+            public override bool VisitMap(MapNode mapNode) => mapNode.sections.Select(Visit).Aggregate((b, c) => b || c);
+            public override bool VisitSection(SectionNode sectionNode) => sectionNode.sections.Select(Visit).Aggregate((b, c) => b || c);
+            public override bool VisitReference(ReferenceNode referenceNode) => true;
         }
 
         private FileNode TrimSections(FileNode ast, ILogger<ActionCompiler> logger)
