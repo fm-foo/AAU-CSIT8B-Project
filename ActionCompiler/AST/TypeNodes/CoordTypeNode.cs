@@ -6,6 +6,11 @@
         {
             return visitor.VisitCoordType(this);
         }
+
+        public override string GetTypeName()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 
 }

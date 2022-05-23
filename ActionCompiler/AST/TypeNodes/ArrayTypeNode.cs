@@ -6,5 +6,10 @@ namespace ActionCompiler.AST.TypeNodes
         {
             return visitor.VisitArrayType(this);
         }
+
+        public override string GetTypeName()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

@@ -1,10 +1,14 @@
 ﻿using ActionCompiler.AST;
+using ActionCompiler.AST.Expr;
+using ActionCompiler.AST.Statement;
 using ActionCompiler.AST.Types;
 using ActionCompiler.Compiler;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace ActionCompiler.CodeGeneration.HighLevel
@@ -38,6 +42,91 @@ namespace ActionCompiler.CodeGeneration.HighLevel
             return (mapNode.identifier.identifier, classDeclaration);
         }
 
+        public override object VisitGame(GameNode gameNode)
+        {
+            ClassDeclarationSyntax classDeclaration = ClassDeclaration(gameNode.identifier.identifier)
+                                                    .AddModifiers(Token(SyntaxKind.PublicKeyword))
+                                                    .AddBaseListTypes(SimpleBaseType(ParseTypeName("BaseGame")));
+
+            List<MemberDeclarationSyntax> memberDeclarations = GetFunctionDeclarations(gameNode.funcDecs);
+            //memberDeclarations.AddRange(GetFieldDeclarations(gameNode.fieldDecs));
+
+            classDeclaration = classDeclaration.AddMembers(memberDeclarations.ToArray());
+            
+            return (gameNode.identifier.identifier, classDeclaration);
+        }
+
+        private List<MemberDeclarationSyntax> GetFieldDeclarations(IEnumerable<FieldDecNode> fieldDecs)
+        {
+            throw new NotImplementedException();
+        }
+
+        private List<MemberDeclarationSyntax> GetFunctionDeclarations(IEnumerable<PropertyNode> funcDecs)
+        {
+            List<MemberDeclarationSyntax> lst = new();
+
+            foreach (var dec in funcDecs)
+            {
+                FunctionNode function = (FunctionNode)dec.value!;
+
+                SyntaxToken identifier = Identifier(dec.identifier.identifier);
+                BlockSyntax block = (BlockSyntax)Visit(function.block);
+
+                IEnumerable<ParameterSyntax>? args = function.args.Select(a => Identifier(a.identifier.identifier)).Select(p => Parameter(p).WithType(ParseTypeName("object")));
+
+                MethodDeclarationSyntax? functionDeclaration = MethodDeclaration(ParseTypeName("object"), identifier)
+                                            .AddModifiers(Token(SyntaxKind.PublicKeyword))
+                                            .AddParameterListParameters(args.ToArray())
+                                            .WithBody(block);
+
+                lst.Add(functionDeclaration);
+            }
+
+            return lst;
+        }
+
+        public override object VisitBlock(BlockNode blockNode)
+        {
+            List<StatementSyntax> statements = new();
+
+            foreach (StatementNode node in blockNode.statements)
+            {
+                StatementSyntax statementSyntax = (StatementSyntax)Visit(node);
+                statements.Add(statementSyntax);
+            }
+
+            return Block(statements.ToArray());
+        }
+
+        public override object VisitDeclaration(DeclarationNode declarationNode)
+        {
+            LocalDeclarationStatementSyntax variableDeclaration;
+
+            if (declarationNode.expr is null)
+            {
+                variableDeclaration =  LocalDeclarationStatement(VariableDeclaration(ParseTypeName(declarationNode.type.GetTypeName())).AddVariables(VariableDeclarator(declarationNode.identifier.identifier)));
+            } else
+            {
+                variableDeclaration = LocalDeclarationStatement(VariableDeclaration(ParseTypeName(declarationNode.type.GetTypeName())).AddVariables(VariableDeclarator(declarationNode.identifier.identifier).WithInitializer(EqualsValueClause((ExpressionSyntax)Visit(declarationNode.expr)))));
+            }
+
+            return variableDeclaration;
+        }
+
+        public override object VisitInt(IntNode intNode)
+        {
+            int value = intNode.integer;
+
+            return LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(value));
+        }
+
+
+        public override object VisitFloat(FloatNode floatNode)
+        {
+            double value = floatNode.f;
+
+            return LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(value));
+        }
         private List<MemberDeclarationSyntax> GetMemberDeclarations(IEnumerable<PropertyNode> properties)
         {
             List<MemberDeclarationSyntax> memberDeclarations = new();

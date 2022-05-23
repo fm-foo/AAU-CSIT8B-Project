@@ -6,5 +6,10 @@ namespace ActionCompiler.AST.TypeNodes
         {
             return visitor.VisitFloatType(this);
         }
+
+        public override string GetTypeName()
+        {
+            return "double";
+        }
     }
 }

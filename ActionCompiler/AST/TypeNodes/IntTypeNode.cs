@@ -6,6 +6,11 @@
         {
             return visitor.VisitIntType(this);
         }
+
+        public override string GetTypeName()
+        {
+            return "int";
+        }
     }
 
 }
