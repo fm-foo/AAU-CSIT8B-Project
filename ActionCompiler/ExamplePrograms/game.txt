@@ -4,5 +4,15 @@ game TestGame {
 		int y = 2;
 
 		float z = 1.2;
+
+		string s = "abc";
+
+		int n;
+		float k;
+	}
+
+	move: function() {
+		bool b = true;
+		bool c = false;
 	}
 };

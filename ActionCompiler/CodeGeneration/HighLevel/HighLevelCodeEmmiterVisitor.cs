@@ -15,6 +15,8 @@ namespace ActionCompiler.CodeGeneration.HighLevel
 {
     public class HighLevelCodeEmmiterVisitor : AutomaticNodeVisitor<object>
     {
+        private static readonly string[] gameFunctions = { "initialize" };
+        private static readonly string[] entityFunctions = { "initialize", "act", "destroy" };
 
         public override object VisitFile(FileNode file)
         {
@@ -72,17 +74,24 @@ namespace ActionCompiler.CodeGeneration.HighLevel
                 SyntaxToken identifier = Identifier(dec.identifier.identifier);
                 BlockSyntax block = (BlockSyntax)Visit(function.block);
 
-                IEnumerable<ParameterSyntax>? args = function.args.Select(a => Identifier(a.identifier.identifier)).Select(p => Parameter(p).WithType(ParseTypeName("object")));
+                IEnumerable<ParameterSyntax>? args = function.args.Select(a => Identifier(a.identifier.identifier)).Select(p => Parameter(p).WithType(PredefinedType(Token(SyntaxKind.ObjectKeyword))));
 
-                MethodDeclarationSyntax? functionDeclaration = MethodDeclaration(ParseTypeName("object"), identifier)
+                MethodDeclarationSyntax? functionDeclaration = MethodDeclaration(PredefinedType(Token(SyntaxKind.VoidKeyword)), identifier)
                                             .AddModifiers(Token(SyntaxKind.PublicKeyword))
                                             .AddParameterListParameters(args.ToArray())
                                             .WithBody(block);
+
+                functionDeclaration = ShouldOverride(dec.identifier.identifier) ? functionDeclaration.AddModifiers(Token(SyntaxKind.OverrideKeyword)) : functionDeclaration;
 
                 lst.Add(functionDeclaration);
             }
 
             return lst;
+        }
+
+        private bool ShouldOverride(string identifier)
+        { 
+            return gameFunctions.Contains(identifier, StringComparer.InvariantCultureIgnoreCase) || entityFunctions.Contains(identifier, StringComparer.InvariantCultureIgnoreCase);
         }
 
         public override object VisitBlock(BlockNode blockNode)
@@ -100,33 +109,40 @@ namespace ActionCompiler.CodeGeneration.HighLevel
 
         public override object VisitDeclaration(DeclarationNode declarationNode)
         {
-            LocalDeclarationStatementSyntax variableDeclaration;
+            VariableDeclaratorSyntax variableDeclarationSyntax = VariableDeclarator(declarationNode.identifier.identifier);
 
-            if (declarationNode.expr is null)
+            if (declarationNode.expr is not null)
             {
-                variableDeclaration =  LocalDeclarationStatement(VariableDeclaration(ParseTypeName(declarationNode.type.GetTypeName())).AddVariables(VariableDeclarator(declarationNode.identifier.identifier)));
-            } else
-            {
-                variableDeclaration = LocalDeclarationStatement(VariableDeclaration(ParseTypeName(declarationNode.type.GetTypeName())).AddVariables(VariableDeclarator(declarationNode.identifier.identifier).WithInitializer(EqualsValueClause((ExpressionSyntax)Visit(declarationNode.expr)))));
+                variableDeclarationSyntax = variableDeclarationSyntax.WithInitializer(EqualsValueClause((ExpressionSyntax)Visit(declarationNode.expr)));
             }
 
+            LocalDeclarationStatementSyntax variableDeclaration = LocalDeclarationStatement(VariableDeclaration(ParseTypeName(declarationNode.type.GetTypeName())).AddVariables(variableDeclarationSyntax));
             return variableDeclaration;
         }
 
         public override object VisitInt(IntNode intNode)
         {
-            int value = intNode.integer;
-
-            return LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(value));
+            return LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(intNode.integer));
         }
-
 
         public override object VisitFloat(FloatNode floatNode)
         {
-            double value = floatNode.f;
-
-            return LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(value));
+            return LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(floatNode.f));
         }
+
+        public override object VisitString(StringNode stringNode)
+        {
+            return LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(stringNode.s));
+        }
+
+        public override object VisitBool(BoolNode boolNode)
+        {
+            return boolNode.val ?
+                LiteralExpression(SyntaxKind.TrueLiteralExpression, Token(SyntaxKind.TrueKeyword)) :
+                LiteralExpression(SyntaxKind.FalseLiteralExpression, Token(SyntaxKind.FalseKeyword));
+        }
+
+
         private List<MemberDeclarationSyntax> GetMemberDeclarations(IEnumerable<PropertyNode> properties)
         {
             List<MemberDeclarationSyntax> memberDeclarations = new();

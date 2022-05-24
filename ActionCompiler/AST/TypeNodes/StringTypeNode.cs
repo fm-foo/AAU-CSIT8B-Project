@@ -9,7 +9,7 @@
 
         public override string GetTypeName()
         {
-            throw new System.NotImplementedException();
+            return "string";
         }
     }
 
